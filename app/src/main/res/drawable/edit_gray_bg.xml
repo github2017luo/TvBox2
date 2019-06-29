@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-
-    <solid android:color="#d6d6d6" />
-
-    <corners android:radius="0dp" />
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/edit_gray_focused" android:state_pressed="true" /> <!-- pressed -->
+    <item android:drawable="@drawable/edit_gray_focused" android:state_focused="true" /> <!-- focused -->
+    <item android:drawable="@drawable/edit_gray_focused" android:state_hovered="true" /> <!-- hovered -->
+    <item android:drawable="@drawable/edit_gray_normal" /> <!-- default -->
+</selector>

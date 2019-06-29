@@ -36,6 +36,7 @@
                 android:layout_marginTop="25dp"
                 android:background="@drawable/edit_gray_bg"
                 android:hint="请输入旧手机号"
+                android:nextFocusDown="@+id/editImageCode"
                 android:inputType="phone"
                 android:paddingLeft="15dp"
                 android:textColor="@android:color/black"
@@ -56,15 +57,24 @@
                     android:background="@drawable/edit_gray_bg"
                     android:hint="@string/input_check_code"
                     android:paddingLeft="15dp"
+                    android:nextFocusRight="@+id/rlImageCode"
+                    android:nextFocusUp="@+id/editPhone"
+                    android:nextFocusDown="@+id/editPhoneCode"
                     android:textColor="@android:color/black"
                     android:textColorHint="@color/hint_color"
                     android:textSize="18sp" />
 
                 <RelativeLayout
+                    android:id="@+id/rlImageCode"
                     android:layout_width="140dp"
                     android:layout_height="47dp"
                     android:layout_marginLeft="15dp"
-                    android:background="@android:color/white">
+                    android:background="@drawable/edit_bg"
+                    android:focusable="true"
+                    android:nextFocusLeft="@+id/editImageCode"
+                    android:nextFocusUp="@+id/editPhone"
+                    android:nextFocusDown="@+id/tvPhoneCode"
+                    android:padding="2dp">
 
                     <ImageView
                         android:id="@+id/ivImageCode"
@@ -94,10 +104,13 @@
                     android:paddingLeft="15dp"
                     android:textColor="@android:color/black"
                     android:textColorHint="@color/hint_color"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:nextFocusRight="@+id/tvPhoneCode"
+                    android:nextFocusUp="@+id/editImageCode"
+                    android:nextFocusDown="@+id/tvCommit"/>
 
 
-                <TextView
+                <Button
                     android:id="@+id/tvPhoneCode"
                     android:layout_width="140dp"
                     android:layout_height="47dp"
@@ -105,6 +118,9 @@
                     android:background="@drawable/edit_gray_bg"
                     android:enabled="true"
                     android:gravity="center"
+                    android:nextFocusLeft="@+id/editPhoneCode"
+                    android:nextFocusUp="@+id/rlImageCode"
+                    android:nextFocusDown="@+id/tvCommit"
                     android:text="@string/get_phone_code"
                     android:textColor="@color/text_color_selector"
                     android:textSize="18sp" />
@@ -118,6 +134,7 @@
                 android:layout_marginTop="25dp"
                 android:background="@drawable/btn_selector"
                 android:gravity="center"
+                android:focusable="true"
                 android:text="修改"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
