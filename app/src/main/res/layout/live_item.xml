@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:id="@+id/itemRoot"
+    android:orientation="vertical"
+    tools:background="@color/page_bg">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="213dp">
+
+        <ImageView
+            android:id="@+id/ivIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:background="@android:color/white" />
+
+        <TextView
+            android:id="@+id/tvTip"
+            android:layout_width="192dp"
+            android:layout_height="47dp"
+            android:layout_centerInParent="true"
+            android:background="@android:color/black"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            tools:text="直播已结束" />
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        tools:text="心身互动养身健康教育讲座" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="5dp"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        tools:text="6月15日  08:00-11:00" />
+</LinearLayout>

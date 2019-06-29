@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.easy.tvbox.ui.LoadingView
+            android:id="@+id/loadingView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/llContain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/page_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="50dp"
+            android:paddingTop="20dp"
+            android:paddingRight="50dp"
+            android:paddingBottom="20dp">
+
+            <com.zhouwei.mzbanner.MZBannerView
+                android:id="@+id/banner"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:canLoop="true"
+                app:indicatorAlign="right"
+                app:indicatorPaddingLeft="10dp"
+                app:open_mz_mode="false" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/llLive"
+                    android:layout_width="0dp"
+                    android:layout_height="125dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/home_module_bg_1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_live2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="12dp"
+                        android:text="大课直播"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llDaily"
+                    android:layout_width="0dp"
+                    android:layout_height="125dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/home_module_bg_2"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_course2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="12dp"
+                        android:text="每日课程"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/llMusic"
+                    android:layout_width="0dp"
+                    android:layout_height="125dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/home_module_bg_3"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_music2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="12dp"
+                        android:text="音 乐"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llMine"
+                    android:layout_width="0dp"
+                    android:layout_height="125dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/home_module_bg_4"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_my2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="12dp"
+                        android:text="我 的"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

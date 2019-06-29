@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemRoot"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:background="@color/page_bg">
+
+    <ImageView
+        android:id="@+id/ivIcon"
+        android:layout_width="match_parent"
+        android:layout_height="213dp"
+        tools:background="@android:color/white" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        tools:text="心身互动养身健康教育讲座" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            tools:text="08:00-11:00" />
+
+        <TextView
+            android:id="@+id/tvDownCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="5dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:visibility="gone"
+            tools:text="倒计时：03 时 37 分 09 秒"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+</LinearLayout>

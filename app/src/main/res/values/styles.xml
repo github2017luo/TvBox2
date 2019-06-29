@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="@style/Theme.Leanback" />
+
+    <style name="StyleNetChangedDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="StyleNetChangedDialog.Animation" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/translate_netstate_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/translate_netstate_dialog_out</item>
+    </style>
+</resources>
