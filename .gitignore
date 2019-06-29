@@ -2,4 +2,5 @@
 .gradle/5.1.1/vcsMetadata-1/
 .idea/
 app/src/main/java/com/easy/tvbox/player/
-.gradle/*
+.gradle/
+app/release/
