@@ -2,7 +2,9 @@ package com.easy.tvbox.ui.home;
 
 import com.easy.tvbox.base.BaseView;
 import com.easy.tvbox.bean.DailyData;
+import com.easy.tvbox.bean.DailyList;
 import com.easy.tvbox.bean.LiveData;
+import com.easy.tvbox.bean.LiveList;
 import com.easy.tvbox.bean.Respond;
 
 import java.util.List;
@@ -11,7 +13,11 @@ public interface HomeView extends BaseView {
 
     void carouselCallback(Respond<List<String>> respond);
 
-    void queryForAudioCallback(Respond<DailyData> respond);
+    void dailyCallback(Respond<DailyData> respond);
 
     void liveCallback(Respond<LiveData> respond);
+
+    void countDownDaily(DailyList dailyList);
+
+    void countDownLive(LiveList liveList);
 }

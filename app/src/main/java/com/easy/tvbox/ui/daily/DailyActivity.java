@@ -90,7 +90,6 @@ public class DailyActivity extends BaseActivity<DailyBinding> implements DailyVi
     @Override
     public void networkChange(boolean isConnect) {
         if (isConnect) {
-            EventBus.getDefault().post(new DailyUpdateEvent(0));
             mViewBinding.gridView.setVisibility(View.VISIBLE);
             mViewBinding.loadingView.setStatus(LoadingView.STATUS_HIDDEN);
         } else {

@@ -27,7 +27,10 @@ import io.reactivex.schedulers.Schedulers;
 
 public class HomePresenter extends BasePresenter<HomeView> {
 
-    Disposable mDisposable;
+    Disposable dailyTimeRequestDisposable;
+    Disposable dailyCountDownDisposable;
+    Disposable liveTimeRequestDisposable;
+    Disposable liveCountDownDisposable;
 
     @Inject
     public HomePresenter() {
@@ -43,30 +46,31 @@ public class HomePresenter extends BasePresenter<HomeView> {
      * 定时请求每日课程
      */
     public void timeRequestDailyCourse(String shopNo) {
+        dailyRequestCancel();
         //每10分支更新一次数据
         Observable.interval(0, 10, TimeUnit.MINUTES)
                 .observeOn(Schedulers.io())
                 .subscribe(new Observer<Long>() {
                     @Override
                     public void onSubscribe(Disposable disposable) {
-                        mDisposable = disposable;
+                        dailyTimeRequestDisposable = disposable;
                     }
 
                     @Override
                     public void onNext(Long number) {
-                        queryForAudio(shopNo);
+                        queryDaily(shopNo);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         //取消订阅
-                        cancel();
+                        dailyRequestCancel();
                     }
 
                     @Override
                     public void onComplete() {
                         //取消订阅
-                        cancel();
+                        dailyRequestCancel();
                     }
                 });
     }
@@ -74,16 +78,16 @@ public class HomePresenter extends BasePresenter<HomeView> {
     /**
      * 取消订阅
      */
-    public void cancel() {
-        if (mDisposable != null && !mDisposable.isDisposed()) {
-            mDisposable.dispose();
+    public void dailyRequestCancel() {
+        if (dailyTimeRequestDisposable != null && !dailyTimeRequestDisposable.isDisposed()) {
+            dailyTimeRequestDisposable.dispose();
         }
     }
 
     /**
      * 获取每日音频列表---不需要翻页
      */
-    public void queryForAudio(String shopNo) {
+    public void queryDaily(String shopNo) {
         Map<String, Object> map = new HashMap<>();
         map.put("shopNo", shopNo);
         Disposable disposable = requestStore.queryForAudio(0, 10, map)
@@ -95,11 +99,18 @@ public class HomePresenter extends BasePresenter<HomeView> {
                             if (dailyData != null) {
                                 List<DailyList> contents = dailyData.getContent();
                                 if (contents != null && contents.size() > 0) {
+                                    long mix = Long.MAX_VALUE;
+                                    DailyList mixDailyList = null;
+                                    long currentTime = System.currentTimeMillis();
                                     for (DailyList content : contents) {
                                         long startTime = CommonUtils.date2TimeStamp(content.getBeginDate());
                                         long endTime = CommonUtils.date2TimeStamp(content.getEndDate());
                                         content.setStartTime(startTime);
                                         content.setEndTime(endTime);
+                                        if (currentTime < startTime && startTime < mix) {
+                                            mix = startTime;
+                                            mixDailyList = content;
+                                        }
                                         if (startTime != 0 && endTime != 0) {
                                             String startDate = CommonUtils.timeStamp2Date(startTime, 1);
                                             String endDate = CommonUtils.timeStamp2Date(endTime, 1);
@@ -108,6 +119,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
                                             }
                                         }
                                     }
+                                    countDownDaily(mixDailyList);
                                 }
                             }
                             respond.setObj(dailyData);
@@ -115,12 +127,63 @@ public class HomePresenter extends BasePresenter<HomeView> {
                     }
                 })
                 .observeOn(Schedulers.io())
-                .subscribe(respond -> mView.queryForAudioCallback(respond),
+                .subscribe(respond -> mView.dailyCallback(respond),
                         throwable -> {
                             Respond respond = getThrowableRespond(throwable);
-                            mView.queryForAudioCallback(respond);
+                            mView.dailyCallback(respond);
                         });
         mCompositeSubscription.add(disposable);
+    }
+
+    /**
+     * 每日课程开始倒计时
+     *
+     * @param dailyList
+     */
+    public void countDownDaily(DailyList dailyList) {
+        long time = -1;
+        if (dailyList != null) {
+            time = dailyList.getStartTime() - System.currentTimeMillis();
+        }
+        if (time < 0) {
+            return;
+        }
+        dailyCountDownCancel();
+        Observable.timer(time, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onSubscribe(Disposable disposable) {
+                        dailyCountDownDisposable = disposable;
+                    }
+
+                    @Override
+                    public void onNext(Long number) {
+                        mView.countDownDaily(dailyList);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //取消订阅
+                        dailyCountDownCancel();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        //取消订阅
+                        dailyCountDownCancel();
+                    }
+                });
+    }
+
+    /**
+     * 取消订阅
+     */
+    public void dailyCountDownCancel() {
+        if (dailyCountDownDisposable != null && !dailyCountDownDisposable.isDisposed()) {
+            dailyCountDownDisposable.dispose();
+        }
     }
 
     /**
@@ -135,6 +198,11 @@ public class HomePresenter extends BasePresenter<HomeView> {
         mCompositeSubscription.add(disposable);
     }
 
+    /**
+     * 首页轮播图
+     *
+     * @param shopNo
+     */
     public void getCarouselByShopNo(String shopNo) {
         Disposable disposable = requestStore.getCarouselByShopNo(shopNo)
                 .doOnSuccess(respond -> {
@@ -160,9 +228,51 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
     /**
+     * 定时请求直播
+     */
+    public void timeRequestLiveCourse() {
+        liveRequestCancel();
+        //每10分支更新一次数据
+        Observable.interval(0, 3, TimeUnit.HOURS)
+                .observeOn(Schedulers.io())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onSubscribe(Disposable disposable) {
+                        liveTimeRequestDisposable = disposable;
+                    }
+
+                    @Override
+                    public void onNext(Long number) {
+                        queryLive();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //取消订阅
+                        liveRequestCancel();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        //取消订阅
+                        liveRequestCancel();
+                    }
+                });
+    }
+
+    /**
+     * 取消订阅
+     */
+    public void liveRequestCancel() {
+        if (liveTimeRequestDisposable != null && !liveTimeRequestDisposable.isDisposed()) {
+            liveTimeRequestDisposable.dispose();
+        }
+    }
+
+    /**
      * 直播列表
      */
-    public void queryForLive() {
+    public void queryLive() {
         Disposable disposable = requestStore.queryForLive(0, 20)
                 .doOnSuccess(respond -> {
                     if (respond.isOk()) {
@@ -172,10 +282,18 @@ public class HomePresenter extends BasePresenter<HomeView> {
                             if (liveData != null) {
                                 List<LiveList> contents = liveData.getContent();
                                 if (contents != null && contents.size() > 0) {
+                                    long mix = Long.MAX_VALUE;
+                                    LiveList mixLiveList = null;
                                     long currentTime = System.currentTimeMillis();
                                     for (LiveList content : contents) {
                                         long startTime = CommonUtils.date2TimeStamp(content.getBeginDate());
                                         long endTime = CommonUtils.date2TimeStamp(content.getEndDate());
+                                        content.setStartTime(startTime);
+                                        content.setEndTime(endTime);
+                                        if (currentTime < startTime && startTime < mix) {
+                                            mix = startTime;
+                                            mixLiveList = content;
+                                        }
                                         if (startTime != 0 && endTime != 0) {
                                             if (endTime < currentTime) {
                                                 content.setState(0);
@@ -191,6 +309,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
                                             }
                                         }
                                     }
+                                    countDownLive(mixLiveList);
                                 }
                             }
                             respond.setObj(liveData);
@@ -204,5 +323,55 @@ public class HomePresenter extends BasePresenter<HomeView> {
                             mView.liveCallback(respond);
                         });
         mCompositeSubscription.add(disposable);
+    }
+    /**
+     * 每日课程开始倒计时
+     *
+     * @param liveList
+     */
+    public void countDownLive(LiveList liveList) {
+        long time = -1;
+        if (liveList != null) {
+            time = liveList.getStartTime() - System.currentTimeMillis();
+        }
+        if (time < 0) {
+            return;
+        }
+        liveCountDownCancel();
+        Observable.timer(time, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onSubscribe(Disposable disposable) {
+                        liveCountDownDisposable = disposable;
+                    }
+
+                    @Override
+                    public void onNext(Long number) {
+                        mView.countDownLive(liveList);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //取消订阅
+                        liveCountDownCancel();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        //取消订阅
+                        liveCountDownCancel();
+                    }
+                });
+    }
+
+    /**
+     * 取消订阅
+     */
+    public void liveCountDownCancel() {
+        if (liveCountDownDisposable != null && !liveCountDownDisposable.isDisposed()) {
+            liveCountDownDisposable.dispose();
+        }
     }
 }

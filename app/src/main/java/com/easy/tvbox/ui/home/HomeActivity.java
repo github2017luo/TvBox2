@@ -3,6 +3,7 @@ package com.easy.tvbox.ui.home;
 import android.util.Log;
 import android.view.View;
 
+import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
@@ -17,6 +18,7 @@ import com.easy.tvbox.bean.LiveList;
 import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.HomeBinding;
 import com.easy.tvbox.event.DailyUpdateEvent;
+import com.easy.tvbox.event.LiveUpdateEvent;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.ui.LoadingView;
 import com.easy.tvbox.utils.ToastUtils;
@@ -38,8 +40,8 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     HomePresenter presenter;
     List<String> bannerImages = new ArrayList<>();
     Account account;
-    public static List<DailyList> dailyDataContent;
-    public static List<LiveList> liveDataContent;
+    public static List<DailyList> dailyDataContent = new ArrayList<>();
+    public static List<LiveList> liveDataContent = new ArrayList<>();
 
     @Override
     public int getLayoutId() {
@@ -78,6 +80,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
 
         mViewBinding.llLive.setOnClickListener(v -> {
             RouteManager.goLiveActivity(HomeActivity.this);
+            EventBus.getDefault().post(new LiveUpdateEvent(0));
         });
         mViewBinding.llDaily.setOnClickListener(v -> RouteManager.goDailyActivity(HomeActivity.this));
         mViewBinding.llMusic.setOnClickListener(v -> RouteManager.goMusicActivity(HomeActivity.this));
@@ -90,15 +93,13 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 }
             }
         });
-        networkChange(NetworkUtils.isNetConnected(this));
-
-        presenter.timeRequestDailyCourse(account.getShopNo());
-        presenter.queryForLive();
     }
 
     private void initData() {
         presenter.saveEquipment();
         presenter.getCarouselByShopNo(account.getShopNo());
+        presenter.timeRequestLiveCourse();
+        presenter.timeRequestDailyCourse(account.getShopNo());
     }
 
     @Override
@@ -135,12 +136,55 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     }
 
     @Override
-    public void queryForAudioCallback(Respond<DailyData> respond) {
+    protected void onDestroy() {
+        super.onDestroy();
+        if (presenter != null) {
+            presenter.dailyRequestCancel();
+            presenter.dailyCountDownCancel();
+            presenter.liveRequestCancel();
+        }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDailyUpdateEvent(DailyUpdateEvent event) {
+        if (event.type == 0) {
+            presenter.queryDaily(account.getShopNo());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLiveUpdateEvent(LiveUpdateEvent event) {
+        if (event.type == 0) {
+            presenter.queryLive();
+        }
+    }
+
+    @Override
+    public void liveCallback(Respond<LiveData> respond) {
+        if (respond.isOk()) {
+            LiveData liveData = respond.getObj();
+            if (liveData != null) {
+                List<LiveList> temp = liveData.getContent();
+                if (temp != null) {
+                    liveDataContent = temp;
+                    Log.d("liveCallback", liveDataContent.toString());
+                }
+            }
+        } else {
+            ToastUtils.showLong(respond.getMessage());
+        }
+        EventBus.getDefault().post(new LiveUpdateEvent(1));
+    }
+
+    @Override
+    public void dailyCallback(Respond<DailyData> respond) {
         if (respond.isOk()) {
             DailyData dailyData = respond.getObj();
             if (dailyData != null) {
-                dailyDataContent = dailyData.getContent();
-                if (dailyDataContent != null) {
+                List<DailyList> temp = dailyData.getContent();
+                if (temp != null) {
+                    dailyDataContent = temp;
                     Log.d("queryForAudioCallback", dailyDataContent.toString());
                 }
             }
@@ -151,31 +195,16 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (presenter != null) {
-            presenter.cancel();
-        }
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDailyUpdateEvent(DailyUpdateEvent event) {
-        if (event.type == 0) {
-            presenter.queryForAudio(account.getShopNo());
+    public void countDownDaily(DailyList dailyList) {
+        if (dailyList != null) {
+            RouteManager.goDailyVideoActivity(HomeActivity.this, JSON.toJSONString(dailyList));
         }
     }
 
     @Override
-    public void liveCallback(Respond<LiveData> respond) {
-        if (respond.isOk()) {
-            LiveData liveData = respond.getObj();
-            if (liveData != null) {
-                liveDataContent = liveData.getContent();
-                Log.d("liveCallback", liveDataContent.toString());
-            }
-        } else {
-            ToastUtils.showLong(respond.getMessage());
+    public void countDownLive(LiveList liveList) {
+        if (liveList != null) {
+            RouteManager.goVideoActivity(HomeActivity.this, JSON.toJSONString(liveList));
         }
     }
 }

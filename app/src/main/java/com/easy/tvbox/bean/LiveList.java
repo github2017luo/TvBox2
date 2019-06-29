@@ -21,6 +21,24 @@ public class LiveList implements CBaseData{
     private String endDate;
     private int state;//0:结束 1：正在进行，2：未开始
     private String showTime;
+    private long startTime;
+    private long endTime;//--自己加的
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
 
     public void setState(int state) {
         this.state = state;

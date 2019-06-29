@@ -45,6 +45,14 @@ public class LiveAdapter extends GodBaseAdapter<LiveList> {
         itemRoot.setOnClickListener(v -> RouteManager.goVideoActivity(context, JSON.toJSONString(itemData)));
     }
 
+    public void setDatas(List<LiveList> musicLists) {
+        if (musicLists != null) {
+            dataList.clear();
+            dataList.addAll(musicLists);
+            notifyDataSetChanged();
+        }
+    }
+
     @Override
     protected int getItemLayout() {
         return R.layout.live_item;
