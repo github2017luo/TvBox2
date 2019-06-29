@@ -10,7 +10,7 @@
             android:id="@+id/loadingView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/llContain"
@@ -34,9 +34,11 @@
                 android:background="@drawable/edit_bg"
                 android:hint="@string/input_phone_num"
                 android:inputType="phone"
+                android:nextFocusDown="@+id/editImageCode"
                 android:paddingLeft="15dp"
                 android:textColor="@android:color/black"
                 android:textColorHint="#FF9B9B9B"
+                android:textCursorDrawable="@drawable/edittext_cursor"
                 android:textSize="18sp" />
 
             <LinearLayout
@@ -52,16 +54,26 @@
                     android:layout_weight="1"
                     android:background="@drawable/edit_bg"
                     android:hint="@string/input_check_code"
+                    android:nextFocusRight="@+id/rlImageCode"
+                    android:nextFocusUp="@+id/editPhone"
+                    android:nextFocusDown="@+id/editPhoneCode"
                     android:paddingLeft="15dp"
                     android:textColor="@android:color/black"
                     android:textColorHint="#FF9B9B9B"
+                    android:textCursorDrawable="@drawable/edittext_cursor"
                     android:textSize="18sp" />
 
                 <RelativeLayout
+                    android:id="@+id/rlImageCode"
                     android:layout_width="140dp"
                     android:layout_height="47dp"
                     android:layout_marginLeft="15dp"
-                    android:background="@android:color/white">
+                    android:background="@drawable/edit_bg"
+                    android:focusable="true"
+                    android:nextFocusLeft="@+id/editImageCode"
+                    android:nextFocusUp="@+id/editPhone"
+                    android:nextFocusDown="@+id/tvPhoneCode"
+                    android:padding="2dp">
 
                     <ImageView
                         android:id="@+id/ivImageCode"
@@ -88,13 +100,17 @@
                     android:layout_weight="1"
                     android:background="@drawable/edit_bg"
                     android:hint="@string/input_phone_code"
+                    android:nextFocusRight="@+id/tvPhoneCode"
+                    android:nextFocusUp="@+id/editImageCode"
+                    android:nextFocusDown="@+id/login"
                     android:paddingLeft="15dp"
                     android:textColor="@android:color/black"
                     android:textColorHint="#FF9B9B9B"
+                    android:textCursorDrawable="@drawable/edittext_cursor"
                     android:textSize="18sp" />
 
 
-                <TextView
+                <Button
                     android:id="@+id/tvPhoneCode"
                     android:layout_width="140dp"
                     android:layout_height="47dp"
@@ -102,6 +118,9 @@
                     android:background="@drawable/edit_bg"
                     android:enabled="true"
                     android:gravity="center"
+                    android:nextFocusLeft="@+id/editPhoneCode"
+                    android:nextFocusUp="@+id/rlImageCode"
+                    android:nextFocusDown="@+id/login"
                     android:text="@string/get_phone_code"
                     android:textColor="@color/text_color_selector"
                     android:textSize="18sp" />
@@ -114,7 +133,9 @@
                 android:layout_height="44dp"
                 android:layout_marginTop="25dp"
                 android:background="@drawable/btn_selector"
+                android:focusable="true"
                 android:gravity="center"
+                android:nextFocusUp="@+id/tvPhoneCode"
                 android:text="@string/login"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />

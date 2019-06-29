@@ -2,7 +2,9 @@ package com.easy.tvbox.ui.login;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.InputFilter;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.easy.tvbox.BuildConfig;
@@ -21,6 +23,7 @@ import com.easy.tvbox.databinding.LoginBinding;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.ui.LoadingView;
 import com.easy.tvbox.utils.SMSCountDownTimer;
+import com.easy.tvbox.utils.SpaceFilter;
 import com.easy.tvbox.utils.ToastUtils;
 
 import java.util.List;
@@ -60,7 +63,43 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
                 return;
             }
         }
-        mViewBinding.ivImageCode.setOnClickListener(v -> loginPresenter.generateImageCode());
+        mViewBinding.editPhone.setFilters(new InputFilter[]{new SpaceFilter()});
+        mViewBinding.editImageCode.setFilters(new InputFilter[]{new SpaceFilter()});
+        mViewBinding.editPhoneCode.setFilters(new InputFilter[]{new SpaceFilter()});
+
+        mViewBinding.editImageCode.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (view.getId() == R.id.editPhone) {
+                        //KEYCODE_DPAD_DOWN这个按各自需求做拦截处理,一般不需要处理
+                        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                            mViewBinding.editPhone.requestFocus();
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        });
+
+        mViewBinding.editPhoneCode.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (view.getId() == R.id.editPhone) {
+                        //KEYCODE_DPAD_DOWN这个按各自需求做拦截处理,一般不需要处理
+                        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                            mViewBinding.editImageCode.requestFocus();
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        });
+
+        mViewBinding.rlImageCode.setOnClickListener(v -> loginPresenter.generateImageCode());
 
         mViewBinding.tvPhoneCode.setOnClickListener(v -> {
             String phone = mViewBinding.editPhone.getText().toString();
@@ -104,6 +143,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
             }
             loginPresenter.login(phone, phoneCode);
         });
+
         mViewBinding.loadingView.setRetryListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,8 +152,10 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
                 }
             }
         });
+
         networkChange(NetworkUtils.isNetConnected(LoginActivity.this));
     }
+
 
     @Override
     public void networkChange(boolean isConnect) {
