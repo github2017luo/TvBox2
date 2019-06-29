@@ -85,12 +85,12 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         mViewBinding.loadingView.setRetryListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (NetworkUtils.is3gConnected(HomeActivity.this)) {
+                if (NetworkUtils.isWifiConnected(HomeActivity.this)) {
                     networkChange(true);
                 }
             }
         });
-        networkChange(NetworkUtils.is3gConnected(this));
+        networkChange(NetworkUtils.isWifiConnected(this));
 
         presenter.timeRequestDailyCourse(account.getShopNo());
         presenter.queryForLive();

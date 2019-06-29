@@ -61,8 +61,8 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
 
         Intent intent = getIntent();
         position = intent.getIntExtra("position", 0);
-        if (MusicActivity.musicLists.size() > position && position >= 0) {
-            musicList = MusicActivity.musicLists.get(position);
+        if (MusicFragment.musicLists.size() > position && position >= 0) {
+            musicList = MusicFragment.musicLists.get(position);
         }
         if (musicList == null) {
             finish();
@@ -73,7 +73,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
 
         initPayer();
 
-        networkChange(NetworkUtils.is3gConnected(MusicDetailActivity.this));
+        networkChange(NetworkUtils.isWifiConnected(MusicDetailActivity.this));
 
         startPayer();
     }
@@ -83,7 +83,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
         mViewBinding.loadingView.setRetryListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (NetworkUtils.is3gConnected(MusicDetailActivity.this)) {
+                if (NetworkUtils.isWifiConnected(MusicDetailActivity.this)) {
                     networkChange(true);
                 }
             }
@@ -122,9 +122,9 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
             @Override
             public void onClick(View v) {
                 position++;
-                if (position >= MusicActivity.musicLists.size()) {
+                if (position >= MusicFragment.musicLists.size()) {
                     ToastUtils.showLong("已经是最后一首歌曲");
-                    position = MusicActivity.musicLists.size() - 1;
+                    position = MusicFragment.musicLists.size() - 1;
                     return;
                 }
                 startPayer();
@@ -133,10 +133,10 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
     }
 
     private void startPayer() {
-        if (position < 0 || position >= MusicActivity.musicLists.size()) {
+        if (position < 0 || position >= MusicFragment.musicLists.size()) {
             return;
         }
-        musicList = MusicActivity.musicLists.get(position);
+        musicList = MusicFragment.musicLists.get(position);
         if (musicList != null) {
             refreshView();
             if (mPlayer != null) {

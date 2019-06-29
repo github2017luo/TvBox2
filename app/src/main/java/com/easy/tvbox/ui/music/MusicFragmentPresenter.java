@@ -115,7 +115,9 @@ public class MusicFragmentPresenter extends BasePresenter<MusicFragmentView> {
                     });
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(musicData -> mView.queryMusicCallback(musicData), throwable -> mView.queryMusicCallback(null));
+                .subscribe(
+                        musicData -> mView.queryMusicCallback(musicData, videoId),
+                        throwable -> mView.queryMusicCallback(null, videoId));
         mCompositeSubscription.add(disposable);
     }
 

@@ -5,5 +5,4 @@ import com.easy.tvbox.bean.MusicData;
 
 public interface MusicView extends BaseView {
 
-    void queryMusicCallback(MusicData musicData);
 }

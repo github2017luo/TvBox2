@@ -1,126 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/page_bg">
-
-        <com.easy.tvbox.ui.LoadingView
-            android:id="@+id/loadingView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
+        android:background="@color/page_bg"
+        android:orientation="vertical"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp">
 
         <LinearLayout
-            android:id="@+id/llContain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvMusic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="歌曲"
+                android:textColor="@color/blue"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tvMv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="62dp"
+                android:text="MV"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:padding="50dp">
+            android:layout_marginTop="20dp">
 
-            <RelativeLayout
-                android:layout_width="205dp"
-                android:layout_height="205dp"
-                android:background="@drawable/music_module_bg">
-
-                <SurfaceView
-                    android:id="@+id/surfaceView"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_gravity="center" />
-
-                <TextView
-                    android:id="@+id/tvPlayAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:paddingTop="20dp"
-                    android:text="播放全部"
-                    android:textColor="@android:color/white"
-                    android:textSize="32sp" />
-
-                <ImageView
-                    android:id="@+id/ivPlayer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvPlayAll"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="20dp"
-                    android:src="@drawable/button_stop_pause" />
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <com.easy.tvbox.ui.LoadingView
+                android:id="@+id/loadingView"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="25dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:visibility="gone" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="全部音乐"
-                    android:textColor="@android:color/white"
-                    android:textSize="15sp" />
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginTop="32dp"
-                    android:background="@android:color/white" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="42dp"
-                        android:layout_height="wrap_content"
-                        android:text="播放/暂停"
-                        android:textColor="@android:color/white"
-                        android:textSize="7sp" />
-
-                    <TextView
-                        android:layout_width="26dp"
-                        android:layout_height="wrap_content"
-                        android:text="歌曲"
-                        android:textColor="@android:color/white"
-                        android:textSize="7sp" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:text="演唱者"
-                            android:textColor="@android:color/white"
-                            android:textSize="7sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:text="时长"
-                            android:textColor="@android:color/white"
-                            android:textSize="7sp" />
-
-                    </RelativeLayout>
-                </LinearLayout>
-
-                <ListView
-                    android:id="@+id/listView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
-        </LinearLayout>
-    </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
 </layout>

@@ -107,12 +107,12 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
         mViewBinding.loadingView.setRetryListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (NetworkUtils.is3gConnected(LoginActivity.this)) {
+                if (NetworkUtils.isWifiConnected(LoginActivity.this)) {
                     networkChange(true);
                 }
             }
         });
-        networkChange(NetworkUtils.is3gConnected(LoginActivity.this));
+        networkChange(NetworkUtils.isWifiConnected(LoginActivity.this));
     }
 
     @Override

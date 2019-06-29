@@ -54,7 +54,7 @@ public abstract class BaseFragment<M extends ViewDataBinding> extends Fragment {
         addPresenters(observerList);
         if (observerList != null && observerList.size() > 0) {
             for (BasePresenter lifecycleObserver : observerList) {
-                lifecycleObserver.init(mRegistry);
+                lifecycleObserver.init(this);
                 lifecycleObserver.setContext(getContext());
                 getLifecycle().addObserver(lifecycleObserver);
             }
