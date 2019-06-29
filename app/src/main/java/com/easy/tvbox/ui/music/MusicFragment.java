@@ -27,12 +27,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements MusicFragmentView, PullToRefreshListView.OnLoad{
+public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements MusicFragmentView, PullToRefreshListView.OnLoad {
 
     @Inject
     MusicFragmentPresenter presenter;
 
-    MusicAdapter adapter;
+    MusicFragmentAdapter adapter;
     public static List<MusicList> musicLists = new ArrayList<>();
     public static List<MusicList> mvLists = new ArrayList<>();
     int page = 0;
@@ -41,7 +41,6 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     AliVcMediaPlayer mPlayer;
     int currentPosition = 0;//播放的位置
     MusicList currentPlayingMusic;
-
 
     public static MusicFragment getInstance(int type) {
         MusicFragment musicFragment = new MusicFragment();
@@ -80,9 +79,9 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         account = DataManager.getInstance().queryAccount();
         if (videoId == 1) {
             initPayer();
-            adapter = new MusicAdapter(getContext(), musicLists);
+            adapter = new MusicFragmentAdapter(getContext(), musicLists);
         } else {
-            adapter = new MusicAdapter(getContext(), mvLists);
+            adapter = new MusicFragmentAdapter(getContext(), mvLists);
         }
         mViewBinding.listView.setOnLoad(this);
         mViewBinding.listView.setAdapter(adapter);
@@ -283,6 +282,16 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     @Override
     public void loadData(int beginIndex, ProgressBar pb) {
         presenter.queryMusic(page, account.getShopNo(), videoId);
+    }
+
+    public void choose(boolean isCurrent) {
+        if (isCurrent) {
+
+        } else {
+            if (videoId == 1) {
+                mViewBinding.ivPlayer.performClick();
+            }
+        }
     }
 }
 

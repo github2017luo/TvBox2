@@ -4,6 +4,7 @@ import android.view.View;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
@@ -25,7 +26,6 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
     MusicPresenter musicPresenter;
     Account account;
     MusicFragment musicFragment, mvFragment;
-    int currentType = 1;
 
     @Override
     public int getLayoutId() {
@@ -57,15 +57,13 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
         mViewBinding.tvMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentType = 1;
-                switchType();
+                switchType(1);
             }
         });
         mViewBinding.tvMv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentType = 2;
-                switchType();
+                switchType(2);
             }
         });
         musicFragment = MusicFragment.getInstance(1);
@@ -79,6 +77,28 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
             @Override
             public int getCount() {
                 return 2;
+            }
+        });
+        mViewBinding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    musicFragment.choose(true);
+                    mvFragment.choose(false);
+                } else {
+                    musicFragment.choose(false);
+                    mvFragment.choose(true);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
         networkChange(NetworkUtils.isNetConnected(MusicActivity.this));
@@ -95,7 +115,7 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
         }
     }
 
-    public void switchType() {
+    public void switchType(int currentType) {
         if (currentType == 1) {
             mViewBinding.tvMusic.setTextColor(getResources().getColor(R.color.blue));
             mViewBinding.tvMv.setTextColor(getResources().getColor(R.color.white));

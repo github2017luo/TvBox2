@@ -12,10 +12,10 @@ import com.easy.tvbox.bean.MusicList;
 
 import java.util.List;
 
-public class MusicAdapter extends GodBaseAdapter<MusicList> {
+public class MusicFragmentAdapter extends GodBaseAdapter<MusicList> {
 
 
-    public MusicAdapter(Context context, List<MusicList> musicLists) {
+    public MusicFragmentAdapter(Context context, List<MusicList> musicLists) {
         super(context, musicLists);
     }
 
