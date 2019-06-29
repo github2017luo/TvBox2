@@ -128,7 +128,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                 }
             }
         });
-        networkChange(NetworkUtils.isWifiConnected(getContext()));
+        networkChange(NetworkUtils.isNetConnected(getContext()));
     }
 
     private void startPayer() {

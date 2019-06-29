@@ -50,7 +50,7 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
             return;
         }
         mViewBinding.loadingView.setRetryListener(v -> {
-            if (NetworkUtils.isWifiConnected(MusicActivity.this)) {
+            if (NetworkUtils.isNetConnected(MusicActivity.this)) {
                 networkChange(true);
             }
         });
@@ -81,7 +81,7 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
                 return 2;
             }
         });
-        networkChange(NetworkUtils.isWifiConnected(MusicActivity.this));
+        networkChange(NetworkUtils.isNetConnected(MusicActivity.this));
     }
 
     @Override

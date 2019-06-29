@@ -118,13 +118,13 @@ public class UpdatePhoneActivity extends BaseActivity<UpdatePhoneBinding> implem
         mViewBinding.loadingView.setRetryListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (NetworkUtils.isWifiConnected(UpdatePhoneActivity.this)) {
+                if (NetworkUtils.isNetConnected(UpdatePhoneActivity.this)) {
                     networkChange(true);
                 }
             }
         });
 
-        networkChange(NetworkUtils.isWifiConnected(UpdatePhoneActivity.this));
+        networkChange(NetworkUtils.isNetConnected(UpdatePhoneActivity.this));
     }
 
     @Override

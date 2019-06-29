@@ -77,13 +77,13 @@ public class DailyActivity extends BaseActivity<DailyBinding> implements DailyVi
         });
 
         mViewBinding.loadingView.setRetryListener(v -> {
-            if (NetworkUtils.isWifiConnected(DailyActivity.this)) {
+            if (NetworkUtils.isNetConnected(DailyActivity.this)) {
                 networkChange(true);
             }
         });
 
         refreshView();
-        networkChange(NetworkUtils.isWifiConnected(DailyActivity.this));
+        networkChange(NetworkUtils.isNetConnected(DailyActivity.this));
         presenter.downCount();
     }
 

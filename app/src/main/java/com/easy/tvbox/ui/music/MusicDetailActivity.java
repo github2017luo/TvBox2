@@ -73,7 +73,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
 
         initPayer();
 
-        networkChange(NetworkUtils.isWifiConnected(MusicDetailActivity.this));
+        networkChange(NetworkUtils.isNetConnected(MusicDetailActivity.this));
 
         startPayer();
     }
@@ -83,7 +83,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
         mViewBinding.loadingView.setRetryListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (NetworkUtils.isWifiConnected(MusicDetailActivity.this)) {
+                if (NetworkUtils.isNetConnected(MusicDetailActivity.this)) {
                     networkChange(true);
                 }
             }
