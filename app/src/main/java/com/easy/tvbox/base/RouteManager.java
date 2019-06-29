@@ -14,6 +14,7 @@ import com.easy.tvbox.ui.music.MusicActivity;
 import com.easy.tvbox.ui.music.MusicDetailActivity;
 import com.easy.tvbox.ui.phone.UpdatePhoneActivity;
 import com.easy.tvbox.ui.video.DailyVideoActivity;
+import com.easy.tvbox.ui.video.MusicVideoActivity;
 import com.easy.tvbox.ui.video.VideoActivity;
 
 public class RouteManager {
@@ -26,6 +27,7 @@ public class RouteManager {
     public static final String MINE = "/MineActivity";
     public static final String LIVE = "/LiveActivity";
     public static final String DAILY = "/DailyActivity";
+    public static final String MUSIC_VIDEO = "/MusicVideoActivity";
 
     public static void goMusicDetailActivity(Context context, int position) {
         Intent intent = new Intent(context, MusicDetailActivity.class);
@@ -101,6 +103,19 @@ public class RouteManager {
     public static void goDailyActivity(Context context) {
         Intent intent = new Intent(context, DailyActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 音乐视频-- mv，
+     *
+     * @param context
+     * @param json
+     */
+    public static void goMusicVideoActivity(Context context, String json) {
+        Intent intent = new Intent(context, MusicVideoActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("data", json);
         context.startActivity(intent);
     }
 }

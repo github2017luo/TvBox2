@@ -55,7 +55,6 @@ public class DailyVideoPresenter extends BasePresenter<DailyVideoView> {
     }
 
     public void downCount(long time) {
-        //每10分支更新一次数据
         Observable.timer(time, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Long>() {

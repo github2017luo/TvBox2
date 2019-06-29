@@ -11,6 +11,7 @@ import com.easy.tvbox.ui.music.MusicDetailActivity;
 import com.easy.tvbox.ui.music.MusicFragment;
 import com.easy.tvbox.ui.phone.UpdatePhoneActivity;
 import com.easy.tvbox.ui.video.DailyVideoActivity;
+import com.easy.tvbox.ui.video.MusicVideoActivity;
 import com.easy.tvbox.ui.video.VideoActivity;
 
 import dagger.Component;
@@ -43,4 +44,6 @@ public interface AppComponent {
     void inject(DailyVideoActivity activity);
 
     void inject(MusicFragment fragment);
+
+    void inject(MusicVideoActivity fragment);
 }

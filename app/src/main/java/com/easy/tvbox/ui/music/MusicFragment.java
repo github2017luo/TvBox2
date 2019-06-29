@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.alibaba.fastjson.JSON;
 import com.alivc.player.AliVcMediaPlayer;
 import com.alivc.player.MediaPlayer;
 import com.easy.tvbox.R;
@@ -20,7 +21,6 @@ import com.easy.tvbox.bean.MusicList;
 import com.easy.tvbox.databinding.MusicFragmentBinding;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.utils.PullToRefreshListView;
-import com.easy.tvbox.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +41,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     AliVcMediaPlayer mPlayer;
     int currentPosition = 0;//播放的位置
     MusicList currentPlayingMusic;
+    boolean isPlaying;
 
     public static MusicFragment getInstance(int type) {
         MusicFragment musicFragment = new MusicFragment();
@@ -100,7 +101,12 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                 }
             } else {
                 if (mvLists != null && mvLists.size() > 0 && position < mvLists.size()) {
-                    ToastUtils.showLong("跳到视频播放页面--播放单曲");
+                    List<MusicInfo> musicInfos = new ArrayList<>();
+                    MusicInfo musicInfo = mvLists.get(position).getMusicInfo();
+                    if (musicInfo != null) {
+                        musicInfos.add(musicInfo);
+                    }
+                    RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfo));
                 }
             }
         });
@@ -123,7 +129,16 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                         }
                     }
                 } else {
-                    ToastUtils.showLong("跳到视频播放页面--播放前部");
+                    if (mvLists != null && mvLists.size() > 0) {
+                        List<MusicInfo> musicInfos = new ArrayList<>();
+                        for (MusicList mvList : mvLists) {
+                            MusicInfo musicInfo = mvList.getMusicInfo();
+                            if (musicInfo != null) {
+                                musicInfos.add(musicInfo);
+                            }
+                        }
+                        RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
+                    }
                 }
             }
         });
@@ -160,8 +175,10 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                 adapter.notifyDataSetChanged();
             }
             if (stop) {
+                isPlaying = false;
                 mViewBinding.ivPlayer.setImageResource(R.drawable.button_stop_pause);
             } else {
+                isPlaying = true;
                 mViewBinding.ivPlayer.setImageResource(R.drawable.button_player_pause);
             }
         }
@@ -189,6 +206,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
             public void onFrameInfoListener() {
                 //首帧显示时触发
                 Log.d("VideoActivity", "首帧显示时触发");
+                isPlaying = true;
                 mViewBinding.ivPlayer.setImageResource(R.drawable.button_player_pause);
             }
         });
@@ -197,6 +215,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
             public void onError(int i, String msg) {
                 //错误发生时触发，错误码见接口文档
                 Log.d("VideoActivity", "错误发生时触发，错误码见接口文档:" + i + "\n" + msg);
+                isPlaying = false;
                 mViewBinding.ivPlayer.setImageResource(R.drawable.button_stop_pause);
             }
         });
@@ -207,6 +226,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                 Log.d("VideoActivity", "视频正常播放完成时触发");
                 currentPosition++;
                 if (currentPosition >= musicLists.size()) {
+                    isPlaying = false;
                     mViewBinding.ivPlayer.setImageResource(R.drawable.button_stop_pause);
                 } else {
                     startPayer();
@@ -225,6 +245,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
             public void onStopped() {
                 //使用stop接口时触发
                 Log.d("VideoActivity", "使用stop接口时触发");
+                isPlaying = false;
                 mViewBinding.ivPlayer.setImageResource(R.drawable.button_stop_pause);
             }
         });
@@ -288,7 +309,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         if (isCurrent) {
 
         } else {
-            if (videoId == 1) {
+            if (videoId == 1 && isPlaying) {
                 mViewBinding.ivPlayer.performClick();
             }
         }

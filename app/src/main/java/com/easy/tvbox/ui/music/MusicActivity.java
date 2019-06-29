@@ -89,10 +89,8 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
             public void onPageSelected(int position) {
                 if (position == 0) {
                     musicFragment.choose(true);
-                    mvFragment.choose(false);
                 } else {
                     musicFragment.choose(false);
-                    mvFragment.choose(true);
                 }
             }
 

@@ -77,6 +77,10 @@
             android:screenOrientation="landscape" />
 
         <activity
+            android:name=".ui.video.MusicVideoActivity"
+            android:screenOrientation="landscape" />
+
+        <activity
             android:name=".DetailsActivity"
             android:screenOrientation="landscape" />
         <activity
