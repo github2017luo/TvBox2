@@ -25,15 +25,6 @@ public class MusicAdapter extends GodBaseAdapter<MusicList> {
         ImageView ivPlayer = ViewHolder.getImageView(convertView, R.id.ivPlayer);
         changePlayerState(itemData, ivPlayer);
 
-        ViewHolder.getImageView(convertView, R.id.ivPlayer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                int state = itemData.getPlayerState();
-//                reset();
-//                itemData.setPlayerState(state == 1 ? 0 : 1);
-//                notifyDataSetChanged();
-            }
-        });
         String pic = "";
         List<String> pics = itemData.getPictures();
         if (pics != null && pics.size() > 0) {

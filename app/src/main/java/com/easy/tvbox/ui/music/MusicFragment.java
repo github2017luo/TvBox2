@@ -3,6 +3,7 @@ package com.easy.tvbox.ui.music;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.alivc.player.AliVcMediaPlayer;
 import com.alivc.player.MediaPlayer;
@@ -18,6 +19,7 @@ import com.easy.tvbox.bean.MusicInfo;
 import com.easy.tvbox.bean.MusicList;
 import com.easy.tvbox.databinding.MusicFragmentBinding;
 import com.easy.tvbox.http.NetworkUtils;
+import com.easy.tvbox.utils.PullToRefreshListView;
 import com.easy.tvbox.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements MusicFragmentView {
+public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements MusicFragmentView, PullToRefreshListView.OnLoad{
 
     @Inject
     MusicFragmentPresenter presenter;
@@ -82,6 +84,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         } else {
             adapter = new MusicAdapter(getContext(), mvLists);
         }
+        mViewBinding.listView.setOnLoad(this);
         mViewBinding.listView.setAdapter(adapter);
         mViewBinding.listView.setOnItemClickListener((parent, view1, position, id) -> {
             if (videoId == 1) {
@@ -275,6 +278,11 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
             mvLists.clear();
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void loadData(int beginIndex, ProgressBar pb) {
+        presenter.queryMusic(page, account.getShopNo(), videoId);
     }
 }
 
