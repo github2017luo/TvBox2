@@ -24,8 +24,8 @@
     <application
         android:name=".base.App"
         android:allowBackup="true"
-        android:banner="@drawable/movie"
-        android:icon="@drawable/movie"
+        android:banner="@drawable/logo_icon"
+        android:icon="@drawable/logo_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"

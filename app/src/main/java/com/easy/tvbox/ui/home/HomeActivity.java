@@ -172,7 +172,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 }
             }
         } else {
-            ToastUtils.showLong(respond.getMessage());
+//            ToastUtils.showLong(respond.getMessage());
         }
         EventBus.getDefault().post(new LiveUpdateEvent(1));
     }
