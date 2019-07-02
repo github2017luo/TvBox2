@@ -2,6 +2,7 @@ package com.easy.tvbox.ui.home;
 
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.R;
@@ -21,6 +22,7 @@ import com.easy.tvbox.event.DailyUpdateEvent;
 import com.easy.tvbox.event.LiveUpdateEvent;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.ui.LoadingView;
+import com.easy.tvbox.utils.BorderView;
 import com.easy.tvbox.utils.ToastUtils;
 import com.zhouwei.mzbanner.holder.MZHolderCreator;
 
@@ -93,6 +95,12 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 }
             }
         });
+
+        BorderView border = new BorderView(this);
+
+        border.setBackgroundResource(R.drawable.border_red);
+        border.attachTo(mViewBinding.llMenu);
+        mViewBinding.llLive.requestFocus();
     }
 
     private void initData() {
