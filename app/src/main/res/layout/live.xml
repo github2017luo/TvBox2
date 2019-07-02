@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/page_bg"
-        android:padding="50dp">
+        android:background="@color/page_bg">
 
         <GridView
             android:id="@+id/gridView"
@@ -13,7 +13,17 @@
             android:layout_height="match_parent"
             android:horizontalSpacing="30dp"
             android:numColumns="2"
+            android:padding="50dp"
             android:verticalSpacing="30dp" />
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/ivNoData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/no_live"
+            android:visibility="gone"
+            android:padding="30dp"
+            tools:visibility="visible" />
+    </RelativeLayout>
 </layout>

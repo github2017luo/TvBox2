@@ -1,5 +1,7 @@
 package com.easy.tvbox.ui.live;
 
+import android.view.View;
+
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
@@ -52,6 +54,15 @@ public class LiveActivity extends BaseActivity<LiveBinding> implements LiveView 
         }
         adapter = new LiveAdapter(this, HomeActivity.liveDataContent);
         mViewBinding.gridView.setAdapter(adapter);
+        showNoData();
+    }
+
+    private void showNoData() {
+        if (HomeActivity.liveDataContent == null || HomeActivity.liveDataContent.isEmpty()) {
+            mViewBinding.ivNoData.setVisibility(View.VISIBLE);
+        } else {
+            mViewBinding.ivNoData.setVisibility(View.GONE);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
