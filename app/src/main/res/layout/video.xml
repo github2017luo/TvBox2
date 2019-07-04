@@ -4,20 +4,13 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:padding="30dp">
+        android:layout_height="match_parent">
 
         <SurfaceView
             android:id="@+id/surfaceView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true" />
-
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/videoView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
     </RelativeLayout>
 

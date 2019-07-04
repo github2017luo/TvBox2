@@ -30,18 +30,17 @@ public class LiveAdapter extends GodBaseAdapter<LiveList> {
         ViewHolder.getTextView(convertView, R.id.tvTime).setText(itemData.getShowTime());
 
         View itemRoot = ViewHolder.getView(convertView, R.id.itemRoot);
-//        if (itemData.getState() == 0) {
-//            ViewHolder.getTextView(convertView, R.id.tvTip).setText("直播已结束");
-//            itemRoot.setEnabled(false);
-//        } else if (itemData.getState() == 1) {
-//            ViewHolder.getTextView(convertView, R.id.tvTip).setText("直播未开始");
-//            itemRoot.setEnabled(false);
-//        } else {
-//            ViewHolder.getTextView(convertView, R.id.tvTip).setText("正在直播");
-//            itemRoot.setEnabled(true);
-//            itemRoot.setOnClickListener(v -> RouteManager.goVideoActivity(context, itemData.getUid()));
-//        }
-        itemRoot.setEnabled(true);
+        if (itemData.getState() == 0) {
+            ViewHolder.getTextView(convertView, R.id.tvTip).setText("直播已结束");
+            itemRoot.setEnabled(false);
+        } else if (itemData.getState() == 1) {
+            ViewHolder.getTextView(convertView, R.id.tvTip).setText("直播未开始");
+            itemRoot.setEnabled(false);
+        } else {
+            ViewHolder.getTextView(convertView, R.id.tvTip).setText("正在直播");
+            itemRoot.setEnabled(true);
+            itemRoot.setOnClickListener(v -> RouteManager.goVideoActivity(context, itemData.getUid()));
+        }
         itemRoot.setOnClickListener(v -> RouteManager.goVideoActivity(context, JSON.toJSONString(itemData)));
     }
 

@@ -214,9 +214,9 @@ public class AppRequestStore {
      *
      * @return
      */
-    public Single<Respond> queryForLive(int page, int size) {
+    public Single<Respond> queryForLive(int page, int size,Map<String, Object> map) {
         return retrofit.create(ApiService.class)
-                .queryForLive(page, size, getRequestBody("{}"))
+                .queryForLive(page, size, getRequestBody(map))
                 .map(getCommonFunction())
                 .subscribeOn(Schedulers.newThread());
     }

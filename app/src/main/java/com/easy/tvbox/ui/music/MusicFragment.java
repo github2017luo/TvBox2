@@ -106,7 +106,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                     if (musicInfo != null) {
                         musicInfos.add(musicInfo);
                     }
-                    RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfo));
+                    RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
                 }
             }
         });

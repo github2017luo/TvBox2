@@ -5,6 +5,8 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.DataManager;
+import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.DailyData;
 import com.easy.tvbox.bean.DailyList;
 import com.easy.tvbox.bean.LiveData;
@@ -273,7 +275,12 @@ public class HomePresenter extends BasePresenter<HomeView> {
      * 直播列表
      */
     public void queryLive() {
-        Disposable disposable = requestStore.queryForLive(0, 20)
+        Map<String, Object> map = new HashMap<>();
+        Account account = DataManager.getInstance().queryAccount();
+        if (account != null) {
+            map.put("shopNo", account.getShopNo());
+        }
+        Disposable disposable = requestStore.queryForLive(0, 20, map)
                 .doOnSuccess(respond -> {
                     if (respond.isOk()) {
                         String body = respond.getBody();
@@ -324,6 +331,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
                         });
         mCompositeSubscription.add(disposable);
     }
+
     /**
      * 每日课程开始倒计时
      *
