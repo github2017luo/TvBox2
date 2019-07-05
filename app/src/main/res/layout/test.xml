@@ -8,5 +8,11 @@
         android:layout_height="match_parent"
         tools:deviceIds="tv"
         tools:ignore="MergeRootFrame">
+
+        <fragment
+            android:id="@+id/cardsFragment"
+            android:name="com.easy.tvbox.ui.home.HomeMenuFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </RelativeLayout>
 </layout>

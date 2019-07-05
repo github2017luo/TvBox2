@@ -1,8 +1,5 @@
 package com.easy.tvbox.ui.test;
 
-import androidx.fragment.app.Fragment;
-
-import com.easy.tvbox.MainFragment;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
@@ -41,9 +38,7 @@ public class TestActivity extends BaseActivity<TestBinding> implements TestView 
 
     @Override
     public void initView() {
-        Fragment fragment = new TestFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment)
-                .commit();
+
     }
 
 }
