@@ -30,6 +30,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.easy.tvbox.base.Constant.IS_DEBUG;
+
 //@Route(path = RouteManager.LOGIN, name = "登录/注册")
 public class LoginActivity extends BaseActivity<LoginBinding> implements LoginView {
 
@@ -55,7 +57,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
     @Override
     public void initView() {
         isLoginActivity = true;
-        if (BuildConfig.DEBUG) {
+        if (IS_DEBUG) {
             Account account = DataManager.getInstance().queryAccount();
             if (account != null) {
                 RouteManager.goHomeActivity(LoginActivity.this);
@@ -138,7 +140,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
                 ToastUtils.showLong("请填写短信验证码");
                 return;
             }
-            if (BuildConfig.DEBUG) {
+            if (IS_DEBUG) {
                 phoneCode = Constant.CODE;
             }
             loginPresenter.login(phone, phoneCode);

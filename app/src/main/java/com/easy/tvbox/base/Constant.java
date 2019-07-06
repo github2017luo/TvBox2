@@ -9,4 +9,6 @@ public class Constant {
     public static final String CODE = "azitai@2019";
     public static final String PHONE = "13779926288";
     public static final String PHONE_TEST = "13779926287";
+
+    public static final boolean IS_DEBUG = true;
 }

@@ -26,6 +26,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.easy.tvbox.base.Constant.IS_DEBUG;
+
 public class UpdatePhoneActivity extends BaseActivity<UpdatePhoneBinding> implements UpdatePhoneView {
 
     @Inject
@@ -99,7 +101,7 @@ public class UpdatePhoneActivity extends BaseActivity<UpdatePhoneBinding> implem
                     ToastUtils.showLong("请填写短信验证码");
                     return;
                 }
-                if (BuildConfig.DEBUG) {
+                if (IS_DEBUG) {
                     phoneCode = Constant.CODE;
                     if (account.getPhone().equals(Constant.PHONE)) {
                         phone = Constant.PHONE_TEST;
