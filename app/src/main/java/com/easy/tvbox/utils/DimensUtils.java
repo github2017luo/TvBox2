@@ -1,0 +1,73 @@
+package com.easy.tvbox.utils;
+
+import android.content.Context;
+import android.view.WindowManager;
+
+public class DimensUtils {
+    public static int[] getWidthHeight(Context context) {
+        WindowManager wm = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+
+        int width = wm.getDefaultDisplay().getWidth();
+        int height = wm.getDefaultDisplay().getHeight();
+
+        return new int[]{width, height};
+    }
+
+    /**
+     * dp转换成px
+     */
+    public static int dp2px(Context context, float dpValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+    /**
+     * dp转换成px
+     */
+    public static int dp2px(Context context, int dpValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+    /**
+     * px转换成dp
+     */
+    public static int px2dp(Context context, float pxValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+    /**
+     * px转换成dp
+     */
+    public static int px2dp(Context context, int pxValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+    /**
+     * sp转换成px
+     */
+    public static int sp2px(Context context, float spValue) {
+        float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
+    }
+    /**
+     * sp转换成px
+     */
+    public static int sp2px(Context context, int spValue) {
+        float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
+    }
+    /**
+     * px转换成sp
+     */
+    public static int px2sp(Context context, float pxValue) {
+        float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (pxValue / fontScale + 0.5f);
+    }
+    /**
+     * px转换成sp
+     */
+    public static int px2sp(Context context, int pxValue) {
+        float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (pxValue / fontScale + 0.5f);
+    }
+}

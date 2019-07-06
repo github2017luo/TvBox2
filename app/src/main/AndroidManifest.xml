@@ -35,7 +35,7 @@
         tools:replace="android:allowBackup">
         <!--android:name=".ui.login.LoginActivity"-->
         <activity
-            android:name=".ui.test.TestActivity"
+            android:name=".ui.login.LoginActivity"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden|stateUnchanged">
             <intent-filter>

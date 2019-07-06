@@ -5,11 +5,29 @@ public class HomeMenu {
     public int iconResourceId;
     public int bgResourceId;
     public String title;
+    public int itemHeight;
+    public int itemWidth;
 
     public HomeMenu(String title, int iconResourceId, int bgResourceId) {
         this.iconResourceId = iconResourceId;
         this.title = title;
         this.bgResourceId = bgResourceId;
+    }
+
+    public int getItemHeight() {
+        return itemHeight;
+    }
+
+    public void setItemHeight(int itemHeight) {
+        this.itemHeight = itemHeight;
+    }
+
+    public int getItemWidth() {
+        return itemWidth;
+    }
+
+    public void setItemWidth(int itemWidth) {
+        this.itemWidth = itemWidth;
     }
 
     public int getId() {
