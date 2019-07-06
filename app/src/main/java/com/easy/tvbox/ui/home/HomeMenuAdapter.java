@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.easy.tvbox.base.AbstractObjectPresenter;
 import com.easy.tvbox.bean.HomeMenu;
-import com.easy.tvbox.utils.ToastUtils;
 
 public class HomeMenuAdapter extends AbstractObjectPresenter<HomeMenuView> {
 
@@ -14,9 +13,8 @@ public class HomeMenuAdapter extends AbstractObjectPresenter<HomeMenuView> {
 
     @Override
     protected HomeMenuView onCreateView() {
-        HomeMenuView characterCardView = new HomeMenuView(getContext());
-        characterCardView.setOnClickListener(v -> ToastUtils.showLong("ddd"));
-        return characterCardView;
+        HomeMenuView homeMenuView = new HomeMenuView(getContext());
+        return homeMenuView;
 
     }
 

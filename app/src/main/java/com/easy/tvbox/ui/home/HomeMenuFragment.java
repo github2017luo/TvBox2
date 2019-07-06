@@ -76,7 +76,7 @@ public class HomeMenuFragment extends VerticalGridSupportFragment {
 
         for (int i = 0; i < homeMenus.size(); i++) {
             HomeMenu temp = homeMenus.get(i);
-            temp.setId(0);
+            temp.setId(i);
             temp.setItemHeight(itemHeight);
             temp.setItemWidth(itemWidth);
         }
