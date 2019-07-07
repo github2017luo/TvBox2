@@ -13,6 +13,7 @@ import com.easy.tvbox.bean.LiveData;
 import com.easy.tvbox.bean.LiveList;
 import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.utils.CommonUtils;
+import com.easy.tvbox.utils.DimensUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -104,6 +105,9 @@ public class HomePresenter extends BasePresenter<HomeView> {
                                     long mix = Long.MAX_VALUE;
                                     DailyList mixDailyList = null;
                                     long currentTime = System.currentTimeMillis();
+                                    int[] screens = DimensUtils.getWidthHeight(context);
+                                    int width = (screens[0] - DimensUtils.dp2px(context, 90)) / 2;
+                                    int height = width / 2 + DimensUtils.dp2px(context, 60);
                                     for (DailyList content : contents) {
                                         long startTime = CommonUtils.date2TimeStamp(content.getBeginDate());
                                         long endTime = CommonUtils.date2TimeStamp(content.getEndDate());
@@ -120,6 +124,8 @@ public class HomePresenter extends BasePresenter<HomeView> {
                                                 content.setShowTime(startDate + "-" + endDate);
                                             }
                                         }
+                                        content.setWidth(width);
+                                        content.setHeight(height);
                                     }
                                     countDownDaily(mixDailyList);
                                 }

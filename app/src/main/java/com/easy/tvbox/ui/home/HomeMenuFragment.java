@@ -62,7 +62,7 @@ public class HomeMenuFragment extends VerticalGridSupportFragment {
 
         int[] screenSize = DimensUtils.getWidthHeight(App.getApp());
         int itemHeight = (screenSize[1] - DimensUtils.dp2px(App.getApp(), 70)) / 3;
-        int itemWidth = (screenSize[0] - DimensUtils.dp2px(App.getApp(), 120)) / 4;
+        int itemWidth = (screenSize[0] - DimensUtils.dp2px(App.getApp(), 110)) / 4;
 
         List<HomeMenu> homeMenus = new ArrayList<>();
         HomeMenu live = new HomeMenu("大课直播", R.drawable.icon_live2, R.drawable.home_module_bg_1);
