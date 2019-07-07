@@ -81,9 +81,9 @@ public class DailyActivity extends BaseActivity<DailyBinding> implements DailyVi
 
     @Override
     public void downCountCallback() {
-//        if (dailyGridFragment != null) {
-//            dailyGridFragment.refreshView();
-//        }
+        if (dailyGridFragment != null) {
+            dailyGridFragment.refreshCountdown();
+        }
     }
 
     public void setNoData() {

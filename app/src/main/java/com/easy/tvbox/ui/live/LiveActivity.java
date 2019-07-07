@@ -9,11 +9,9 @@ import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.databinding.LiveBinding;
-import com.easy.tvbox.event.LiveUpdateEvent;
+import com.easy.tvbox.http.NetworkUtils;
+import com.easy.tvbox.ui.LoadingView;
 import com.easy.tvbox.ui.home.HomeActivity;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -23,7 +21,7 @@ public class LiveActivity extends BaseActivity<LiveBinding> implements LiveView 
 
     @Inject
     LivePresenter presenter;
-    LiveAdapter adapter;
+    LiveGridFragment liveGridFragment;
 
     @Override
     public int getLayoutId() {
@@ -37,7 +35,19 @@ public class LiveActivity extends BaseActivity<LiveBinding> implements LiveView 
 
     @Override
     public void networkChange(boolean isConnect) {
-
+        if (isConnect) {
+            if (HomeActivity.liveDataContent == null || HomeActivity.liveDataContent.isEmpty()) {
+                mViewBinding.ivNoData.setVisibility(View.VISIBLE);
+                mViewBinding.cardsFragment.setVisibility(View.GONE);
+            } else {
+                mViewBinding.ivNoData.setVisibility(View.GONE);
+                mViewBinding.cardsFragment.setVisibility(View.VISIBLE);
+            }
+            mViewBinding.loadingView.setStatus(LoadingView.STATUS_HIDDEN);
+        } else {
+            mViewBinding.cardsFragment.setVisibility(View.GONE);
+            mViewBinding.loadingView.setStatus(LoadingView.STATUS_NONETWORK);
+        }
     }
 
     @Override
@@ -52,25 +62,19 @@ public class LiveActivity extends BaseActivity<LiveBinding> implements LiveView 
             finish();
             return;
         }
-        adapter = new LiveAdapter(this, HomeActivity.liveDataContent);
-        mViewBinding.gridView.setAdapter(adapter);
-        showNoData();
-    }
+        liveGridFragment = new LiveGridFragment();
+        liveGridFragment.setPresenter(presenter);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.cardsFragment, liveGridFragment)
+                .commit();
 
-    private void showNoData() {
-        if (HomeActivity.liveDataContent == null || HomeActivity.liveDataContent.isEmpty()) {
-            mViewBinding.ivNoData.setVisibility(View.VISIBLE);
-        } else {
-            mViewBinding.ivNoData.setVisibility(View.GONE);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLiveUpdateEvent(LiveUpdateEvent event) {
-        if (event.type == 1) {
-            if (adapter != null) {
-                adapter.setDatas(HomeActivity.liveDataContent);
+        mViewBinding.loadingView.setRetryListener(v -> {
+            if (NetworkUtils.isNetConnected(LiveActivity.this)) {
+                networkChange(true);
             }
-        }
+        });
+
+        networkChange(NetworkUtils.isNetConnected(LiveActivity.this));
     }
 }

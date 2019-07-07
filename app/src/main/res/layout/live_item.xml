@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/page_bg"
     android:gravity="center"
-    android:id="@+id/itemRoot"
-    android:orientation="vertical"
-    tools:background="@color/page_bg">
-
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="213dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <ImageView
             android:id="@+id/ivIcon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:background="@android:color/white" />
+            android:background="@android:color/white"
+            android:scaleType="fitXY" />
 
         <TextView
             android:id="@+id/tvTip"
@@ -32,12 +33,12 @@
 
     </RelativeLayout>
 
-
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
+        android:layout_height="25dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         tools:text="心身互动养身健康教育讲座" />
@@ -45,9 +46,11 @@
     <TextView
         android:id="@+id/tvTime"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_gravity="center"
+        android:paddingLeft="10dp"
         android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         tools:text="6月15日  08:00-11:00" />

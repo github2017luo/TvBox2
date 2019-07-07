@@ -1,4 +1,4 @@
-package com.easy.tvbox.ui.daily;
+package com.easy.tvbox.ui.live;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,10 +8,11 @@ import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.FocusHighlight;
 import androidx.leanback.widget.VerticalGridPresenter;
 
-import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.base.RouteManager;
-import com.easy.tvbox.bean.DailyList;
-import com.easy.tvbox.event.DailyUpdateEvent;
+import com.easy.tvbox.bean.LiveList;
+import com.easy.tvbox.event.LiveUpdateEvent;
+import com.easy.tvbox.ui.daily.DailyActivity;
+import com.easy.tvbox.ui.daily.DailyGridAdapter;
 import com.easy.tvbox.ui.home.HomeActivity;
 import com.easy.tvbox.utils.ToastUtils;
 
@@ -19,13 +20,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class DailyGridFragment extends VerticalGridSupportFragment {
+public class LiveGridFragment extends VerticalGridSupportFragment {
 
     private ArrayObjectAdapter mAdapter;
-    DailyPresenter presenter;
+    LivePresenter presenter;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,37 +39,33 @@ public class DailyGridFragment extends VerticalGridSupportFragment {
         gridPresenter.setShadowEnabled(true);
         setGridPresenter(gridPresenter);
 
-        mAdapter = new ArrayObjectAdapter(new DailyGridAdapter(getActivity()));
+        mAdapter = new ArrayObjectAdapter(new LiveGridAdapter(getActivity()));
         setAdapter(mAdapter);
 
         setOnItemViewClickedListener((itemViewHolder, item, rowViewHolder, row) -> {
-            if (item instanceof DailyList) {
-                DailyList dailyList = (DailyList) item;
-                if (presenter != null) {
-                    int playState = presenter.playState(dailyList);
-                    if (playState == -1) {
-                        ToastUtils.showLong("时间未到");
-                    } else if (playState == 0) {
-                        RouteManager.goDailyVideoActivity(getContext(), JSON.toJSONString(dailyList));
-                    } else if (playState == 1) {
-                        ToastUtils.showLong("时间已过");
-                    }
+            if (item instanceof LiveList) {
+                LiveList liveList = (LiveList) item;
+                if (liveList.getState() == 0) {
+                    ToastUtils.showLong("直播已结束");
+                } else if (liveList.getState() == 1) {
+                    ToastUtils.showLong("直播未开始");
+                } else {
+                    RouteManager.goVideoActivity(getContext(), liveList.getUid());
                 }
-
             }
         });
         refreshView();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDailyUpdateEvent(DailyUpdateEvent event) {
+    public void onLiveUpdateEvent(LiveUpdateEvent event) {
         if (event.type == 1) {
             refreshView();
         }
     }
 
     public void refreshView() {
-        List<DailyList> dailyDataContent = HomeActivity.dailyDataContent;
+        List<LiveList> dailyDataContent = HomeActivity.liveDataContent;
         if (dailyDataContent != null && dailyDataContent.size() > 0) {
             if (mAdapter != null) {
                 prepareEntranceTransition();
@@ -86,7 +82,7 @@ public class DailyGridFragment extends VerticalGridSupportFragment {
         }
     }
 
-    public void setPresenter(DailyPresenter presenter) {
+    public void setPresenter(LivePresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -94,18 +90,5 @@ public class DailyGridFragment extends VerticalGridSupportFragment {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-    }
-
-    public void refreshCountdown() {
-        List<DailyList> dailyDataContent = HomeActivity.dailyDataContent;
-        if (dailyDataContent != null && dailyDataContent.size() > 0) {
-            if (mAdapter != null && mAdapter.size() == HomeActivity.dailyDataContent.size()) {
-//                prepareEntranceTransition();
-                for (int i = 0; i < HomeActivity.dailyDataContent.size(); i++) {
-                    mAdapter.replace(i, HomeActivity.dailyDataContent.get(i));
-                }
-//                startEntranceTransition();
-            }
-        }
     }
 }

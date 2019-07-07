@@ -1,7 +1,7 @@
 package com.easy.tvbox.bean;
 
-public class LiveList implements CBaseData{
-//    {
+public class LiveList implements CBaseData {
+    //    {
 //        uid: "d8f767f9cad242049ff0c53b6da06d97",
 //                title: "《心身互动养生健康教育讲座》", 	//标题
 //            attachmentId: "1560275579006_3.jpg", 	//封面图片文件名
@@ -19,10 +19,28 @@ public class LiveList implements CBaseData{
     private String posterUrl;
     private String beginDate;
     private String endDate;
-    private int state;//0:结束 1：正在进行，2：未开始
+    private int state;//0:结束 1：未开始 2：正在进行
     private String showTime;
     private long startTime;
     private long endTime;//--自己加的
+    private int width;
+    private int height;
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
 
     public long getStartTime() {
         return startTime;

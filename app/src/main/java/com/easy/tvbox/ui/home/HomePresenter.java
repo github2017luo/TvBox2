@@ -298,6 +298,9 @@ public class HomePresenter extends BasePresenter<HomeView> {
                                     long mix = Long.MAX_VALUE;
                                     LiveList mixLiveList = null;
                                     long currentTime = System.currentTimeMillis();
+                                    int[] screens = DimensUtils.getWidthHeight(context);
+                                    int width = (screens[0] - DimensUtils.dp2px(context, 90)) / 2;
+                                    int height = width / 2 + DimensUtils.dp2px(context, 60);
                                     for (LiveList content : contents) {
                                         long startTime = CommonUtils.date2TimeStamp(content.getBeginDate());
                                         long endTime = CommonUtils.date2TimeStamp(content.getEndDate());
@@ -321,6 +324,8 @@ public class HomePresenter extends BasePresenter<HomeView> {
                                                 content.setShowTime(startDate + "-" + endDate);
                                             }
                                         }
+                                        content.setWidth(width);
+                                        content.setHeight(height);
                                     }
                                     countDownLive(mixLiveList);
                                 }
