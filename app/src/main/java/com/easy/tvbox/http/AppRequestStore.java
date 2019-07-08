@@ -294,4 +294,12 @@ public class AppRequestStore {
                 .map(getCommonFunction())
                 .subscribeOn(Schedulers.newThread());
     }
+
+
+    public Single<Respond> querySongSheet(Map<String, Object> map) {
+        return retrofit.create(ApiService.class)
+                .querySongSheet(getRequestBody(map))
+                .map(getCommonFunction())
+                .subscribeOn(Schedulers.newThread());
+    }
 }

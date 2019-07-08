@@ -62,4 +62,7 @@ public interface ApiService {
 
     @GET("getTimeAxis/{uid}")
     Single<ResponseBody> getTimeAxis(@Path("uid") String uid);
+
+    @POST("querySongSheet")
+    Single<ResponseBody> querySongSheet(@Body RequestBody requestBody);
 }

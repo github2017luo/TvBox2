@@ -1,6 +1,7 @@
 package com.easy.tvbox.dagger;
 
 
+import com.easy.tvbox.ui.album.AlbumActivity;
 import com.easy.tvbox.ui.daily.DailyActivity;
 import com.easy.tvbox.ui.home.HomeActivity;
 import com.easy.tvbox.ui.live.LiveActivity;
@@ -50,4 +51,5 @@ public interface AppComponent {
 
     void inject(TestActivity fragment);
 
+    void inject(AlbumActivity fragment);
 }
