@@ -41,7 +41,7 @@ public class AlbumGridView extends BaseCardView {
         TextView tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText(albumList.getName());
 
-        TextView tvNum = findViewById(R.id.tvTitle);
+        TextView tvNum = findViewById(R.id.tvNum);
         tvNum.setText(albumList.getNum());
 
     }

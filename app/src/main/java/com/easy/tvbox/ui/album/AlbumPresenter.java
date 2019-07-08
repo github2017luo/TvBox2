@@ -5,7 +5,9 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.bean.Album;
+import com.easy.tvbox.bean.AlbumList;
 import com.easy.tvbox.bean.Respond;
+import com.easy.tvbox.utils.DimensUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +41,16 @@ public class AlbumPresenter extends BasePresenter<AlbumView> {
                         if (!TextUtils.isEmpty(body)) {
                             try {
                                 Album album = JSON.parseObject(body, Album.class);
+                                if (album != null && album.getContent() != null) {
+                                    List<AlbumList> albumLists = album.getContent();
+                                    int[] screens = DimensUtils.getWidthHeight(context);
+                                    int width = screens[0]-DimensUtils.dp2px(context, 80);
+                                    int height = DimensUtils.dp2px(context, 50);
+                                    for (AlbumList albumList : albumLists) {
+                                        albumList.setHeight(height);
+                                        albumList.setWidth(width);
+                                    }
+                                }
                                 respond.setObj(album);
                             } catch (Exception e) {
                                 e.printStackTrace();

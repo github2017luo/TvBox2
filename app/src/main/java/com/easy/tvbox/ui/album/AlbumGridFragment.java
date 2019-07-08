@@ -36,7 +36,7 @@ public class AlbumGridFragment extends VerticalGridSupportFragment {
         gridPresenter.setShadowEnabled(true);
         setGridPresenter(gridPresenter);
 
-        mAdapter = new ArrayObjectAdapter(new LiveGridAdapter(getActivity()));
+        mAdapter = new ArrayObjectAdapter(new AlbumGridAdapter(getActivity()));
         setAdapter(mAdapter);
 
         setOnItemViewClickedListener((itemViewHolder, item, rowViewHolder, row) -> {

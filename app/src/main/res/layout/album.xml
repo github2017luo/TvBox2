@@ -5,16 +5,70 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <com.easy.tvbox.ui.LoadingView
             android:id="@+id/loadingView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
 
-        <FrameLayout
-            android:id="@+id/cardsFragment"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:orientation="vertical"
+            android:paddingTop="30dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="30dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="我的歌单"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="32dp"
+                android:background="@android:color/white" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="歌单封面"
+                    android:textColor="@android:color/white"
+                    android:textSize="7sp" />
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="歌单名称"
+                    android:textColor="@android:color/white"
+                    android:textSize="7sp" />
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="歌曲数量"
+                    android:textColor="@android:color/white"
+                    android:textSize="7sp" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/cardsFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
     </RelativeLayout>
 </layout>

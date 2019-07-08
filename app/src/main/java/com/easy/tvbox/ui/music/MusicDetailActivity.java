@@ -6,6 +6,8 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 
+import androidx.core.view.ViewCompat;
+
 import com.alivc.player.AliVcMediaPlayer;
 import com.alivc.player.MediaPlayer;
 import com.bumptech.glide.Glide;
@@ -89,6 +91,13 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
             }
         });
 
+        mViewBinding.ivPrev.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                setFocusChangeListener(v, hasFocus);
+            }
+        });
+
         mViewBinding.ivPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +108,14 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
                     return;
                 }
                 startPayer();
+            }
+        });
+
+
+        mViewBinding.ivPlayer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                setFocusChangeListener(v, hasFocus);
             }
         });
 
@@ -118,6 +135,14 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
                 }
             }
         });
+
+        mViewBinding.ivNext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                setFocusChangeListener(v, hasFocus);
+            }
+        });
+
         mViewBinding.ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +155,22 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
                 startPayer();
             }
         });
+    }
+
+    public void setFocusChangeListener(View v, boolean hasFocus) {
+        if (hasFocus) {
+            ViewCompat.animate(v)
+                    .scaleX(1.17f)
+                    .scaleY(1.17f)
+                    .translationZ(1)
+                    .start();
+        } else {
+            ViewCompat.animate(v)
+                    .scaleX(1)
+                    .scaleY(1)
+                    .translationZ(1)
+                    .start();
+        }
     }
 
     private void startPayer() {
@@ -248,6 +289,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
 
         MImageGetter urlImageGetter = new MImageGetter(mViewBinding.tvLyric, MusicDetailActivity.this);//实例化URLImageGetter类
         mViewBinding.tvLyric.setText(Html.fromHtml(musicList.getLyric(), urlImageGetter, null));
+        mViewBinding.tvLyric.setMovementMethod(ScrollingMovementMethod.getInstance());
     }
 
     @Override
