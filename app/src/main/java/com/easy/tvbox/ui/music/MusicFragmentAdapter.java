@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.core.view.ViewCompat;
+
 import com.bumptech.glide.Glide;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.GodBaseAdapter;

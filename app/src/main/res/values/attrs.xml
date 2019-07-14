@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <declare-styleable name="TvHorizontalScrollView">
+        <attr name="fadingEdge" format="integer" />
+        <!--选中item距离左或上的偏移量-->
+        <attr name="hsv_selected_offset_start" format="dimension" />
+        <!--选中item距离右或下的偏移量-->
+        <attr name="hsv_selected_offset_end" format="dimension" />
+        <!--是否选中的item居中，true时offset_start和offset_end将不再起作用-->
+        <attr name="hsv_is_selected_centered" format="boolean" />
+        <!--滚动时长-->
+        <attr name="hsv_scroller_duration" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="TvVerticalScrollView">
+        <!--选中item距离左或上的偏移量-->
+        <attr name="vsv_selected_offset_start" format="dimension" />
+        <!--选中item距离右或下的偏移量-->
+        <attr name="vsv_selected_offset_end" format="dimension" />
+        <!--是否选中的item居中，true时offset_start和offset_end将不再起作用-->
+        <attr name="vsv_is_selected_centered" format="boolean" />
+        <!--滚动时长-->
+        <attr name="vsv_scroller_duration" format="integer" />
+    </declare-styleable>
 
     <!-- 倒影控件属性 -->
     <declare-styleable name="reflectItemView">
         <attr name="isReflect" format="boolean" />
     </declare-styleable>
 
-
     <attr name="scale" format="integer" />
     <attr name="scaleable" format="boolean" />
     <attr name="borderDrawable" format="reference" />
     <attr name="borderSize" format="dimension" />
     <attr name="delay" format="integer" />
-
     <attr name="animationType">
         <enum name="DEFAULT" value="0"></enum>
         <enum name="TRANSLATE" value="1"></enum>
     </attr>
-
     <attr name="durationLarge" format="integer" />
     <attr name="durationSmall" format="integer" />
 
@@ -32,6 +51,36 @@
         <attr name="animationType" />
     </declare-styleable>
 
+    <!-- 标签控件 -->
+    <declare-styleable name="LabelView">
+        <!-- 设置文字内容 -->
+        <attr name="lv_text" format="string" />
+        <!-- 设置文字颜色,默认#ffffff -->
+        <attr name="lv_text_color" format="color" />
+        <!-- 设置文字大小,默认11sp -->
+        <attr name="lv_text_size" format="dimension" />
+        <!-- 设置文字是否支持加粗,默认true -->
+        <attr name="lv_text_bold" format="boolean" />
+        <!-- 设置文字是否支持全部大写,默认true-->
+        <attr name="lv_text_all_caps" format="boolean" />
+        <!-- 设置背景颜色,默认"#FF4081"-->
+        <attr name="lv_background_color" format="color" />
+        <!-- 设置LabelView所在矩形最小宽高,默认mFillTriangle?35dp:50dp-->
+        <attr name="lv_min_size" format="dimension" />
+        <!-- 设置文字上下padding,默认3.5dp,mFillTriangle为true时无效-->
+        <attr name="lv_padding" format="dimension" />
+        <!-- 设置LabelView方向 -->
+        <attr name="lv_gravity" format="enum">
+            <enum name="TOP_LEFT" value="51" />
+            <enum name="TOP_RIGHT" value="53" />
+            <enum name="BOTTOM_LEFT" value="83" />
+            <enum name="BOTTOM_RIGHT" value="85" />
+        </attr>
+        <!-- 设置是否填充三角区域,默认false -->
+        <attr name="lv_fill_triangle" format="boolean" />
+        <!-- 圆角度数，与lv_fill_triangle配套使用 -->
+        <attr name="lv_radius" format="dimension" />
+    </declare-styleable>
 
     <declare-styleable name="TvRelativeLayout">
         <attr name="scaleable" />
@@ -40,6 +89,17 @@
 
     </declare-styleable>
 
+    <declare-styleable name="TvIconButton">
+        <attr name="tv_icon" format="reference" />
+        <attr name="tv_iconWidth" format="dimension" />
+        <attr name="tv_iconHeight" format="dimension" />
+        <attr name="tv_iconMoveOffset" format="dimension" />
+        <attr name="tv_text" format="string|reference" />
+        <attr name="tv_textColor" format="reference|color" />
+        <attr name="tv_textSize" format="dimension" />
+        <attr name="tv_textPadding" format="dimension" />
+        <attr name="tv_textBg" format="reference" />
+    </declare-styleable>
 
     <declare-styleable name="TvTextView">
         <attr name="scaleable" />
@@ -49,18 +109,60 @@
 
     </declare-styleable>
 
-    <declare-styleable name="TvHorizontalScrollView">
-        <attr name="fadingEdge" format="integer" />
-
-    </declare-styleable>
-
-    <declare-styleable name="RoundImpl">
-        <attr name="bottomRightRadius" format="dimension" />
-        <attr name="bottomLeftRadius" format="dimension" />
-        <attr name="radius"  format="dimension" />
-        <attr name="topRightRadius" format="dimension" />
+    <declare-styleable name="RoundFrameLayout">
+        <attr name="rfl_radius" format="dimension" />
         <attr name="topLeftRadius" format="dimension" />
-
+        <attr name="topRightRadius" format="dimension" />
+        <attr name="bottomLeftRadius" format="dimension" />
+        <attr name="bottomRightRadius" format="dimension" />
     </declare-styleable>
 
+    <!--<declare-styleable name="RoundImpl">-->
+    <!--<attr name="bottomRightRadius" format="dimension" />-->
+    <!--<attr name="bottomLeftRadius" format="dimension" />-->
+    <!--<attr name="radius"  format="dimension" />-->
+    <!--<attr name="topRightRadius" format="dimension" />-->
+    <!--<attr name="topLeftRadius" format="dimension" />-->
+    <!--</declare-styleable>-->
+
+    <declare-styleable name="TvRecyclerView">
+        <attr name="android:orientation" tools:ignore="ResourceName" />
+        <attr name="tv_layoutManager" format="string" />
+        <attr name="tv_selectedItemOffsetStart" format="dimension" />
+        <attr name="tv_selectedItemOffsetEnd" format="dimension" />
+        <attr name="tv_selectedItemIsCentered" format="boolean" />
+        <attr name="tv_isMenu" format="boolean" />
+        <attr name="tv_isMemoryFocus" format="boolean" />
+        <attr name="tv_loadMoreBeforehandCount" format="integer" />
+        <attr name="tv_optimizeLayout" format="boolean" />
+        <attr name="tv_verticalSpacingWithMargins" format="dimension" />
+        <attr name="tv_horizontalSpacingWithMargins" format="dimension" />
+        <!--Grid-->
+        <attr name="tv_numColumns" format="integer" />
+        <attr name="tv_numRows" format="integer" />
+        <!--MetroGrid-->
+        <attr name="tv_laneCountsStr" format="string" />
+        <attr name="tv_isIntelligentScroll" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="TvRecyclerView_SpacingItemDecoration">
+        <attr name="android:verticalSpacing" tools:ignore="ResourceName" />
+        <attr name="android:horizontalSpacing" tools:ignore="ResourceName" />
+    </declare-styleable>
+
+    <declare-styleable name="TvRecyclerView_DividerItemDecoration">
+        <attr name="android:divider" tools:ignore="ResourceName" />
+        <attr name="tv_verticalDivider" format="reference" />
+        <attr name="tv_horizontalDivider" format="reference" />
+    </declare-styleable>
+
+
+    <declare-styleable name="TvRecyclerView_SpannableGridViewChild">
+        <attr name="tv_colSpan" format="integer" />
+        <attr name="tv_rowSpan" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="TvRecyclerView_StaggeredGridViewChild">
+        <attr name="tv_span" format="integer" />
+    </declare-styleable>
 </resources>

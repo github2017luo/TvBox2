@@ -51,5 +51,5 @@ public interface AppComponent {
 
     void inject(TestActivity fragment);
 
-    void inject(AlbumActivity fragment);
+    void inject(AlbumActivity activity);
 }

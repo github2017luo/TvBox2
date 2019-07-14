@@ -12,4 +12,8 @@
 
     <color name="blue">#008FF4</color>
     <color name="white">#ffffff</color>
+
+    <color name="actionbar_color">#3FBA91</color>
+    <color name="green_bright">#00FF00</color>
+    <color name="item_default_color">#EEEEEE</color>
 </resources>

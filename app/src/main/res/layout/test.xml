@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:deviceIds="tv"
-        tools:ignore="MergeRootFrame">
+        android:orientation="vertical"
+        android:paddingTop="30dp">
 
-        <fragment
-            android:id="@+id/cardsFragment"
-            android:name="com.easy.tvbox.ui.home.HomeMenuFragment"
+        <com.easy.tvbox.tvview.tvRecycleView.TvRecyclerView
+            android:id="@+id/recyclerView"
+            style="@style/TwoWayView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:tv_numColumns="3"
+            app:tv_numRows="3"
+            app:tv_layoutManager="GridLayoutManager"/>
+    </LinearLayout>
 </layout>

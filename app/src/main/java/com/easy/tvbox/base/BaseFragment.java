@@ -66,7 +66,6 @@ public abstract class BaseFragment<M extends ViewDataBinding> extends Fragment {
         return mRegistry;
     }
 
-
     public abstract int getLayoutId();
 
     public abstract void initView(View view);

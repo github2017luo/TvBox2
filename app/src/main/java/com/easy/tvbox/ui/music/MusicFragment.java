@@ -79,7 +79,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     public void initView(View view) {
         account = DataManager.getInstance().queryAccount();
         if (videoId == 1) {
-            initPayer();
+//            initPayer();
             adapter = new MusicFragmentAdapter(getContext(), musicLists);
         } else {
             adapter = new MusicFragmentAdapter(getContext(), mvLists);

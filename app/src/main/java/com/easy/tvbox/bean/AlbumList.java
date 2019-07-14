@@ -17,7 +17,7 @@ public class AlbumList {
     private String image;
     private String name;
     private String status;
-    private String num;
+    private String total;
     private int width;
     private int height;
 
@@ -45,12 +45,12 @@ public class AlbumList {
         this.name = name;
     }
 
-    public String getNum() {
-        return num;
+    public String getTotal() {
+        return total;
     }
 
-    public void setNum(String num) {
-        this.num = num;
+    public void setTotal(String total) {
+        this.total = total;
     }
 
     public String getUid() {

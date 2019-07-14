@@ -25,24 +25,7 @@ public class AlbumGridView extends BaseCardView {
     }
 
     public void updateUi(AlbumList albumList) {
-        View llContain = findViewById(R.id.llContain);
-        ViewGroup.LayoutParams layoutParams = llContain.getLayoutParams();
-        layoutParams.height = albumList.getHeight();
-        layoutParams.width = albumList.getWidth();
-        llContain.setLayoutParams(layoutParams);
 
-        ImageView ivIcon = findViewById(R.id.ivIcon);
-        Glide.with(getContext())
-                .load(albumList.getImage())
-                .error(R.drawable.error_icon)
-                .placeholder(R.drawable.error_icon)
-                .into(ivIcon);
-
-        TextView tvTitle = findViewById(R.id.tvTitle);
-        tvTitle.setText(albumList.getName());
-
-        TextView tvNum = findViewById(R.id.tvNum);
-        tvNum.setText(albumList.getNum());
 
     }
 }

@@ -49,12 +49,12 @@ public class RoundImpl {
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         mPath = new Path();
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RoundImpl, defStyle, 0);
-        mBottomLeftRadius = a.getDimension(R.styleable.RoundImpl_bottomLeftRadius, -1);
-        mBottomRightRadius = a.getDimension(R.styleable.RoundImpl_bottomRightRadius, -1);
-        mTopLeftRadius = a.getDimension(R.styleable.RoundImpl_topLeftRadius, -1);
-        mTopRightRadius = a.getDimension(R.styleable.RoundImpl_topRightRadius, -1);
-        mRadius = a.getDimension(R.styleable.RoundImpl_radius, -1);
+//        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RoundImpl, defStyle, 0);
+//        mBottomLeftRadius = a.getDimension(R.styleable.RoundImpl_bottomLeftRadius, -1);
+//        mBottomRightRadius = a.getDimension(R.styleable.RoundImpl_bottomRightRadius, -1);
+//        mTopLeftRadius = a.getDimension(R.styleable.RoundImpl_topLeftRadius, -1);
+//        mTopRightRadius = a.getDimension(R.styleable.RoundImpl_topRightRadius, -1);
+//        mRadius = a.getDimension(R.styleable.RoundImpl_radius, -1);
 
 
         if (mRadius > 0) {
@@ -68,7 +68,7 @@ public class RoundImpl {
                 mTopRightRadius = mRadius;
         }
 
-        a.recycle();
+//        a.recycle();
 
     }
 
