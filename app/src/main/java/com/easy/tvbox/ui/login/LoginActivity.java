@@ -155,6 +155,12 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
             }
         });
 
+        if(BuildConfig.DEBUG){
+            mViewBinding.editPhone.setText("13779926287");
+            mViewBinding.editImageCode.setText("ssss");
+            mViewBinding.editPhoneCode.setText("sss");
+        }
+
         networkChange(NetworkUtils.isNetConnected(LoginActivity.this));
     }
 

@@ -1,7 +1,9 @@
 package com.easy.tvbox.ui.music;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -13,6 +15,7 @@ import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseFragment;
 import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.base.DataManager;
+import com.easy.tvbox.base.FocusBorderHelper;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.MusicData;
@@ -21,6 +24,7 @@ import com.easy.tvbox.bean.MusicList;
 import com.easy.tvbox.databinding.MusicFragmentBinding;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.utils.PullToRefreshListView;
+import com.owen.focus.FocusBorder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +46,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     int currentPosition = 0;//播放的位置
     MusicList currentPlayingMusic;
     boolean isPlaying;
+    FocusBorder mFocusBorder;
 
     public static MusicFragment getInstance(int type) {
         MusicFragment musicFragment = new MusicFragment();
@@ -49,6 +54,26 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         bundle.putInt("type", type);
         musicFragment.setArguments(bundle);
         return musicFragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (getActivity() instanceof FocusBorderHelper) {
+            mFocusBorder = ((FocusBorderHelper) getActivity()).getFocusBorder();
+        }
+    }
+
+    protected void onMoveFocusBorder(View focusedView, float scale) {
+        if (null != mFocusBorder) {
+            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale));
+        }
+    }
+
+    protected void onMoveFocusBorder(View focusedView, float scale, float roundRadius) {
+        if (null != mFocusBorder) {
+            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale, roundRadius));
+        }
     }
 
     @Override
@@ -84,33 +109,50 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         } else {
             adapter = new MusicFragmentAdapter(getContext(), mvLists);
         }
-        mViewBinding.listView.setOnLoad(this);
-        mViewBinding.listView.setAdapter(adapter);
-        mViewBinding.listView.setOnItemClickListener((parent, view1, position, id) -> {
-            if (videoId == 1) {
-                if (musicLists != null && musicLists.size() > 0 && position < musicLists.size()) {
-                    if (mPlayer != null) {
-                        if (mPlayer.isPlaying()) {
-                            mPlayer.stop();
-                            currentPlayingMusic = null;
-                            currentPosition = 0;
-                            refreshView(true);
-                        }
-                    }
-                    RouteManager.goMusicDetailActivity(getContext(), position);
-                }
-            } else {
-                if (mvLists != null && mvLists.size() > 0 && position < mvLists.size()) {
-                    List<MusicInfo> musicInfos = new ArrayList<>();
-                    MusicInfo musicInfo = mvLists.get(position).getMusicInfo();
-                    if (musicInfo != null) {
-                        musicInfos.add(musicInfo);
-                    }
-                    RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
-                }
+//        mViewBinding.listView.setOnLoad(this);
+//        mViewBinding.listView.setAdapter(adapter);
+//        mViewBinding.listView.setOnItemClickListener((parent, view1, position, id) -> {
+//            if (videoId == 1) {
+//                if (musicLists != null && musicLists.size() > 0 && position < musicLists.size()) {
+//                    if (mPlayer != null) {
+//                        if (mPlayer.isPlaying()) {
+//                            mPlayer.stop();
+//                            currentPlayingMusic = null;
+//                            currentPosition = 0;
+//                            refreshView(true);
+//                        }
+//                    }
+//                    RouteManager.goMusicDetailActivity(getContext(), position);
+//                }
+//            } else {
+//                if (mvLists != null && mvLists.size() > 0 && position < mvLists.size()) {
+//                    List<MusicInfo> musicInfos = new ArrayList<>();
+//                    MusicInfo musicInfo = mvLists.get(position).getMusicInfo();
+//                    if (musicInfo != null) {
+//                        musicInfos.add(musicInfo);
+//                    }
+//                    RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
+//                }
+//            }
+//        });
+        mViewBinding.tvAlbum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.goAlbumActivity(getContext());
             }
         });
-
+        mViewBinding.tvAlbum.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.1f);
+            }
+        });
+        mViewBinding.ivPlayer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.1f);
+            }
+        });
         mViewBinding.ivPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
