@@ -128,6 +128,13 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
         } else {
             mFt.attach(current);
         }
+        if (currentType == 1) {
+            musicFragment.choose(true);
+            musicFragment.choose(false);
+        } else {
+            musicFragment.choose(false);
+            musicFragment.choose(true);
+        }
         mFt.commit();
     }
 

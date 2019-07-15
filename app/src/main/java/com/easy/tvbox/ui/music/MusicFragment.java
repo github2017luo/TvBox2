@@ -3,9 +3,7 @@ package com.easy.tvbox.ui.music;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSON;
 import com.alivc.player.AliVcMediaPlayer;
@@ -25,9 +23,6 @@ import com.easy.tvbox.databinding.MusicFragmentBinding;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.tvview.tvRecycleView.SimpleOnItemListener;
 import com.easy.tvbox.tvview.tvRecycleView.TvRecyclerView;
-import com.easy.tvbox.ui.album.AlbumAdapter;
-import com.easy.tvbox.utils.PullToRefreshListView;
-import com.easy.tvbox.utils.ToastUtils;
 import com.owen.focus.FocusBorder;
 
 import java.util.ArrayList;
@@ -35,7 +30,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements MusicFragmentView, PullToRefreshListView.OnLoad {
+public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements MusicFragmentView {
 
     @Inject
     MusicFragmentPresenter presenter;
@@ -51,6 +46,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     MusicList currentPlayingMusic;
     boolean isPlaying;
     FocusBorder mFocusBorder;
+    MusicData musicDatas;
 
     public static MusicFragment getInstance(int type) {
         MusicFragment musicFragment = new MusicFragment();
@@ -108,12 +104,11 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     public void initView(View view) {
         account = DataManager.getInstance().queryAccount();
         if (videoId == 1) {
-//            initPayer();
+            initPayer();
         }
         adapter = new MusicFragmentAdapter(getContext());
         mViewBinding.recyclerView.setSpacingWithMargins(10, 3);
         mViewBinding.recyclerView.setAdapter(adapter);
-
         mViewBinding.recyclerView.setOnItemListener(new SimpleOnItemListener() {
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
@@ -144,6 +139,17 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                         RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
                     }
                 }
+            }
+        });
+        mViewBinding.recyclerView.setOnLoadMoreListener(new TvRecyclerView.OnLoadMoreListener() {
+            @Override
+            public boolean onLoadMore() {
+                mViewBinding.recyclerView.setLoadingMore(true); //正在加载数据
+                presenter.queryMusic(++page, account.getShopNo(), videoId);
+                if (musicDatas != null) {
+                    return !musicDatas.isLast();
+                }
+                return false; //是否还有更多数据
             }
         });
 
@@ -327,9 +333,10 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     }
 
     @Override
-    public void queryMusicCallback(MusicData musicData, int videoId) {
-        if (musicData != null) {
-            List<MusicList> musicDataContent = musicData.getContent();
+    public void queryMusicCallback(MusicData data, int videoId) {
+        if (data != null) {
+            musicDatas = data;
+            List<MusicList> musicDataContent = data.getContent();
             if (musicDataContent != null && musicDataContent.size() > 0) {
                 if (videoId == 1) {
                     musicLists.addAll(musicDataContent);
@@ -337,6 +344,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                     mvLists.addAll(musicDataContent);
                 }
                 adapter.appendDatas(musicDataContent);
+                mViewBinding.recyclerView.setLoadingMore(false); //加载数据完毕
             }
         }
     }
@@ -352,11 +360,6 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
             mvLists.clear();
         }
         super.onDestroy();
-    }
-
-    @Override
-    public void loadData(int beginIndex, ProgressBar pb) {
-        presenter.queryMusic(page, account.getShopNo(), videoId);
     }
 
     public void choose(boolean isCurrent) {
