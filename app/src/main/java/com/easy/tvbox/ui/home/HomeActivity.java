@@ -1,6 +1,7 @@
 package com.easy.tvbox.ui.home;
 
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -22,6 +23,7 @@ import com.easy.tvbox.event.LiveUpdateEvent;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.ui.LoadingView;
 import com.easy.tvbox.utils.ToastUtils;
+import com.owen.focus.FocusBorder;
 import com.zhouwei.mzbanner.holder.MZHolderCreator;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,6 +44,8 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     Account account;
     public static List<DailyList> dailyDataContent = new ArrayList<>();
     public static List<LiveList> liveDataContent = new ArrayList<>();
+
+    FocusBorder mFocusBorder;
 
     @Override
     public int getLayoutId() {
@@ -64,6 +68,12 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         mViewBinding.banner.pause();//暂停轮播
     }
 
+    protected void onMoveFocusBorder(View focusedView, float scale) {
+        if (null != mFocusBorder) {
+            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale));
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -78,12 +88,69 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
             return;
         }
 
+        mFocusBorder = new FocusBorder.Builder()
+                .asColor()
+                .borderColorRes(R.color.actionbar_color)
+                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3f)
+                .shadowColorRes(R.color.green_bright)
+                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 5f)
+                .build(this);
+
         mViewBinding.loadingView.setRetryListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (NetworkUtils.isNetConnected(HomeActivity.this)) {
                     networkChange(true);
                 }
+            }
+        });
+        mViewBinding.rlLive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.goLiveActivity(HomeActivity.this);
+                EventBus.getDefault().post(new LiveUpdateEvent(0));
+            }
+        });
+        mViewBinding.rlLive.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.1f);
+            }
+        });
+        mViewBinding.rlDaily.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.goDailyActivity(HomeActivity.this);
+            }
+        });
+        mViewBinding.rlDaily.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.1f);
+            }
+        });
+        mViewBinding.rlMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.goMusicActivity(HomeActivity.this);
+            }
+        });
+        mViewBinding.rlMusic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.1f);
+            }
+        });
+        mViewBinding.rlMy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.goMineActivity(HomeActivity.this);
+            }
+        });
+        mViewBinding.rlMy.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.1f);
             }
         });
     }

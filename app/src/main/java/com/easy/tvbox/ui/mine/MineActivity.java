@@ -1,5 +1,6 @@
 package com.easy.tvbox.ui.mine;
 
+import android.util.TypedValue;
 import android.view.View;
 
 import com.easy.tvbox.R;
@@ -10,8 +11,11 @@ import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.databinding.MineBinding;
+import com.easy.tvbox.event.LiveUpdateEvent;
 import com.easy.tvbox.event.LogoutEvent;
+import com.easy.tvbox.ui.home.HomeActivity;
 import com.easy.tvbox.utils.CommonUtils;
+import com.owen.focus.FocusBorder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -24,6 +28,7 @@ public class MineActivity extends BaseActivity<MineBinding> implements MineView 
     @Inject
     MinePresenter minePresenter;
     Account account;
+    FocusBorder mFocusBorder;
 
     @Override
     public int getLayoutId() {
@@ -46,8 +51,22 @@ public class MineActivity extends BaseActivity<MineBinding> implements MineView 
         refreshAccountInfo();
     }
 
+    protected void onMoveFocusBorder(View focusedView, float scale) {
+        if (null != mFocusBorder) {
+            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale));
+        }
+    }
+
     @Override
     public void initView() {
+        mFocusBorder = new FocusBorder.Builder()
+                .asColor()
+                .borderColorRes(R.color.actionbar_color)
+                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3f)
+                .shadowColorRes(R.color.green_bright)
+                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 5f)
+                .build(this);
+
         mViewBinding.tvUpdatePhone.setOnClickListener(v -> RouteManager.goUpdatePhoneActivity(MineActivity.this));
 
         mViewBinding.logout.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +77,21 @@ public class MineActivity extends BaseActivity<MineBinding> implements MineView 
                 dialog.show(getSupportFragmentManager(), "logout");
             }
         });
+
+        mViewBinding.logout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.1f);
+            }
+        });
+
+        mViewBinding.tvUpdatePhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.2f);
+            }
+        });
+        mViewBinding.tvUpdatePhone.requestFocus();
     }
 
     private void refreshAccountInfo() {
