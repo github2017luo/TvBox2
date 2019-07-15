@@ -43,8 +43,9 @@
                         android:id="@+id/ivPrev"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
+                        android:nextFocusDown="@id/ivPlayer"
                         android:rotation="180"
-                        android:nextFocusDown="@+id/ivPlayer"
+                        android:focusable="true"
                         android:src="@drawable/fast_forward" />
 
                     <ImageView
@@ -53,14 +54,16 @@
                         android:layout_height="38dp"
                         android:layout_marginLeft="22dp"
                         android:layout_marginRight="22dp"
-                        android:nextFocusDown="@+id/ivNext"
+                        android:focusable="true"
                         android:nextFocusUp="@id/ivPrev"
+                        android:nextFocusDown="@id/ivNext"
                         android:src="@drawable/button_stop_pause" />
 
                     <ImageView
                         android:id="@+id/ivNext"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
+                        android:focusable="true"
                         android:nextFocusUp="@id/ivPlayer"
                         android:src="@drawable/fast_forward" />
 

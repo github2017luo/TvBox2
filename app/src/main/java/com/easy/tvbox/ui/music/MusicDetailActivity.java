@@ -4,9 +4,8 @@ import android.content.Intent;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
-
-import androidx.core.view.ViewCompat;
 
 import com.alivc.player.AliVcMediaPlayer;
 import com.alivc.player.MediaPlayer;
@@ -24,6 +23,7 @@ import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.ui.LoadingView;
 import com.easy.tvbox.utils.MImageGetter;
 import com.easy.tvbox.utils.ToastUtils;
+import com.owen.focus.FocusBorder;
 
 import java.util.List;
 
@@ -37,6 +37,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
     MusicList musicList;
     AliVcMediaPlayer mPlayer;
     MusicInfo musicInfo;
+    FocusBorder mFocusBorder;
 
     @Override
     public int getLayoutId() {
@@ -63,6 +64,15 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
 
         Intent intent = getIntent();
         position = intent.getIntExtra("position", 0);
+
+        mFocusBorder = new FocusBorder.Builder()
+                .asColor()
+                .borderColorRes(R.color.actionbar_color)
+                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3f)
+                .shadowColorRes(R.color.green_bright)
+                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 5f)
+                .build(this);
+
         if (MusicFragment.musicLists.size() > position && position >= 0) {
             musicList = MusicFragment.musicLists.get(position);
         }
@@ -80,6 +90,12 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
         startPayer();
     }
 
+    protected void onMoveFocusBorder(View focusedView, float scale) {
+        if (null != mFocusBorder) {
+            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale));
+        }
+    }
+
     private void initViewClick() {
         mViewBinding.tvLyric.setMovementMethod(ScrollingMovementMethod.getInstance());
         mViewBinding.loadingView.setRetryListener(new View.OnClickListener() {
@@ -90,11 +106,10 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
                 }
             }
         });
-
         mViewBinding.ivPrev.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                setFocusChangeListener(v, hasFocus);
+                onMoveFocusBorder(v, 1.1f);
             }
         });
 
@@ -111,11 +126,10 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
             }
         });
 
-
         mViewBinding.ivPlayer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                setFocusChangeListener(v, hasFocus);
+                onMoveFocusBorder(v, 1.1f);
             }
         });
 
@@ -139,7 +153,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
         mViewBinding.ivNext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                setFocusChangeListener(v, hasFocus);
+                onMoveFocusBorder(v, 1.1f);
             }
         });
 
@@ -155,22 +169,6 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
                 startPayer();
             }
         });
-    }
-
-    public void setFocusChangeListener(View v, boolean hasFocus) {
-        if (hasFocus) {
-            ViewCompat.animate(v)
-                    .scaleX(1.17f)
-                    .scaleY(1.17f)
-                    .translationZ(1)
-                    .start();
-        } else {
-            ViewCompat.animate(v)
-                    .scaleX(1)
-                    .scaleY(1)
-                    .translationZ(1)
-                    .start();
-        }
     }
 
     private void startPayer() {
@@ -191,7 +189,6 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
 
     private void initPayer() {
         mPlayer = new AliVcMediaPlayer(this, mViewBinding.surfaceView);
-
         mPlayer.setPreparedListener(new MediaPlayer.MediaPlayerPreparedListener() {
             @Override
             public void onPrepared() {
