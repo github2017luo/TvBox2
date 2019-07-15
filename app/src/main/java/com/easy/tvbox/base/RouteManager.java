@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.easy.tvbox.ui.album.AlbumActivity;
+import com.easy.tvbox.ui.album.AlbumListActivity;
 import com.easy.tvbox.ui.daily.DailyActivity;
 import com.easy.tvbox.ui.home.HomeActivity;
 import com.easy.tvbox.ui.live.LiveActivity;
@@ -39,6 +40,13 @@ public class RouteManager {
 
     public static void goMusicActivity(Context context) {
         Intent intent = new Intent(context, MusicActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void goAlbumListActivity(Context context, String uid) {
+        Intent intent = new Intent(context, AlbumListActivity.class);
+        intent.putExtra("uid", uid);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

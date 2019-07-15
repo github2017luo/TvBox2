@@ -46,8 +46,7 @@ public class HomeMenuFragment extends VerticalGridSupportFragment {
                         EventBus.getDefault().post(new LiveUpdateEvent(0));
                         break;
                     case 1:
-                        RouteManager.goAlbumActivity(getContext());
-//                        RouteManager.goDailyActivity(getContext());
+                        RouteManager.goDailyActivity(getContext());
                         break;
                     case 2:
                         RouteManager.goMusicActivity(getContext());

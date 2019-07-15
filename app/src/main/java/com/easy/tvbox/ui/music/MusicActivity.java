@@ -20,12 +20,8 @@ import com.owen.focus.FocusBorder;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class MusicActivity extends BaseActivity<MusicBinding> implements MusicView, FocusBorderHelper {
 
-    @Inject
-    MusicPresenter musicPresenter;
     Account account;
     MusicFragment musicFragment, mvFragment;
     FocusBorder mFocusBorder;
@@ -42,7 +38,6 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
 
     @Override
     public void addPresenters(List<BasePresenter> observerList) {
-        observerList.add(musicPresenter);
     }
 
     @Override
@@ -91,7 +86,6 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
         });
         musicFragment = MusicFragment.getInstance(1);
         mvFragment = MusicFragment.getInstance(2);
-
         setFragment(1);
         mFocusBorder.setVisible(true);
         onMoveFocusBorder(mViewBinding.tvMusic, 1.1f);

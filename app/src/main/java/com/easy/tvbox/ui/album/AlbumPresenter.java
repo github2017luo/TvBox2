@@ -44,7 +44,7 @@ public class AlbumPresenter extends BasePresenter<AlbumView> {
                                 if (album != null && album.getContent() != null) {
                                     List<AlbumList> albumLists = album.getContent();
                                     int[] screens = DimensUtils.getWidthHeight(context);
-                                    int width = screens[0]-DimensUtils.dp2px(context, 80);
+                                    int width = screens[0] - DimensUtils.dp2px(context, 80);
                                     int height = DimensUtils.dp2px(context, 50);
                                     for (AlbumList albumList : albumLists) {
                                         albumList.setHeight(height);

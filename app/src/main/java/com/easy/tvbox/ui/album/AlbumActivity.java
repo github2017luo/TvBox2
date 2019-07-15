@@ -8,6 +8,7 @@ import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.base.DataManager;
+import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.Album;
 import com.easy.tvbox.bean.AlbumList;
@@ -24,13 +25,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class AlbumActivity extends BaseActivity<AlbumBinding> implements AlbumView{
+public class AlbumActivity extends BaseActivity<AlbumBinding> implements AlbumView {
 
     @Inject
     AlbumPresenter presenter;
     AlbumAdapter albumAdapter;
     FocusBorder mFocusBorder;
     Account account;
+    List<AlbumList> albumLists;
 
     @Override
     public int getLayoutId() {
@@ -49,7 +51,7 @@ public class AlbumActivity extends BaseActivity<AlbumBinding> implements AlbumVi
 
     @Override
     public void initView() {
-         account = DataManager.getInstance().queryAccount();
+        account = DataManager.getInstance().queryAccount();
         if (account == null) {
             finish();
             return;
@@ -86,13 +88,15 @@ public class AlbumActivity extends BaseActivity<AlbumBinding> implements AlbumVi
 
             @Override
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
-                ToastUtils.showLong("onItemClick::"+position);
+                if (albumLists != null && position < albumLists.size()) {
+                    RouteManager.goAlbumListActivity(AlbumActivity.this, albumLists.get(position).getUid());
+                }
             }
         });
     }
 
     protected void onMoveFocusBorder(View focusedView, float scale) {
-        if(null != mFocusBorder) {
+        if (null != mFocusBorder) {
             mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale));
         }
     }
@@ -114,10 +118,10 @@ public class AlbumActivity extends BaseActivity<AlbumBinding> implements AlbumVi
         if (respond.isOk()) {
             Album album = respond.getObj();
             if (album != null) {
-                List<AlbumList> temp = album.getContent();
-                if (temp != null && temp.size() > 0 && albumAdapter!=null ) {
+                albumLists = album.getContent();
+                if (albumLists != null && albumLists.size() > 0 && albumAdapter != null) {
                     albumAdapter.clearDatas();
-                    albumAdapter.appendDatas(temp);
+                    albumAdapter.appendDatas(albumLists);
                     mViewBinding.recyclerView.getNextFocusDownId();
                 }
             }

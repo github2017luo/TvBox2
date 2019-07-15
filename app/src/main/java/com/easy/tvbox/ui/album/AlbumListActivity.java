@@ -1,8 +1,8 @@
-package com.easy.tvbox.ui.music;
+package com.easy.tvbox.ui.album;
 
-import android.content.Context;
-import android.os.Bundle;
+import android.content.Intent;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -10,19 +10,20 @@ import com.alivc.player.AliVcMediaPlayer;
 import com.alivc.player.MediaPlayer;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
-import com.easy.tvbox.base.BaseFragment;
+import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.base.DataManager;
-import com.easy.tvbox.base.FocusBorderHelper;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.MusicData;
 import com.easy.tvbox.bean.MusicInfo;
 import com.easy.tvbox.bean.MusicList;
-import com.easy.tvbox.databinding.MusicFragmentBinding;
+import com.easy.tvbox.databinding.AlbumListBinding;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.tvview.tvRecycleView.SimpleOnItemListener;
 import com.easy.tvbox.tvview.tvRecycleView.TvRecyclerView;
+import com.easy.tvbox.ui.LoadingView;
+import com.easy.tvbox.ui.music.MusicFragment;
 import com.owen.focus.FocusBorder;
 
 import java.util.ArrayList;
@@ -30,64 +31,23 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements MusicFragmentView {
+public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements AlbumListView {
 
     @Inject
-    MusicFragmentPresenter presenter;
-
-    MusicFragmentAdapter adapter;
-    public static List<MusicList> musicLists = new ArrayList<>();
-    public static List<MusicList> mvLists = new ArrayList<>();
-    int page = 0;
-    Account account;
-    int videoId = 1;//1 音乐，2 MV
-    AliVcMediaPlayer mPlayer;
-    int currentPosition = 0;//播放的位置
-    MusicList currentPlayingMusic;
-    boolean isPlaying;
+    AlbumListPresenter presenter;
     FocusBorder mFocusBorder;
-    MusicData musicDatas;
-
-    public static MusicFragment getInstance(int type) {
-        MusicFragment musicFragment = new MusicFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("type", type);
-        musicFragment.setArguments(bundle);
-        return musicFragment;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (getActivity() instanceof FocusBorderHelper) {
-            mFocusBorder = ((FocusBorderHelper) getActivity()).getFocusBorder();
-        }
-    }
-
-    protected void onMoveFocusBorder(View focusedView, float scale) {
-        if (null != mFocusBorder) {
-            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale));
-        }
-    }
-
-    protected void onMoveFocusBorder(View focusedView, float scale, float roundRadius) {
-        if (null != mFocusBorder) {
-            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale, roundRadius));
-        }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null) {
-            videoId = args.getInt("type");
-        }
-    }
+    AlbumListAdapter adapter;
+    Account account;
+    String uid;
+    AliVcMediaPlayer mPlayer;
+    List<MusicList> musicLists;
+    int currentPosition = 0;//播放的位置
+    boolean isPlaying;
+    MusicList currentPlayingMusic;
 
     @Override
     public int getLayoutId() {
-        return R.layout.music_fragment;
+        return R.layout.album_list;
     }
 
     @Override
@@ -101,12 +61,33 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     }
 
     @Override
-    public void initView(View view) {
+    public void initView() {
         account = DataManager.getInstance().queryAccount();
-        if (videoId == 1) {
-//            initPayer();
+        if (account == null) {
+            finish();
+            return;
         }
-        adapter = new MusicFragmentAdapter(getContext());
+
+        Intent intent = getIntent();
+        uid = intent.getStringExtra("uid");
+
+//        initPayer();
+
+        mFocusBorder = new FocusBorder.Builder()
+                .asColor()
+                .borderColorRes(R.color.actionbar_color)
+                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3f)
+                .shadowColorRes(R.color.green_bright)
+                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 5f)
+                .build(this);
+
+        mViewBinding.loadingView.setRetryListener(v -> {
+            if (NetworkUtils.isNetConnected(AlbumListActivity.this)) {
+                networkChange(true);
+            }
+        });
+
+        adapter = new AlbumListAdapter(this);
         mViewBinding.recyclerView.setSpacingWithMargins(10, 3);
         mViewBinding.recyclerView.setAdapter(adapter);
         mViewBinding.recyclerView.setOnItemListener(new SimpleOnItemListener() {
@@ -117,100 +98,45 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
 
             @Override
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
-                if (videoId == 1) {
-                    if (musicLists != null && musicLists.size() > 0 && position < musicLists.size()) {
-                        if (mPlayer != null) {
-                            if (mPlayer.isPlaying()) {
-                                mPlayer.stop();
-                                currentPlayingMusic = null;
-                                currentPosition = 0;
-                                refreshView(true);
-                            }
+                if (musicLists != null && musicLists.size() > 0 && position < musicLists.size()) {
+                    if (mPlayer != null) {
+                        if (mPlayer.isPlaying()) {
+                            mPlayer.stop();
+                            currentPlayingMusic = null;
+                            currentPosition = 0;
+                            refreshView(true);
                         }
-                        RouteManager.goMusicDetailActivity(getContext(), position);
                     }
-                } else {
-                    if (mvLists != null && mvLists.size() > 0 && position < mvLists.size()) {
-                        List<MusicInfo> musicInfos = new ArrayList<>();
-                        MusicInfo musicInfo = mvLists.get(position).getMusicInfo();
-                        if (musicInfo != null) {
-                            musicInfos.add(musicInfo);
-                        }
-                        RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
-                    }
+                    RouteManager.goMusicDetailActivity(AlbumListActivity.this, position);
                 }
-            }
-        });
-        mViewBinding.recyclerView.setOnLoadMoreListener(new TvRecyclerView.OnLoadMoreListener() {
-            @Override
-            public boolean onLoadMore() {
-                mViewBinding.recyclerView.setLoadingMore(true); //正在加载数据
-                presenter.queryMusic(++page, account.getShopNo(), videoId);
-                if (musicDatas != null) {
-                    return !musicDatas.isLast();
-                }
-                return false; //是否还有更多数据
             }
         });
 
-        mViewBinding.tvAlbum.setOnClickListener(new View.OnClickListener() {
+        mViewBinding.ivPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mPlayer != null) {
                     if (mPlayer.isPlaying()) {
-                        mPlayer.stop();
-                        currentPlayingMusic = null;
-                        currentPosition = 0;
+                        mPlayer.pause();
                         refreshView(true);
-                    }
-                }
-                RouteManager.goAlbumActivity(getContext());
-            }
-        });
-        mViewBinding.tvAlbum.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onMoveFocusBorder(v, 1.1f);
-            }
-        });
-        mViewBinding.ivPlayer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (videoId == 1) {
-                    if (mPlayer != null) {
-                        if (mPlayer.isPlaying()) {
-                            mPlayer.pause();
-                            refreshView(true);
+                    } else {
+                        if (currentPlayingMusic != null) {
+                            mPlayer.play();
+                            refreshView(false);
                         } else {
-                            if (currentPlayingMusic != null) {
-                                mPlayer.play();
-                                refreshView(false);
-                            } else {
-                                startPayer();
-                            }
+                            startPayer();
                         }
-                    }
-                } else {
-                    if (mvLists != null && mvLists.size() > 0) {
-                        List<MusicInfo> musicInfos = new ArrayList<>();
-                        for (MusicList mvList : mvLists) {
-                            MusicInfo musicInfo = mvList.getMusicInfo();
-                            if (musicInfo != null) {
-                                musicInfos.add(musicInfo);
-                            }
-                        }
-                        RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
                     }
                 }
             }
         });
+
         mViewBinding.ivPlayer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 onMoveFocusBorder(v, 1.1f);
             }
         });
-        networkChange(NetworkUtils.isNetConnected(getContext()));
     }
 
     private void startPayer() {
@@ -252,8 +178,14 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         }
     }
 
+    protected void onMoveFocusBorder(View focusedView, float scale) {
+        if (null != mFocusBorder) {
+            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale));
+        }
+    }
+
     private void initPayer() {
-        mPlayer = new AliVcMediaPlayer(getContext(), mViewBinding.surfaceView);
+        mPlayer = new AliVcMediaPlayer(this, mViewBinding.surfaceView);
 
         mPlayer.setPreparedListener(new MediaPlayer.MediaPlayerPreparedListener() {
             @Override
@@ -334,25 +266,27 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         });
     }
 
+    @Override
     public void networkChange(boolean isConnect) {
         if (isConnect) {
-            presenter.queryMusic(page, account.getShopNo(), videoId);
+            mViewBinding.recyclerView.setVisibility(View.VISIBLE);
+            mViewBinding.loadingView.setStatus(LoadingView.STATUS_HIDDEN);
+            presenter.querySongSheetMusic(uid);
+        } else {
+            mViewBinding.recyclerView.setVisibility(View.GONE);
+            mViewBinding.loadingView.setStatus(LoadingView.STATUS_NONETWORK);
         }
     }
 
     @Override
-    public void queryMusicCallback(MusicData data, int videoId) {
+    public void queryMusicCallback(MusicData data) {
         if (data != null) {
-            musicDatas = data;
-            List<MusicList> musicDataContent = data.getContent();
-            if (musicDataContent != null && musicDataContent.size() > 0) {
-                if (videoId == 1) {
-                    musicLists.addAll(musicDataContent);
-                } else {
-                    mvLists.addAll(musicDataContent);
-                }
-                adapter.appendDatas(musicDataContent);
-                mViewBinding.recyclerView.setLoadingMore(false); //加载数据完毕
+            musicLists = data.getContent();
+            if (musicLists != null && musicLists.size() > 0) {
+                MusicFragment.musicLists.clear();
+                MusicFragment.musicLists.addAll(musicLists);
+                adapter.clearDatas();
+                adapter.appendDatas(musicLists);
             }
         }
     }
@@ -362,23 +296,9 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         if (mPlayer != null) {
             mPlayer.destroy();
         }
-        if (videoId == 1) {
+        if (musicLists != null) {
             musicLists.clear();
-        } else {
-            mvLists.clear();
         }
         super.onDestroy();
     }
-
-    public void choose(boolean isCurrent) {
-        if (isCurrent) {
-
-        } else {
-            if (videoId == 1 && isPlaying) {
-                mViewBinding.ivPlayer.performClick();
-            }
-        }
-    }
 }
-
-

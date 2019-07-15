@@ -110,7 +110,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .register(getRequestBody(map))
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -122,7 +122,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .login(code, getRequestBody(map))
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -134,7 +134,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .updatePhone(code, getRequestBody(map))
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -146,7 +146,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .validOldPhone(getRequestBody(map))
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -158,7 +158,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .generateImageCode()
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -170,7 +170,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .sendMessage(getRequestBody(map))
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -182,7 +182,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .saveEquipment(getRequestBody(map))
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -194,7 +194,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .getAllShop()
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -206,7 +206,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .getCarouselByShopNo(shopNo)
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -218,7 +218,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .queryForLive(page, size, getRequestBody(map))
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -230,7 +230,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .queryForMusic(page, size, getRequestBody(map))
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -242,7 +242,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .getPlayUrl(id)
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -254,7 +254,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .getMusicDetail(uid)
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
 
@@ -267,7 +267,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .queryForAudio(page, size, getRequestBody(map))
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
 
@@ -280,7 +280,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .getLivePlayUrl(uid)
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /**
@@ -292,7 +292,7 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .getTimeAxis(uid)
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
 
@@ -300,6 +300,15 @@ public class AppRequestStore {
         return retrofit.create(ApiService.class)
                 .querySongSheet(getRequestBody(map))
                 .map(getCommonFunction())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
+    }
+
+
+
+    public Observable<Respond> querySongSheetMusic(Map<String, Object> map) {
+        return retrofit.create(ApiService.class)
+                .querySongSheetMusic(getRequestBody(map))
+                .map(getCommonFunction())
+                .subscribeOn(Schedulers.io());
     }
 }

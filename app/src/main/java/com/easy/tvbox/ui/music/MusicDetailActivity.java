@@ -73,7 +73,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
 
         initViewClick();
 
-        initPayer();
+//        initPayer();
 
         networkChange(NetworkUtils.isNetConnected(MusicDetailActivity.this));
 

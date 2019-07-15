@@ -12,6 +12,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_marginTop="35dp"
             android:orientation="horizontal">
 
@@ -34,8 +35,8 @@
                 android:layout_marginLeft="62dp"
                 android:focusable="true"
                 android:nextFocusLeft="@id/tvMusic"
-                android:nextFocusUp="@id/tvMusic"
                 android:nextFocusRight="@id/tvAlbum"
+                android:nextFocusUp="@id/tvMusic"
                 android:nextFocusDown="@id/ivPlayer"
                 android:padding="10dp"
                 android:text="MV"

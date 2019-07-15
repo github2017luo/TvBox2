@@ -65,4 +65,7 @@ public interface ApiService {
 
     @POST("querySongSheet")
     Single<ResponseBody> querySongSheet(@Body RequestBody requestBody);
+
+    @POST("querySongSheetMusic")
+    Observable<ResponseBody> querySongSheetMusic(@Body RequestBody requestBody);
 }
