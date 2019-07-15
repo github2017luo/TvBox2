@@ -20,9 +20,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
-                android:nextFocusDown="@id/tvMv"
-                android:text="歌曲"
+                android:nextFocusRight="@id/tvMv"
+                android:nextFocusDown="@id/ivPlayer"
                 android:padding="10dp"
+                android:text="歌曲"
                 android:textColor="@color/text_focus_selector"
                 android:textSize="20sp" />
 
@@ -32,9 +33,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="62dp"
                 android:focusable="true"
+                android:nextFocusLeft="@id/tvMusic"
                 android:nextFocusUp="@id/tvMusic"
-                android:text="MV"
+                android:nextFocusRight="@id/tvAlbum"
+                android:nextFocusDown="@id/ivPlayer"
                 android:padding="10dp"
+                android:text="MV"
                 android:textColor="@color/text_focus_selector"
                 android:textSize="20sp" />
         </LinearLayout>

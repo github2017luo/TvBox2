@@ -77,6 +77,7 @@ public class AlbumActivity extends BaseActivity<AlbumBinding> implements AlbumVi
                 mFocusBorder.setVisible(hasFocus);
             }
         });
+
         mViewBinding.recyclerView.setOnItemListener(new SimpleOnItemListener() {
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {

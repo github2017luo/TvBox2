@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <LinearLayout
@@ -38,6 +39,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:focusable="true"
+                android:nextFocusRight="@id/tvAlbum"
+                android:nextFocusUp="@id/tvMv"
+                android:nextFocusDown="@id/tvAlbum"
                 android:src="@drawable/button_stop_pause" />
 
         </RelativeLayout>
@@ -68,6 +72,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:focusable="true"
+                    android:nextFocusLeft="@id/ivPlayer"
+                    android:nextFocusUp="@id/ivPlayer"
+                    android:nextFocusDown="@id/recyclerView"
                     android:padding="10dp"
                     android:text="歌单列表"
                     android:textColor="@color/text_focus_selector"
@@ -97,13 +104,15 @@
                 <TextView
                     android:layout_width="26dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:text="歌曲"
                     android:textColor="@android:color/white"
                     android:textSize="7sp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:paddingRight="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -117,6 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_marginRight="20dp"
                         android:text="时长"
                         android:textColor="@android:color/white"
                         android:textSize="7sp" />
@@ -124,11 +134,19 @@
                 </RelativeLayout>
             </LinearLayout>
 
-            <!--<com.easy.tvbox.utils.PullToRefreshListView-->
-            <!--android:id="@+id/listView"-->
-            <!--android:focusable="false"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
+            <com.easy.tvbox.tvview.tvRecycleView.TvRecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                android:nextFocusLeft="@id/ivPlayer"
+                android:nextFocusUp="@id/tvAlbum"
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:scrollbars="none"
+                app:tv_layoutManager="GridLayoutManager"
+                app:tv_numColumns="1" />
         </LinearLayout>
     </LinearLayout>
 </layout>

@@ -1,30 +1,31 @@
 package com.easy.tvbox.ui.music;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.ImageView;
-
-import androidx.core.view.ViewCompat;
 
 import com.bumptech.glide.Glide;
 import com.easy.tvbox.R;
-import com.easy.tvbox.base.GodBaseAdapter;
-import com.easy.tvbox.base.ViewHolder;
 import com.easy.tvbox.bean.MusicList;
+import com.easy.tvbox.tvview.tvwidget.CommonRecyclerViewAdapter;
+import com.easy.tvbox.tvview.tvwidget.CommonRecyclerViewHolder;
 
 import java.util.List;
 
-public class MusicFragmentAdapter extends GodBaseAdapter<MusicList> {
+public class MusicFragmentAdapter extends CommonRecyclerViewAdapter<MusicList> {
 
-
-    public MusicFragmentAdapter(Context context, List<MusicList> musicLists) {
-        super(context, musicLists);
+    public MusicFragmentAdapter(Context context) {
+        super(context);
     }
 
     @Override
-    public void initItemView(View convertView, MusicList itemData, int position) {
+    public int getItemLayoutId(int viewType) {
+        return R.layout.music_item;
+    }
 
-        ImageView ivPlayer = ViewHolder.getImageView(convertView, R.id.ivPlayer);
+    @Override
+    public void onBindItemHolder(CommonRecyclerViewHolder helper, MusicList itemData, int position) {
+
+        ImageView ivPlayer = helper.getHolder().getView(R.id.ivPlayer);
         changePlayerState(itemData, ivPlayer);
 
         String pic = "";
@@ -32,12 +33,17 @@ public class MusicFragmentAdapter extends GodBaseAdapter<MusicList> {
         if (pics != null && pics.size() > 0) {
             pic = pics.get(0);
         }
-        Glide.with(context).load(pic).error(R.drawable.error_icon).placeholder(R.drawable.error_icon)
-                .into(ViewHolder.getImageView(convertView, R.id.ivIcon));
 
-        ViewHolder.getTextView(convertView, R.id.tvTitle).setText(itemData.getTitle());
-        ViewHolder.getTextView(convertView, R.id.tvGeshou).setText(itemData.getGeshou());
-        ViewHolder.getTextView(convertView, R.id.tvTime).setText(itemData.getDurationStr());
+        ImageView ivIcon = helper.getHolder().getView(R.id.ivIcon);
+        Glide.with(mContext)
+                .load(pic)
+                .error(R.drawable.error_icon)
+                .placeholder(R.drawable.error_icon)
+                .into(ivIcon);
+
+        helper.getHolder().setText(R.id.tvTitle, itemData.getTitle());
+        helper.getHolder().setText(R.id.tvGeshou, itemData.getGeshou());
+        helper.getHolder().setText(R.id.tvTime, itemData.getDurationStr());
     }
 
     public void changePlayerState(MusicList itemData, ImageView ivPlayer) {
@@ -46,10 +52,5 @@ public class MusicFragmentAdapter extends GodBaseAdapter<MusicList> {
         } else if (itemData.getPlayerState() == 1) {
             ivPlayer.setImageResource(R.drawable.music_player);
         }
-    }
-
-    @Override
-    protected int getItemLayout() {
-        return R.layout.music_item;
     }
 }

@@ -74,7 +74,7 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
         mViewBinding.tvMusic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                onMoveFocusBorder(v,1.1f);
+                onMoveFocusBorder(v, 1.1f);
             }
         });
         mViewBinding.tvMv.setOnClickListener(new View.OnClickListener() {
@@ -86,33 +86,15 @@ public class MusicActivity extends BaseActivity<MusicBinding> implements MusicVi
         mViewBinding.tvMv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                onMoveFocusBorder(v,1.1f);
+                onMoveFocusBorder(v, 1.1f);
             }
         });
         musicFragment = MusicFragment.getInstance(1);
         mvFragment = MusicFragment.getInstance(2);
-//        mViewBinding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                if (position == 0) {
-//                    musicFragment.choose(true);
-//                } else {
-//                    musicFragment.choose(false);
-//                }
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//
-//            }
-//        });
-        mViewBinding.tvMusic.requestFocus();
+
         setFragment(1);
+        mFocusBorder.setVisible(true);
+        onMoveFocusBorder(mViewBinding.tvMusic, 1.1f);
         networkChange(NetworkUtils.isNetConnected(MusicActivity.this));
     }
 

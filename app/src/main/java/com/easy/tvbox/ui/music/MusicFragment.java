@@ -23,7 +23,11 @@ import com.easy.tvbox.bean.MusicInfo;
 import com.easy.tvbox.bean.MusicList;
 import com.easy.tvbox.databinding.MusicFragmentBinding;
 import com.easy.tvbox.http.NetworkUtils;
+import com.easy.tvbox.tvview.tvRecycleView.SimpleOnItemListener;
+import com.easy.tvbox.tvview.tvRecycleView.TvRecyclerView;
+import com.easy.tvbox.ui.album.AlbumAdapter;
 import com.easy.tvbox.utils.PullToRefreshListView;
+import com.easy.tvbox.utils.ToastUtils;
 import com.owen.focus.FocusBorder;
 
 import java.util.ArrayList;
@@ -105,36 +109,44 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         account = DataManager.getInstance().queryAccount();
         if (videoId == 1) {
 //            initPayer();
-            adapter = new MusicFragmentAdapter(getContext(), musicLists);
-        } else {
-            adapter = new MusicFragmentAdapter(getContext(), mvLists);
         }
-//        mViewBinding.listView.setOnLoad(this);
-//        mViewBinding.listView.setAdapter(adapter);
-//        mViewBinding.listView.setOnItemClickListener((parent, view1, position, id) -> {
-//            if (videoId == 1) {
-//                if (musicLists != null && musicLists.size() > 0 && position < musicLists.size()) {
-//                    if (mPlayer != null) {
-//                        if (mPlayer.isPlaying()) {
-//                            mPlayer.stop();
-//                            currentPlayingMusic = null;
-//                            currentPosition = 0;
-//                            refreshView(true);
-//                        }
-//                    }
-//                    RouteManager.goMusicDetailActivity(getContext(), position);
-//                }
-//            } else {
-//                if (mvLists != null && mvLists.size() > 0 && position < mvLists.size()) {
-//                    List<MusicInfo> musicInfos = new ArrayList<>();
-//                    MusicInfo musicInfo = mvLists.get(position).getMusicInfo();
-//                    if (musicInfo != null) {
-//                        musicInfos.add(musicInfo);
-//                    }
-//                    RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
-//                }
-//            }
-//        });
+        adapter = new MusicFragmentAdapter(getContext());
+        mViewBinding.recyclerView.setSpacingWithMargins(10, 3);
+        mViewBinding.recyclerView.setAdapter(adapter);
+
+        mViewBinding.recyclerView.setOnItemListener(new SimpleOnItemListener() {
+            @Override
+            public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
+                onMoveFocusBorder(itemView, 1.1f);
+            }
+
+            @Override
+            public void onItemClick(TvRecyclerView parent, View itemView, int position) {
+                if (videoId == 1) {
+                    if (musicLists != null && musicLists.size() > 0 && position < musicLists.size()) {
+                        if (mPlayer != null) {
+                            if (mPlayer.isPlaying()) {
+                                mPlayer.stop();
+                                currentPlayingMusic = null;
+                                currentPosition = 0;
+                                refreshView(true);
+                            }
+                        }
+                        RouteManager.goMusicDetailActivity(getContext(), position);
+                    }
+                } else {
+                    if (mvLists != null && mvLists.size() > 0 && position < mvLists.size()) {
+                        List<MusicInfo> musicInfos = new ArrayList<>();
+                        MusicInfo musicInfo = mvLists.get(position).getMusicInfo();
+                        if (musicInfo != null) {
+                            musicInfos.add(musicInfo);
+                        }
+                        RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
+                    }
+                }
+            }
+        });
+
         mViewBinding.tvAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,12 +154,6 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
             }
         });
         mViewBinding.tvAlbum.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onMoveFocusBorder(v, 1.1f);
-            }
-        });
-        mViewBinding.ivPlayer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 onMoveFocusBorder(v, 1.1f);
@@ -182,6 +188,12 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                         RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
                     }
                 }
+            }
+        });
+        mViewBinding.ivPlayer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.1f);
             }
         });
         networkChange(NetworkUtils.isNetConnected(getContext()));
@@ -324,7 +336,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                 } else {
                     mvLists.addAll(musicDataContent);
                 }
-                adapter.notifyDataSetChanged();
+                adapter.appendDatas(musicDataContent);
             }
         }
     }
