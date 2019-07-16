@@ -193,6 +193,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
 
     private void initPayer() {
         mPlayer = new AliVcMediaPlayer(this, mViewBinding.surfaceView);
+        mPlayer.setCirclePlay(true);
         mPlayer.setPreparedListener(new MediaPlayer.MediaPlayerPreparedListener() {
             @Override
             public void onPrepared() {
@@ -314,6 +315,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
         super.onDestroy();
         if (mPlayer != null) {
             mPlayer.destroy();
+            mPlayer = null;
         }
     }
 }
