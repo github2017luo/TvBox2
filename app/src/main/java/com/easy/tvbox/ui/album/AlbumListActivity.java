@@ -24,6 +24,7 @@ import com.easy.tvbox.tvview.tvRecycleView.SimpleOnItemListener;
 import com.easy.tvbox.tvview.tvRecycleView.TvRecyclerView;
 import com.easy.tvbox.ui.LoadingView;
 import com.easy.tvbox.ui.music.MusicFragment;
+import com.easy.tvbox.utils.DimensUtils;
 import com.owen.focus.FocusBorder;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
     int currentPosition = 0;//播放的位置
     boolean isPlaying;
     MusicList currentPlayingMusic;
+    float scale = 1.03f;
 
     @Override
     public int getLayoutId() {
@@ -73,6 +75,11 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
         Intent intent = getIntent();
         uid = intent.getStringExtra("uid");
 
+        int[] size = DimensUtils.getWidthHeight(this);
+        int bigWidth = size[0] - DimensUtils.dp2px(this, 290 + 10);
+        int smallWidth = size[0] - DimensUtils.dp2px(this, 290 + 10 + 40);
+        scale = bigWidth * 1.0f / smallWidth;
+
         if (OPEN_PLAYER) {
             initPayer();
         }
@@ -97,7 +104,7 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
         mViewBinding.recyclerView.setOnItemListener(new SimpleOnItemListener() {
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
-                onMoveFocusBorder(itemView, 1.1f);
+                onMoveFocusBorder(itemView, scale);
             }
 
             @Override

@@ -18,6 +18,7 @@ import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.tvview.tvRecycleView.SimpleOnItemListener;
 import com.easy.tvbox.tvview.tvRecycleView.TvRecyclerView;
 import com.easy.tvbox.ui.LoadingView;
+import com.easy.tvbox.utils.DimensUtils;
 import com.easy.tvbox.utils.ToastUtils;
 import com.owen.focus.FocusBorder;
 
@@ -33,6 +34,7 @@ public class AlbumActivity extends BaseActivity<AlbumBinding> implements AlbumVi
     FocusBorder mFocusBorder;
     Account account;
     List<AlbumList> albumLists;
+    float scale = 1.03f;
 
     @Override
     public int getLayoutId() {
@@ -56,6 +58,11 @@ public class AlbumActivity extends BaseActivity<AlbumBinding> implements AlbumVi
             finish();
             return;
         }
+        int[] size = DimensUtils.getWidthHeight(this);
+        int bigWidth = size[0] - DimensUtils.dp2px(this, 60 + 10);
+        int smallWidth = size[0] - DimensUtils.dp2px(this, 60 + 10 + 40);
+        scale = bigWidth * 1.0f / smallWidth;
+
         mFocusBorder = new FocusBorder.Builder()
                 .asColor()
                 .borderColorRes(R.color.actionbar_color)
@@ -83,7 +90,7 @@ public class AlbumActivity extends BaseActivity<AlbumBinding> implements AlbumVi
         mViewBinding.recyclerView.setOnItemListener(new SimpleOnItemListener() {
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
-                onMoveFocusBorder(itemView, 1.1f);
+                onMoveFocusBorder(itemView, scale);
             }
 
             @Override

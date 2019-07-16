@@ -98,6 +98,7 @@
                 <TextView
                     android:layout_width="42dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:text="播放/暂停"
                     android:textColor="@android:color/white"
                     android:textSize="7sp" />
@@ -105,7 +106,7 @@
                 <TextView
                     android:layout_width="26dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="10dp"
                     android:text="歌曲"
                     android:textColor="@android:color/white"
                     android:textSize="7sp" />
@@ -113,7 +114,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingRight="20dp">
+                    android:paddingRight="30dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -143,8 +144,8 @@
                 android:nextFocusLeft="@id/ivPlayer"
                 android:nextFocusUp="@id/tvAlbum"
                 android:orientation="vertical"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:scrollbars="none"
                 app:tv_layoutManager="GridLayoutManager"
                 app:tv_numColumns="1" />

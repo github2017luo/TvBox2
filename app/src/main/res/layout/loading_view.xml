@@ -38,6 +38,8 @@
         style="@android:style/Widget.ProgressBar.Large"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:focusable="false"
+        android:clickable="false"
         android:layout_centerInParent="true"
         android:indeterminateDrawable="@drawable/progress_bar_loading"
         android:visibility="gone"

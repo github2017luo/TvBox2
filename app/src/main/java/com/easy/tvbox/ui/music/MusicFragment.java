@@ -23,6 +23,7 @@ import com.easy.tvbox.databinding.MusicFragmentBinding;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.tvview.tvRecycleView.SimpleOnItemListener;
 import com.easy.tvbox.tvview.tvRecycleView.TvRecyclerView;
+import com.easy.tvbox.utils.DimensUtils;
 import com.owen.focus.FocusBorder;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     boolean isPlaying;
     FocusBorder mFocusBorder;
     MusicData musicDatas;
+    float scale = 1.03f;
 
     public static MusicFragment getInstance(int type) {
         MusicFragment musicFragment = new MusicFragment();
@@ -104,13 +106,20 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
                 initPayer();
             }
         }
+
+        int[] size = DimensUtils.getWidthHeight(App.getApp());
+        int bigWidth = size[0] - DimensUtils.dp2px(App.getApp(), 290 + 10);
+        int smallWidth = size[0] - DimensUtils.dp2px(App.getApp(), 290 + 10 + 40);
+        scale = bigWidth * 1.0f / smallWidth;
+
+
         adapter = new MusicFragmentAdapter(getContext());
         mViewBinding.recyclerView.setSpacingWithMargins(10, 3);
         mViewBinding.recyclerView.setAdapter(adapter);
         mViewBinding.recyclerView.setOnItemListener(new SimpleOnItemListener() {
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
-                onMoveFocusBorder(itemView, 1.1f);
+                onMoveFocusBorder(itemView, scale);
             }
 
             @Override
@@ -168,7 +177,7 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         mViewBinding.tvAlbum.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                onMoveFocusBorder(v, 1.1f);
+                onMoveFocusBorder(v, 1.05f);
             }
         });
         mViewBinding.ivPlayer.setOnClickListener(new View.OnClickListener() {

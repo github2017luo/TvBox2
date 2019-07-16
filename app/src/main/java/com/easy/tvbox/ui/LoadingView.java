@@ -77,6 +77,6 @@ public class LoadingView extends LinearLayout {
 
     public void setRetryListener(OnClickListener onClickListener) {
         tvRetry.setOnClickListener(onClickListener);
-        loadingProgressBar.setOnClickListener(onClickListener);
+//        loadingProgressBar.setOnClickListener(onClickListener);
     }
 }
