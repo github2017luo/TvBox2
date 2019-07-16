@@ -29,6 +29,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.easy.tvbox.base.Constant.OPEN_PLAYER;
+
 public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implements MusicDetailView {
 
     @Inject
@@ -83,7 +85,9 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
 
         initViewClick();
 
-//        initPayer();
+        if (OPEN_PLAYER) {
+            initPayer();
+        }
 
         networkChange(NetworkUtils.isNetConnected(MusicDetailActivity.this));
 

@@ -4,6 +4,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
+import androidx.viewpager.widget.ViewPager;
+
 import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
@@ -104,6 +106,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 }
             }
         });
+
         mViewBinding.rlLive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,6 +156,13 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 onMoveFocusBorder(v, 1.1f);
             }
         });
+
+        ViewPager viewPager = mViewBinding.banner.getViewPager();
+        if (viewPager != null) {
+            viewPager.setFocusable(false);
+        }
+        mFocusBorder.setVisible(true);
+        onMoveFocusBorder(mViewBinding.rlLive, 1.1f);
     }
 
     private void initData() {

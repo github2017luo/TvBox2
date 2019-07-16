@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 
-import com.easy.tvbox.BuildConfig;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
@@ -155,7 +154,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
             }
         });
 
-        if(BuildConfig.DEBUG){
+        if (IS_DEBUG) {
             mViewBinding.editPhone.setText("13779926287");
             mViewBinding.editImageCode.setText("ssss");
             mViewBinding.editPhoneCode.setText("sss");

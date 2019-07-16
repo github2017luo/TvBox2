@@ -88,10 +88,11 @@ public class MineActivity extends BaseActivity<MineBinding> implements MineView 
         mViewBinding.tvUpdatePhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                onMoveFocusBorder(v, 1.2f);
+                onMoveFocusBorder(v, 1.1f);
             }
         });
-        mViewBinding.tvUpdatePhone.requestFocus();
+        mFocusBorder.setVisible(true);
+        onMoveFocusBorder(mViewBinding.tvUpdatePhone, 1.1f);
     }
 
     private void refreshAccountInfo() {

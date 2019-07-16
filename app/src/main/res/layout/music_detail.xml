@@ -37,34 +37,38 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="18sp"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/ivPrev"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:nextFocusDown="@id/ivPlayer"
-                        android:rotation="180"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:focusable="true"
+                        android:nextFocusDown="@id/ivPlayer"
+                        android:padding="3dp"
+                        android:rotation="180"
                         android:src="@drawable/fast_forward" />
 
                     <ImageView
                         android:id="@+id/ivPlayer"
-                        android:layout_width="38dp"
-                        android:layout_height="38dp"
-                        android:layout_marginLeft="22dp"
-                        android:layout_marginRight="22dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
                         android:focusable="true"
                         android:nextFocusUp="@id/ivPrev"
                         android:nextFocusDown="@id/ivNext"
+                        android:padding="3dp"
                         android:src="@drawable/button_stop_pause" />
 
                     <ImageView
                         android:id="@+id/ivNext"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:focusable="true"
                         android:nextFocusUp="@id/ivPlayer"
+                        android:padding="3dp"
                         android:src="@drawable/fast_forward" />
 
                 </LinearLayout>

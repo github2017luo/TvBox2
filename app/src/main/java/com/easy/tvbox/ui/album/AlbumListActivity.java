@@ -31,6 +31,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.easy.tvbox.base.Constant.OPEN_PLAYER;
+
 public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements AlbumListView {
 
     @Inject
@@ -71,7 +73,9 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
         Intent intent = getIntent();
         uid = intent.getStringExtra("uid");
 
-//        initPayer();
+        if (OPEN_PLAYER) {
+            initPayer();
+        }
 
         mFocusBorder = new FocusBorder.Builder()
                 .asColor()

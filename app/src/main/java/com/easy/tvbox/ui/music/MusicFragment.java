@@ -30,6 +30,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.easy.tvbox.base.Constant.OPEN_PLAYER;
+
 public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements MusicFragmentView {
 
     @Inject
@@ -70,12 +72,6 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
         }
     }
 
-    protected void onMoveFocusBorder(View focusedView, float scale, float roundRadius) {
-        if (null != mFocusBorder) {
-            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale, roundRadius));
-        }
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +100,9 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
     public void initView(View view) {
         account = DataManager.getInstance().queryAccount();
         if (videoId == 1) {
-//            initPayer();
+            if (OPEN_PLAYER) {
+                initPayer();
+            }
         }
         adapter = new MusicFragmentAdapter(getContext());
         mViewBinding.recyclerView.setSpacingWithMargins(10, 3);

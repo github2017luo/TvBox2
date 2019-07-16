@@ -42,6 +42,7 @@
                 android:nextFocusRight="@id/tvAlbum"
                 android:nextFocusUp="@id/tvMv"
                 android:nextFocusDown="@id/tvAlbum"
+                android:padding="3dp"
                 android:src="@drawable/button_stop_pause" />
 
         </RelativeLayout>
