@@ -23,17 +23,17 @@
         android:paddingRight="60dp"
         android:paddingBottom="30dp">
 
-        <TextView
+        <Button
             android:id="@+id/tvBack"
             android:layout_width="113dp"
             android:layout_height="47dp"
-            android:background="#9B9B9B"
+            android:background="@drawable/btn_cacle_selector"
             android:gravity="center"
             android:text="返回"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
-        <TextView
+        <Button
             android:id="@+id/tvLogout"
             android:layout_width="113dp"
             android:layout_height="47dp"

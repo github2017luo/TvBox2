@@ -5,7 +5,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.alibaba.fastjson.JSON;
 import com.alivc.player.AliVcMediaPlayer;
 import com.alivc.player.MediaPlayer;
 import com.easy.tvbox.R;
@@ -27,7 +26,6 @@ import com.easy.tvbox.ui.music.MusicFragment;
 import com.easy.tvbox.utils.DimensUtils;
 import com.owen.focus.FocusBorder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;

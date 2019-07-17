@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.easy.tvbox.BuildConfig;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
@@ -59,8 +58,9 @@ public class UpdatePhoneActivity extends BaseActivity<UpdatePhoneBinding> implem
         }
         mViewBinding.editPhone.setText(account.getPhone());
         mViewBinding.editPhone.setEnabled(false);
+        mViewBinding.editPhone.setFocusable(false);
 
-        mViewBinding.ivImageCode.setOnClickListener(v -> presenter.generateImageCode());
+        mViewBinding.rlImageCode.setOnClickListener(v -> presenter.generateImageCode());
 
         mViewBinding.tvPhoneCode.setOnClickListener(v -> {
             String phone = mViewBinding.editPhone.getText().toString();
@@ -150,6 +150,7 @@ public class UpdatePhoneActivity extends BaseActivity<UpdatePhoneBinding> implem
         mViewBinding.editPhone.setHint("请输入新手机号");
         mViewBinding.editImageCode.setText("");
         mViewBinding.editPhoneCode.setText("");
+        mViewBinding.editPhone.setFocusable(true);
         if (smsCountDownTimer != null) {
             smsCountDownTimer.cancel();
             smsCountDownTimer.onFinish();
