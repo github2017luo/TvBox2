@@ -3,6 +3,7 @@ package com.easy.tvbox.ui.home;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -265,13 +266,20 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView,
     private void preloadImage() {
         if (dailyDataContent != null && dailyDataContent.size() > 0) {
             for (DailyList dailyList : dailyDataContent) {
-                Glide.with(this)
-                        .load(dailyList.getPosterUrl())
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .preload();
+                if (!TextUtils.isEmpty(dailyList.getPosterUrl())) {
+                    Glide.with(this)
+                            .load(dailyList.getPosterUrl())
+                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .preload();
+                }
+                if (dailyList.getDailyPlay() != null && !TextUtils.isEmpty(dailyList.getDailyPlay().getCover())) {
+                    Glide.with(this)
+                            .load(dailyList.getDailyPlay().getCover())
+                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .preload();
+                }
             }
         }
-
     }
 
     @Override

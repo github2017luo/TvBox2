@@ -10,8 +10,7 @@ public class Constant {
     public static final String PHONE = "13779926288";
     public static final String PHONE_TEST = "13779926287";
 
-    public static final boolean IS_DEBUG = true;//是否是Degbug
+    public static final boolean IS_DEBUG = false;//是否是Degbug
     public static final boolean OPEN_PLAYER = true;// 是否开启播放器，播放器在模拟器上是不能用的
-
-    public static final boolean isTest = true;//是否是Degbug
+    public static final boolean isTest = false;//是否是Degbug
 }
