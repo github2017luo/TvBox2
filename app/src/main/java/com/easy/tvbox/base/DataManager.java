@@ -84,7 +84,7 @@ public class DataManager {
     }
 
     public void updateDownInfo(String path) {
-        DownFile downFile = downFileBox.query().notEqual(DownFile_.path, path).build().findFirst();
+        DownFile downFile = downFileBox.query().equal(DownFile_.path, path).build().findFirst();
         if (downFile != null) {
             downFile.setProgress(100);
             downFileBox.put(downFile);

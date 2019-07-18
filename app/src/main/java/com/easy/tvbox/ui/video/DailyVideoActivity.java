@@ -13,6 +13,7 @@ import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.Constant;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.DailyList;
@@ -28,6 +29,7 @@ import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
@@ -35,7 +37,11 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DataSpec;
+import com.google.android.exoplayer2.upstream.DefaultDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.FileDataSource;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -206,15 +212,29 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                 Uri uri = null;
                 if (hasNet) {
                     uri = Uri.parse(url);
+                    if (uri != null) {
+                        MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab")).createMediaSource(uri);
+                        source.addMediaSource(mediaSource);
+                    }
                 } else {
                     File downloadFile = presenter.getDownload(url);
                     if (downloadFile != null) {
                         uri = Uri.fromFile(downloadFile);
                     }
-                }
-                if (uri != null) {
-                    MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab")).createMediaSource(uri);
-                    source.addMediaSource(mediaSource);
+                    if (uri != null) {
+                        DataSpec dataSpec = new DataSpec(uri);
+                        final FileDataSource fileDataSource = new FileDataSource();
+                        try {
+                            fileDataSource.open(dataSpec);
+                        } catch (FileDataSource.FileDataSourceException e) {
+                            e.printStackTrace();
+                        }
+
+                        DataSource.Factory factory = () -> fileDataSource;
+                        MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(), factory,
+                                new DefaultExtractorsFactory(), null, null);
+                        source.addMediaSource(audioSource);
+                    }
                 }
             }
             if (source.getSize() > 0) {
@@ -240,6 +260,11 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     private void handlePlayContent() {
         if (dailyPlay != null) {
+            if (Constant.isTest) {
+                isPlayRoll = true;
+                playDaily();
+                return;
+            }
             long fixTime = dailyPlay.getFixed();
             long time = fixTime - getCurrentTime() / 1000;
             if (time > 0) { //
@@ -284,6 +309,15 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     public void playDaily() {
         if (dailyPlay != null) {
+            if (Constant.isTest) {
+                List<DailyRoll> rolls = dailyPlay.getRoll();
+                if (rolls != null && rolls.size() > 0) {
+                    List<String> urls = new ArrayList<>();
+                    urls.add(rolls.get(0).getSource());
+                    startPayer(urls, true, 0);
+                }
+                return;
+            }
             if (isPlayRoll) {
                 List<DailyRoll> rolls = dailyPlay.getRoll();
                 if (rolls != null && rolls.size() > 0) {

@@ -1,11 +1,17 @@
 package com.easy.tvbox.ui.login;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
@@ -21,6 +27,7 @@ import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.LoginBinding;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.ui.LoadingView;
+import com.easy.tvbox.ui.home.HomeActivity;
 import com.easy.tvbox.utils.SMSCountDownTimer;
 import com.easy.tvbox.utils.SpaceFilter;
 import com.easy.tvbox.utils.ToastUtils;
@@ -28,6 +35,8 @@ import com.easy.tvbox.utils.ToastUtils;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.reactivex.annotations.NonNull;
 
 import static com.easy.tvbox.base.Constant.IS_DEBUG;
 
@@ -37,6 +46,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
     @Inject
     LoginPresenter loginPresenter;
     SMSCountDownTimer smsCountDownTimer;
+    private final int GET_PERMISSION_REQUEST = 100; //权限申请自定义码
 
     @Override
     public void addPresenters(List<BasePresenter> observerList) {
@@ -64,6 +74,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
                 return;
             }
         }
+        getPermissions();
         mViewBinding.editPhone.setFilters(new InputFilter[]{new SpaceFilter()});
         mViewBinding.editImageCode.setFilters(new InputFilter[]{new SpaceFilter()});
         mViewBinding.editPhoneCode.setFilters(new InputFilter[]{new SpaceFilter()});
@@ -221,5 +232,34 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
     @Override
     public void onBackPressed() {
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == GET_PERMISSION_REQUEST) {
+            if (grantResults.length >= 1) {
+                int writeResult = grantResults[0];
+                //读写内存权限
+                boolean writeGranted = writeResult == PackageManager.PERMISSION_GRANTED;//读写内存权限
+            }
+        }
+    }
+
+    /**
+     * 获取权限
+     */
+    private boolean getPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                //不具有获取权限，需要进行权限申请
+                ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, GET_PERMISSION_REQUEST);
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 }

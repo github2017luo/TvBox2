@@ -3,7 +3,6 @@ package com.easy.tvbox.ui.home;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -14,11 +13,13 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.fastjson.JSON;
-import com.easy.tvbox.MainActivity;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.Constant;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Account;
@@ -33,8 +34,6 @@ import com.easy.tvbox.event.DailyUpdateEvent;
 import com.easy.tvbox.event.LiveUpdateEvent;
 import com.easy.tvbox.http.DownloadHelper;
 import com.easy.tvbox.http.DownloadListener;
-import com.easy.tvbox.http.NetworkUtils;
-import com.easy.tvbox.ui.LoadingView;
 import com.easy.tvbox.utils.ToastUtils;
 import com.owen.focus.FocusBorder;
 import com.zhouwei.mzbanner.holder.MZHolderCreator;
@@ -170,7 +169,6 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView,
         }
         mFocusBorder.setVisible(true);
         onMoveFocusBorder(mViewBinding.rlLive, 1.1f);
-        getPermissions();
         initData();
     }
 
@@ -257,29 +255,33 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView,
             List<DailyList> temp = dailyData.getContent();
             if (temp != null) {
                 dailyDataContent = temp;
+                preloadImage();
                 presenter.saveDownloadInfo(dailyDataContent);
             }
         }
         EventBus.getDefault().post(new DailyUpdateEvent(1));
     }
 
+    private void preloadImage() {
+        if (dailyDataContent != null && dailyDataContent.size() > 0) {
+            for (DailyList dailyList : dailyDataContent) {
+                Glide.with(this)
+                        .load(dailyList.getPosterUrl())
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .preload();
+            }
+        }
+
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == GET_PERMISSION_REQUEST) {
-            int size = 0;
             if (grantResults.length >= 1) {
                 int writeResult = grantResults[0];
                 //读写内存权限
                 boolean writeGranted = writeResult == PackageManager.PERMISSION_GRANTED;//读写内存权限
-                if (!writeGranted) {
-                    size++;
-                }
-                if (size == 0) {
-                    Toast.makeText(this, "你可以重新打开相关功能", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "请到设置-权限管理中开启", Toast.LENGTH_SHORT).show();
-                }
             }
         }
     }
@@ -344,7 +346,9 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView,
     public void onFinishDownload(File file) {
         Log.d("Download", "onFinishDownload_file: " + file.getPath());
         presenter.updateDownInfo(file.getPath());
-        startDownLoad();
+        if (!Constant.isTest) {
+            startDownLoad();
+        }
     }
 
     @Override

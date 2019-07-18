@@ -6,11 +6,13 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.Constant;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.DailyData;
 import com.easy.tvbox.bean.DailyList;
 import com.easy.tvbox.bean.DailyPlay;
+import com.easy.tvbox.bean.DailyRoll;
 import com.easy.tvbox.bean.DownFile;
 import com.easy.tvbox.bean.LiveData;
 import com.easy.tvbox.bean.LiveList;
@@ -459,7 +461,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
     public String getDate() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         String dateString = formatter.format(new Date());
         return dateString;
     }
@@ -486,6 +488,13 @@ public class HomePresenter extends BasePresenter<HomeView> {
         }
         downloadPath = path;
         DailyList[] dailyLists = dailyDataContent.toArray(new DailyList[dailyDataContent.size()]);
+        //todo
+        if (Constant.isTest) {
+            List<DailyList> temp = new ArrayList<>();
+            temp.add(dailyDataContent.get(0));
+            dailyLists = temp.toArray(new DailyList[temp.size()]);
+        }
+        //todo
         Observable.fromArray(dailyLists)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -498,7 +507,9 @@ public class HomePresenter extends BasePresenter<HomeView> {
                     @Override
                     public void onNext(DailyList dailyList) {
                         Log.d("Download", "保存下载信息：" + dailyList.toString());
-                        saveToSQL(downloadPath, dailyList);
+                        if (dailyList.getDailyPlay() != null) {
+                            saveToSQL(downloadPath, dailyList.getDailyPlay());
+                        }
                     }
 
                     @Override
@@ -514,26 +525,44 @@ public class HomePresenter extends BasePresenter<HomeView> {
                 });
     }
 
-    public void saveToSQL(String downloadPath, DailyList dailyList) {
-        if (dailyList != null) {
-            String downloadUrl = dailyList.getCoverUrl();
-            DownFile isDownloaded = DataManager.getInstance().isDownloaded(downloadUrl);
-            if (isDownloaded == null && !TextUtils.isEmpty(downloadUrl)) {
-                DownFile downFile = new DownFile();
-                downFile.setDownLoadUrl(dailyList.getCoverUrl());
-                int index = downloadUrl.indexOf("?");
-                if (index != -1) {
-                    downloadUrl = downloadUrl.substring(0, index);
-                }
-                String fileName = System.currentTimeMillis() / 1000 + "_" + downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1);
-                downFile.setFilePath(downloadPath);
-                downFile.setFileName(fileName);
-                downFile.setPath(downloadPath + File.separator + fileName);
-                DataManager.getInstance().saveDownloadInfo(downFile);
-                Log.d("Download", "保存到数据库：" + downFile.toString());
-            } else {
-                Log.d("Download", "已保存到数据库：" + isDownloaded.toString());
+    public void saveToSQL(String downloadPath, DailyPlay dailyPlay) {
+        if (dailyPlay != null) {
+            List<DailyRoll> rolls = dailyPlay.getRoll();
+            if (Constant.isTest) {
+                addDownloadToSql(downloadPath, rolls.get(0).getSource());
+                return;
             }
+            if (rolls != null && !rolls.isEmpty()) {
+                for (DailyRoll dailyRoll : rolls) {
+                    addDownloadToSql(downloadPath, dailyRoll.getSource());
+                }
+            }
+            List<DailyRoll> formals = dailyPlay.getFormal();
+            if (formals != null && !formals.isEmpty()) {
+                for (DailyRoll dailyRoll : formals) {
+                    addDownloadToSql(downloadPath, dailyRoll.getSource());
+                }
+            }
+        }
+    }
+
+    public void addDownloadToSql(String downloadPath, String downloadUrl) {
+        DownFile isDownloaded = DataManager.getInstance().isDownloaded(downloadUrl);
+        if (isDownloaded == null && !TextUtils.isEmpty(downloadUrl)) {
+            DownFile downFile = new DownFile();
+            downFile.setDownLoadUrl(downloadUrl);
+            int index = downloadUrl.indexOf("?");
+            if (index != -1) {
+                downloadUrl = downloadUrl.substring(0, index);
+            }
+            String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1);
+            downFile.setFilePath(downloadPath);
+            downFile.setFileName(fileName);
+            downFile.setPath(downloadPath + File.separator + fileName);
+            DataManager.getInstance().saveDownloadInfo(downFile);
+            Log.d("Download", "保存到数据库：" + downFile.toString());
+        } else {
+            Log.d("Download", "已保存到数据库：" + isDownloaded.toString());
         }
     }
 

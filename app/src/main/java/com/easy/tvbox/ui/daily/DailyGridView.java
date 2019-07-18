@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.leanback.widget.BaseCardView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.easy.tvbox.R;
 import com.easy.tvbox.bean.DailyList;
 
@@ -35,6 +36,7 @@ public class DailyGridView extends BaseCardView {
         Glide.with(getContext())
                 .load(itemData.getPosterUrl())
                 .error(R.drawable.error_icon)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .placeholder(R.drawable.error_icon)
                 .into(ivIcon);
 
