@@ -33,9 +33,17 @@ public class DailyList implements CBaseData {
     private long startTime;
     private long endTime;//--自己加的
     private String downCount;//倒计时
-
+    private DailyPlay dailyPlay;//自己加的
     private int width;
     private int height;
+
+    public DailyPlay getDailyPlay() {
+        return dailyPlay;
+    }
+
+    public void setDailyPlay(DailyPlay dailyPlay) {
+        this.dailyPlay = dailyPlay;
+    }
 
     public int getWidth() {
         return width;

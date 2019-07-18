@@ -263,7 +263,7 @@ public class AppRequestStore {
      *
      * @return
      */
-    public Single<Respond> queryForAudio(int page, int size, Map<String, Object> map) {
+    public Observable<Respond> queryForAudio(int page, int size, Map<String, Object> map) {
         return retrofit.create(ApiService.class)
                 .queryForAudio(page, size, getRequestBody(map))
                 .map(getCommonFunction())

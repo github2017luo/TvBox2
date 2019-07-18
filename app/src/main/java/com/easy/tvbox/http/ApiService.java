@@ -9,11 +9,17 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
 
 /**
  * 接口声明
  */
 public interface ApiService {
+
+    @Streaming
+    @GET
+    Observable<ResponseBody> download(@Url String url);//直接使用网址下载
 
     @GET("getAllShop")
     Single<ResponseBody> getAllShop();
@@ -55,7 +61,7 @@ public interface ApiService {
     Single<ResponseBody> getCarouselByShopNo(@Path("shopNo") String shopNo);
 
     @POST("queryForAudio")
-    Single<ResponseBody> queryForAudio(@Query("page") int page, @Query("size") int size, @Body RequestBody requestBody);
+    Observable<ResponseBody> queryForAudio(@Query("page") int page, @Query("size") int size, @Body RequestBody requestBody);
 
     @GET("getLivePlayUrl/{uid}")
     Single<ResponseBody> getLivePlayUrl(@Path("uid") String uid);

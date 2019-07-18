@@ -5,9 +5,11 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.DailyPlay;
 import com.easy.tvbox.bean.Respond;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -28,30 +30,6 @@ public class DailyVideoPresenter extends BasePresenter<DailyVideoView> {
     @Override
     public void onAttached() {
 
-    }
-
-    /**
-     * 获取大课播放地址
-     */
-    public void getTimeAxis(String uid) {
-        Disposable disposable = requestStore.getTimeAxis(uid)
-                .doOnSuccess(respond -> {
-                    if (respond.isOk()) {
-                        String body = respond.getBody();
-                        if (!TextUtils.isEmpty(body)) {
-                            Log.d("getTimeAxis", body);
-                            DailyPlay dailyPlay = JSON.parseObject(body, DailyPlay.class);
-                            respond.setObj(dailyPlay);
-                        }
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(respond -> mView.dailyPlayUrlCallback(respond),
-                        throwable -> {
-                            Respond respond = getThrowableRespond(throwable);
-                            mView.dailyPlayUrlCallback(respond);
-                        });
-        mCompositeSubscription.add(disposable);
     }
 
     public void downCount(long time) {
@@ -89,5 +67,13 @@ public class DailyVideoPresenter extends BasePresenter<DailyVideoView> {
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
+    }
+
+    public File getDownload(String url) {
+        String filePath = DataManager.getInstance().getDownloadPath(url);
+        if (filePath != null) {
+            return new File(filePath);
+        }
+        return null;
     }
 }

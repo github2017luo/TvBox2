@@ -51,24 +51,13 @@ public class DailyActivity extends BaseActivity<DailyBinding> implements DailyVi
                 .replace(R.id.cardsFragment, dailyGridFragment)
                 .commit();
 
-        mViewBinding.loadingView.setRetryListener(v -> {
-            if (NetworkUtils.isNetConnected(DailyActivity.this)) {
-                networkChange(true);
-            }
-        });
         networkChange(NetworkUtils.isNetConnected(DailyActivity.this));
         presenter.downCount();
     }
 
     @Override
     public void networkChange(boolean isConnect) {
-        if (isConnect) {
-            mViewBinding.cardsFragment.setVisibility(View.VISIBLE);
-            mViewBinding.loadingView.setStatus(LoadingView.STATUS_HIDDEN);
-        } else {
-            mViewBinding.cardsFragment.setVisibility(View.GONE);
-            mViewBinding.loadingView.setStatus(LoadingView.STATUS_NONETWORK);
-        }
+
     }
 
     @Override

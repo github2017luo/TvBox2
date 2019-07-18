@@ -13,11 +13,13 @@ public interface HomeView extends BaseView {
 
     void carouselCallback(Respond<List<String>> respond);
 
-    void dailyCallback(Respond<DailyData> respond);
+    void dailyCallback(DailyData dailyData);
 
     void liveCallback(Respond<LiveData> respond);
 
     void countDownDaily(DailyList dailyList);
 
     void countDownLive(LiveList liveList);
+
+    void saveDownloadInfoCallback();
 }

@@ -20,6 +20,7 @@ import com.easy.tvbox.bean.DailyPlay;
 import com.easy.tvbox.bean.DailyRoll;
 import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.DailyVideoBinding;
+import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.utils.ToastUtils;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -36,6 +37,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +54,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     PlayerView playerView;
     ExoPlayer player;
     Player.EventListener eventListener;
+    boolean hasNet;//是否有网络
 
     @Override
     public int getLayoutId() {
@@ -87,12 +90,15 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (dailyData == null) {
+        if (dailyData == null || dailyData.getDailyPlay() == null) {
             finish();
             return;
         }
+        hasNet = NetworkUtils.isNetConnected(this);
         initExoPlayer();
-        presenter.getTimeAxis(dailyData.getUid());
+        dailyPlay = dailyData.getDailyPlay();
+        showBackground();
+        handlePlayContent();
     }
 
     private void initExoPlayer() {
@@ -177,17 +183,6 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         player.addListener(eventListener);
     }
 
-    @Override
-    public void dailyPlayUrlCallback(Respond<DailyPlay> respond) {
-        if (respond.isOk()) {
-            dailyPlay = respond.getObj();
-            showBackground();
-            handlePlayContent();
-        } else {
-            ToastUtils.showLong(respond.getMessage());
-        }
-    }
-
     private void showBackground() {
         if (dailyPlay != null) {
             String type = dailyPlay.getType();
@@ -208,9 +203,19 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         if (urls != null && urls.size() > 0) {
             ConcatenatingMediaSource source = new ConcatenatingMediaSource();
             for (String url : urls) {
-                Uri uri = Uri.parse(url);
-                MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab")).createMediaSource(uri);
-                source.addMediaSource(mediaSource);
+                Uri uri = null;
+                if (hasNet) {
+                    uri = Uri.parse(url);
+                } else {
+                    File downloadFile = presenter.getDownload(url);
+                    if (downloadFile != null) {
+                        uri = Uri.fromFile(downloadFile);
+                    }
+                }
+                if (uri != null) {
+                    MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab")).createMediaSource(uri);
+                    source.addMediaSource(mediaSource);
+                }
             }
             if (source.getSize() > 0) {
                 if (isLoop) {

@@ -1,12 +1,20 @@
 package com.easy.tvbox.ui.home;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.fastjson.JSON;
+import com.easy.tvbox.MainActivity;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
@@ -16,12 +24,15 @@ import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.DailyData;
 import com.easy.tvbox.bean.DailyList;
+import com.easy.tvbox.bean.DownFile;
 import com.easy.tvbox.bean.LiveData;
 import com.easy.tvbox.bean.LiveList;
 import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.HomeBinding;
 import com.easy.tvbox.event.DailyUpdateEvent;
 import com.easy.tvbox.event.LiveUpdateEvent;
+import com.easy.tvbox.http.DownloadHelper;
+import com.easy.tvbox.http.DownloadListener;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.ui.LoadingView;
 import com.easy.tvbox.utils.ToastUtils;
@@ -32,13 +43,16 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.annotations.NonNull;
+
 //@Route(path = RouteManager.HOME, name = "首页")
-public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView {
+public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView, DownloadListener {
 
     @Inject
     HomePresenter presenter;
@@ -48,6 +62,8 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     public static List<LiveList> liveDataContent = new ArrayList<>();
 
     FocusBorder mFocusBorder;
+    private final int GET_PERMISSION_REQUEST = 100; //权限申请自定义码
+    DownloadHelper mDownloadHelper = new DownloadHelper("http://www.baseurl.com", this);
 
     @Override
     public int getLayoutId() {
@@ -97,15 +113,6 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 .shadowColorRes(R.color.green_bright)
                 .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 5f)
                 .build(this);
-
-        mViewBinding.loadingView.setRetryListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkUtils.isNetConnected(HomeActivity.this)) {
-                    networkChange(true);
-                }
-            }
-        });
 
         mViewBinding.rlLive.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,7 +170,10 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         }
         mFocusBorder.setVisible(true);
         onMoveFocusBorder(mViewBinding.rlLive, 1.1f);
+        getPermissions();
+        initData();
     }
+
 
     private void initData() {
         presenter.saveEquipment();
@@ -174,14 +184,6 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
 
     @Override
     public void networkChange(boolean isConnect) {
-        if (isConnect) {
-            initData();
-            mViewBinding.llContain.setVisibility(View.VISIBLE);
-            mViewBinding.loadingView.setStatus(LoadingView.STATUS_HIDDEN);
-        } else {
-            mViewBinding.llContain.setVisibility(View.GONE);
-            mViewBinding.loadingView.setStatus(LoadingView.STATUS_NONETWORK);
-        }
     }
 
     @Override
@@ -208,10 +210,12 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mDownloadHelper.dispose();
         if (presenter != null) {
             presenter.dailyRequestCancel();
             presenter.dailyCountDownCancel();
             presenter.liveRequestCancel();
+            presenter.downloadCancel();
         }
     }
 
@@ -248,20 +252,53 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     }
 
     @Override
-    public void dailyCallback(Respond<DailyData> respond) {
-        if (respond.isOk()) {
-            DailyData dailyData = respond.getObj();
-            if (dailyData != null) {
-                List<DailyList> temp = dailyData.getContent();
-                if (temp != null) {
-                    dailyDataContent = temp;
-                    Log.d("queryForAudioCallback", dailyDataContent.toString());
-                }
+    public void dailyCallback(DailyData dailyData) {
+        if (dailyData != null) {
+            List<DailyList> temp = dailyData.getContent();
+            if (temp != null) {
+                dailyDataContent = temp;
+                presenter.saveDownloadInfo(dailyDataContent);
             }
-        } else {
-            ToastUtils.showLong(respond.getMessage());
         }
         EventBus.getDefault().post(new DailyUpdateEvent(1));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == GET_PERMISSION_REQUEST) {
+            int size = 0;
+            if (grantResults.length >= 1) {
+                int writeResult = grantResults[0];
+                //读写内存权限
+                boolean writeGranted = writeResult == PackageManager.PERMISSION_GRANTED;//读写内存权限
+                if (!writeGranted) {
+                    size++;
+                }
+                if (size == 0) {
+                    Toast.makeText(this, "你可以重新打开相关功能", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "请到设置-权限管理中开启", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取权限
+     */
+    private boolean getPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                //不具有获取权限，需要进行权限申请
+                ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, GET_PERMISSION_REQUEST);
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -276,5 +313,42 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         if (liveList != null) {
             RouteManager.goVideoActivity(HomeActivity.this, JSON.toJSONString(liveList));
         }
+    }
+
+    @Override
+    public void saveDownloadInfoCallback() {
+        boolean isOk = getPermissions();
+        if (isOk) {
+            startDownLoad();
+        }
+    }
+
+    public void startDownLoad() {
+        DownFile downFile = presenter.getUnDownLoad();
+        if (downFile != null) {
+            mDownloadHelper.downloadFile(downFile.getDownLoadUrl(), downFile.getFilePath(), downFile.getFileName());
+        }
+    }
+
+    @Override
+    public void onStartDownload() {
+        Log.d("Download", "onStartDownload");
+    }
+
+    @Override
+    public void onProgress(int progress) {
+        Log.d("Download", "onProgress");
+    }
+
+    @Override
+    public void onFinishDownload(File file) {
+        Log.d("Download", "onFinishDownload_file: " + file.getPath());
+        presenter.updateDownInfo(file.getPath());
+        startDownLoad();
+    }
+
+    @Override
+    public void onFail(Throwable ex) {
+        Log.d("Download", "onFail:" + ex.getMessage());
     }
 }

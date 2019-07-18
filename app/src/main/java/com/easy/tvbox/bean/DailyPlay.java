@@ -9,6 +9,15 @@ public class DailyPlay {
     private List<DailyRoll> roll;
     private List<DailyRoll> formal;
     private String type;
+    private String uid;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     public long getNowed() {
         return nowed;

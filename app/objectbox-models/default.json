@@ -34,9 +34,41 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:2027348856514962136",
+      "lastPropertyId": "6:8750289890640798390",
+      "name": "DownFile",
+      "properties": [
+        {
+          "id": "1:7535846341798068050",
+          "name": "sqlId"
+        },
+        {
+          "id": "2:2050972783253470831",
+          "name": "downLoadUrl"
+        },
+        {
+          "id": "3:404144506327053060",
+          "name": "filePath"
+        },
+        {
+          "id": "4:6560449747218837943",
+          "name": "progress"
+        },
+        {
+          "id": "5:2985042624629742676",
+          "name": "fileName"
+        },
+        {
+          "id": "6:8750289890640798390",
+          "name": "path"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:723957967396228018",
+  "lastEntityId": "2:2027348856514962136",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
