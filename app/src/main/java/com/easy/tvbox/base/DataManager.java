@@ -87,7 +87,7 @@ public class DataManager {
 
     public void updateDownInfo(String path) {
         DownFile downFile = downFileBox.query().equal(DownFile_.path, path).build().findFirst();
-        if (downFile != null) {
+        if (downFile != null && downFile.getProgress() != 100) {
             downFile.setProgress(100);
             downFileBox.put(downFile);
             Log.d("Download", "下载进度已更新：" + downFile.toString());

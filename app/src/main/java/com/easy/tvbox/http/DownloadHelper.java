@@ -1,7 +1,5 @@
 package com.easy.tvbox.http;
 
-import com.google.android.exoplayer2.offline.DownloadService;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

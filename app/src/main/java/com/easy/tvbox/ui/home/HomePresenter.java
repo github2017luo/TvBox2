@@ -1,5 +1,6 @@
 package com.easy.tvbox.ui.home;
 
+import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -39,6 +40,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.http.Url;
 
 public class HomePresenter extends BasePresenter<HomeView> {
 
@@ -561,7 +563,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
             DownFile downFile = new DownFile();
             downFile.setDownLoadUrl(downloadUrl);
             downFile.setDownLoadPath(downloadPath);
-            String fileName = downloadPath.substring(downloadPath.lastIndexOf("/") + 1);
+            String fileName = System.currentTimeMillis() + "_" + downloadPath.substring(downloadPath.lastIndexOf("/") + 1);
             downFile.setFilePath(filePath);
             downFile.setFileName(fileName);
             downFile.setPath(filePath + File.separator + fileName);
