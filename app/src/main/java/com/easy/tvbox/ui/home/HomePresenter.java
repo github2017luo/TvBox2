@@ -477,7 +477,12 @@ public class HomePresenter extends BasePresenter<HomeView> {
         }
         downloadCancel();
         String path = getFilePath();
+        downloadPath = DataManager.getInstance().getDownloadFilePath();
         if (downloadPath != null && !downloadPath.equals(path)) {
+            File cacheFile = context.getCacheDir();
+            if (cacheFile != null && cacheFile.exists()) {
+                cacheFile.delete();
+            }
             File file = new File(downloadPath);
             if (file.exists()) {
                 boolean isOk = file.delete();
@@ -489,7 +494,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
         downloadPath = path;
         DailyList[] dailyLists = dailyDataContent.toArray(new DailyList[dailyDataContent.size()]);
         //todo
-        if (Constant.isTest) {
+        if (Constant.isTestDownload) {
             List<DailyList> temp = new ArrayList<>();
             temp.add(dailyDataContent.get(0));
             dailyLists = temp.toArray(new DailyList[temp.size()]);
@@ -528,7 +533,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
     public void saveToSQL(String downloadPath, DailyPlay dailyPlay) {
         if (dailyPlay != null) {
             List<DailyRoll> rolls = dailyPlay.getRoll();
-            if (Constant.isTest) {
+            if (Constant.isTestDownload) {
                 addDownloadToSql(downloadPath, rolls.get(0).getSource());
                 return;
             }
@@ -546,22 +551,27 @@ public class HomePresenter extends BasePresenter<HomeView> {
         }
     }
 
-    public void addDownloadToSql(String downloadPath, String downloadUrl) {
-        DownFile isDownloaded = DataManager.getInstance().isDownloaded(downloadUrl);
+    public void addDownloadToSql(String filePath, String downloadUrl) {
+        if (TextUtils.isEmpty(downloadUrl)) {
+            return;
+        }
+        String downloadPath = getDownloadPath(downloadUrl);
+        DownFile isDownloaded = DataManager.getInstance().isDownloaded(downloadPath);
         if (isDownloaded == null && !TextUtils.isEmpty(downloadUrl)) {
             DownFile downFile = new DownFile();
             downFile.setDownLoadUrl(downloadUrl);
-            int index = downloadUrl.indexOf("?");
-            if (index != -1) {
-                downloadUrl = downloadUrl.substring(0, index);
-            }
-            String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1);
-            downFile.setFilePath(downloadPath);
+            downFile.setDownLoadPath(downloadPath);
+            String fileName = downloadPath.substring(downloadPath.lastIndexOf("/") + 1);
+            downFile.setFilePath(filePath);
             downFile.setFileName(fileName);
-            downFile.setPath(downloadPath + File.separator + fileName);
+            downFile.setPath(filePath + File.separator + fileName);
             DataManager.getInstance().saveDownloadInfo(downFile);
             Log.d("Download", "保存到数据库：" + downFile.toString());
         } else {
+            if (!downloadUrl.equals(isDownloaded.getDownLoadUrl())) {
+                isDownloaded.setDownLoadUrl(downloadUrl);
+                DataManager.getInstance().saveDownloadInfo(isDownloaded);//更新
+            }
             Log.d("Download", "已保存到数据库：" + isDownloaded.toString());
         }
     }
@@ -583,5 +593,72 @@ public class HomePresenter extends BasePresenter<HomeView> {
         if (!TextUtils.isEmpty(path)) {
             DataManager.getInstance().updateDownInfo(path);
         }
+    }
+
+    public void updateDailyListDownLoadNum(List<DailyList> dailyDataContent) {
+        if (dailyDataContent != null && dailyDataContent.size() > 0) {
+            for (DailyList dailyList : dailyDataContent) {
+                DailyPlay dailyPlay = dailyList.getDailyPlay();
+                if (dailyPlay != null && !dailyPlay.isDownloadFinish()) {
+                    List<DailyRoll> all = new ArrayList<>();
+                    List<DailyRoll> dailyRolls = dailyPlay.getFormal();
+                    if (dailyRolls != null && dailyRolls.size() > 0) {
+                        all.addAll(dailyRolls);
+                    }
+                    List<DailyRoll> rolls = dailyPlay.getRoll();
+                    if (rolls != null && rolls.size() > 0) {
+                        all.addAll(rolls);
+                    }
+                    if (all.size() > 0) {
+                        List<DownFile> downloaded = DataManager.getInstance().getDownloaded();
+                        if (downloaded != null && downloaded.size() > 0) {
+                            int num = 0;
+                            for (DailyRoll dailyRoll : all) {
+                                for (DownFile downFile : downloaded) {
+                                    boolean sama = false;
+                                    String downloadPath = getDownloadPath(dailyRoll.getSource());
+                                    if (downloadPath != null && downloadPath.equals(downFile.getDownLoadPath())) {
+                                        num++;
+                                        sama = true;
+                                    }
+                                    Log.d("DownloadUpdate", "===>匹配:" + sama);
+                                }
+                            }
+                            if (num == all.size()) {
+                                dailyPlay.setDownloadFinish(true);
+                            }
+                            dailyPlay.setDownloadPro(num + "/" + all.size());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取下载文件路径--只有文件地址，不包括token(即问号后都不要)
+     *
+     * @param url
+     * @return
+     */
+    private String getDownloadPath(String url) {
+        if (url != null) {
+            int indexUrl = url.indexOf("?");
+            if (indexUrl != -1) {
+                return url.substring(0, indexUrl);
+            }
+        }
+        return null;
+    }
+
+    private boolean isTheSame(String url, String downUrl) {
+        if (url != null && downUrl != null) {
+            url = getDownloadPath(url);
+            downUrl = getDownloadPath(downUrl);
+            Log.d("DownloadUpdate", "下载路径:" + url);
+            Log.d("DownloadUpdate", "sql路径:" + downUrl);
+            return url.equals(downUrl);
+        }
+        return false;
     }
 }

@@ -66,7 +66,7 @@
                     android:padding="10dp"
                     android:text="全部音乐"
                     android:textColor="@color/text_focus_selector"
-                    android:textSize="15sp" />
+                    android:textSize="17sp" />
 
                 <TextView
                     android:id="@+id/tvAlbum"
@@ -79,37 +79,37 @@
                     android:padding="10dp"
                     android:text="歌单列表"
                     android:textColor="@color/text_focus_selector"
-                    android:textSize="15sp" />
+                    android:textSize="17sp" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="20dp"
                 android:background="@android:color/white" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="42dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="播放/暂停"
                     android:textColor="@android:color/white"
-                    android:textSize="7sp" />
+                    android:textSize="15sp" />
 
                 <TextView
-                    android:layout_width="26dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:text="歌曲"
                     android:textColor="@android:color/white"
-                    android:textSize="7sp" />
+                    android:textSize="15sp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -122,7 +122,7 @@
                         android:layout_centerInParent="true"
                         android:text="演唱者"
                         android:textColor="@android:color/white"
-                        android:textSize="7sp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -131,7 +131,7 @@
                         android:layout_marginRight="20dp"
                         android:text="时长"
                         android:textColor="@android:color/white"
-                        android:textSize="7sp" />
+                        android:textSize="15sp" />
 
                 </RelativeLayout>
             </LinearLayout>

@@ -70,9 +70,24 @@ public class DailyVideoPresenter extends BasePresenter<DailyVideoView> {
     }
 
     public File getDownload(String url) {
-        String filePath = DataManager.getInstance().getDownloadPath(url);
+        String filePath = DataManager.getInstance().getDownloadPath(getDownloadPath(url));
         if (filePath != null) {
             return new File(filePath);
+        }
+        return null;
+    }
+    /**
+     * 获取下载文件路径--只有文件地址，不包括token(即问号后都不要)
+     *
+     * @param url
+     * @return
+     */
+    private String getDownloadPath(String url) {
+        if (url != null) {
+            int indexUrl = url.indexOf("?");
+            if (indexUrl != -1) {
+                return url.substring(0, indexUrl);
+            }
         }
         return null;
     }

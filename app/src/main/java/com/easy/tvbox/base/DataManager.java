@@ -8,6 +8,8 @@ import com.easy.tvbox.bean.DownFile;
 import com.easy.tvbox.bean.DownFile_;
 import com.easy.tvbox.bean.MyObjectBox;
 
+import java.util.List;
+
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
@@ -61,9 +63,9 @@ public class DataManager {
         accountBox.removeAll();
     }
 
-    public DownFile isDownloaded(String downLoadUrl) {
-        if (downLoadUrl != null) {
-            DownFile downFile = downFileBox.query().equal(DownFile_.downLoadUrl, downLoadUrl).build().findFirst();
+    public DownFile isDownloaded(String downLoadPath) {
+        if (downLoadPath != null) {
+            DownFile downFile = downFileBox.query().equal(DownFile_.downLoadPath, downLoadPath).build().findFirst();
             return downFile;
         }
         return null;
@@ -94,10 +96,27 @@ public class DataManager {
 
     public String getDownloadPath(String url) {
         if (!TextUtils.isEmpty(url)) {
-            DownFile downFile = downFileBox.query().equal(DownFile_.downLoadUrl, url).build().findFirst();
-            if (downFile != null) {
+            DownFile downFile = downFileBox.query().equal(DownFile_.downLoadPath, url).build().findFirst();
+            if (downFile != null && downFile.getProgress() == 100) {
                 return downFile.getPath();
             }
+        }
+        return null;
+    }
+
+    /**
+     * 获取所有已下载的内容
+     *
+     * @return
+     */
+    public List<DownFile> getDownloaded() {
+        return downFileBox.query().equal(DownFile_.progress, 100).build().find();
+    }
+
+    public String getDownloadFilePath() {
+        DownFile downFile = downFileBox.query().build().findFirst();
+        if (downFile != null) {
+            return downFile.getFilePath();
         }
         return null;
     }

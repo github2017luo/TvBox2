@@ -213,31 +213,31 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             ConcatenatingMediaSource source = new ConcatenatingMediaSource();
             for (String url : urls) {
                 Uri uri = null;
-                if (hasNet) {
+                File downloadFile = presenter.getDownload(url);
+                if (downloadFile != null) {
+                    uri = Uri.fromFile(downloadFile);
+                }
+                if (uri != null) {
+                    DataSpec dataSpec = new DataSpec(uri);
+                    final FileDataSource fileDataSource = new FileDataSource();
+                    try {
+                        fileDataSource.open(dataSpec);
+                    } catch (FileDataSource.FileDataSourceException e) {
+                        e.printStackTrace();
+                    }
+
+                    DataSource.Factory factory = () -> fileDataSource;
+                    MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(), factory,
+                            new DefaultExtractorsFactory(), null, null);
+                    source.addMediaSource(audioSource);
+                } else if (hasNet) {
                     uri = Uri.parse(url);
                     if (uri != null) {
                         MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab")).createMediaSource(uri);
                         source.addMediaSource(mediaSource);
                     }
                 } else {
-                    File downloadFile = presenter.getDownload(url);
-                    if (downloadFile != null) {
-                        uri = Uri.fromFile(downloadFile);
-                    }
-                    if (uri != null) {
-                        DataSpec dataSpec = new DataSpec(uri);
-                        final FileDataSource fileDataSource = new FileDataSource();
-                        try {
-                            fileDataSource.open(dataSpec);
-                        } catch (FileDataSource.FileDataSourceException e) {
-                            e.printStackTrace();
-                        }
-
-                        DataSource.Factory factory = () -> fileDataSource;
-                        MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(), factory,
-                                new DefaultExtractorsFactory(), null, null);
-                        source.addMediaSource(audioSource);
-                    }
+                    ToastUtils.showLong("网络异常");
                 }
             }
             if (source.getSize() > 0) {
@@ -263,7 +263,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     private void handlePlayContent() {
         if (dailyPlay != null) {
-            if (Constant.isTest) {
+            if (Constant.isTestDownload) {
                 isPlayRoll = true;
                 playDaily();
                 return;
@@ -312,7 +312,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     public void playDaily() {
         if (dailyPlay != null) {
-            if (Constant.isTest) {
+            if (Constant.isTestDownload) {
                 List<DailyRoll> rolls = dailyPlay.getRoll();
                 if (rolls != null && rolls.size() > 0) {
                     List<String> urls = new ArrayList<>();

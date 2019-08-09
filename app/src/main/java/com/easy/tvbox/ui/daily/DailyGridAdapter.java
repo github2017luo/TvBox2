@@ -24,8 +24,4 @@ public class DailyGridAdapter extends AbstractObjectPresenter<DailyGridView> {
             dailyGridView.updateUi(dailyList);
         }
     }
-
-    public void refreshCountDown(int position){
-
-    }
 }

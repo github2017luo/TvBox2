@@ -10,6 +10,24 @@ public class DailyPlay {
     private List<DailyRoll> formal;
     private String type;
     private String uid;
+    private String downloadPro;//下载进度
+    private boolean isDownloadFinish;
+
+    public boolean isDownloadFinish() {
+        return isDownloadFinish;
+    }
+
+    public void setDownloadFinish(boolean downloadFinish) {
+        isDownloadFinish = downloadFinish;
+    }
+
+    public String getDownloadPro() {
+        return downloadPro;
+    }
+
+    public void setDownloadPro(String downloadPro) {
+        this.downloadPro = downloadPro;
+    }
 
     public String getUid() {
         return uid;

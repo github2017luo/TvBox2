@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.easy.tvbox.R;
 import com.easy.tvbox.bean.DailyList;
+import com.easy.tvbox.bean.DailyPlay;
 
 public class DailyGridView extends BaseCardView {
 
@@ -41,7 +42,23 @@ public class DailyGridView extends BaseCardView {
                 .into(ivIcon);
 
         TextView tvTitle = findViewById(R.id.tvTitle);
-        tvTitle.setText(itemData.getTitle());
+        DailyPlay dailyPlay = itemData.getDailyPlay();
+        String downloadNum = null;
+        if (dailyPlay != null && !dailyPlay.isDownloadFinish()) {
+            if (dailyPlay.getDownloadPro() != null) {
+                downloadNum = "(" + dailyPlay.getDownloadPro() + ")";
+            } else {
+                int size = 0;
+                if (dailyPlay.getFormal() != null) {
+                    size += dailyPlay.getFormal().size();
+                }
+                if (dailyPlay.getRoll() != null) {
+                    size += dailyPlay.getRoll().size();
+                }
+                downloadNum = "(0/" + size + ")";
+            }
+        }
+        tvTitle.setText(itemData.getTitle() + (downloadNum == null ? "" : downloadNum));
 
         TextView tvTime = findViewById(R.id.tvTime);
         tvTime.setText(itemData.getShowTime());

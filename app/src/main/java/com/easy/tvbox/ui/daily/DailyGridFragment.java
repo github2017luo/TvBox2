@@ -47,10 +47,6 @@ public class DailyGridFragment extends VerticalGridSupportFragment {
             if (item instanceof DailyList) {
                 DailyList dailyList = (DailyList) item;
                 if (presenter != null) {
-                    if(Constant.isTest){
-                        RouteManager.goDailyVideoActivity(getContext(), JSON.toJSONString(dailyList));
-                        return;
-                    }
                     int playState = presenter.playState(dailyList);
                     if (playState == -1) {
                         ToastUtils.showLong("时间未到");

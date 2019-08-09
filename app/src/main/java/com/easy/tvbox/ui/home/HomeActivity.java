@@ -289,7 +289,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView,
             if (grantResults.length >= 1) {
                 int writeResult = grantResults[0];
                 //读写内存权限
-                boolean writeGranted = writeResult == PackageManager.PERMISSION_GRANTED;//读写内存权限
+//                boolean writeGranted = writeResult == PackageManager.PERMISSION_GRANTED;//读写内存权限
             }
         }
     }
@@ -347,14 +347,15 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView,
 
     @Override
     public void onProgress(int progress) {
-        Log.d("Download", "onProgress");
+        Log.d("Download", "onProgress:" + progress);
     }
 
     @Override
     public void onFinishDownload(File file) {
         Log.d("Download", "onFinishDownload_file: " + file.getPath());
         presenter.updateDownInfo(file.getPath());
-        if (!Constant.isTest) {
+        presenter.updateDailyListDownLoadNum(dailyDataContent);
+        if (!Constant.isTestDownload) {
             startDownLoad();
         }
     }

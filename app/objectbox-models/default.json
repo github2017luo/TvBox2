@@ -37,7 +37,7 @@
     },
     {
       "id": "2:2027348856514962136",
-      "lastPropertyId": "6:8750289890640798390",
+      "lastPropertyId": "7:6290599168364358956",
       "name": "DownFile",
       "properties": [
         {
@@ -63,6 +63,10 @@
         {
           "id": "6:8750289890640798390",
           "name": "path"
+        },
+        {
+          "id": "7:6290599168364358956",
+          "name": "downLoadPath"
         }
       ],
       "relations": []
