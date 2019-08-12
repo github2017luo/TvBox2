@@ -258,22 +258,26 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     public void playFormalVideo() {
         //倒计时结束后开始的，所以就是从头开始播放
         isPlayRoll = false;
-        playDaily();
+        if (dailyPlay != null) {
+            List<DailyRoll> formals = dailyPlay.getFormal();
+            if (formals != null && formals.size() > 0) {
+                List<String> urls = new ArrayList<>();
+                for (DailyRoll roll : formals) {
+                    urls.add(roll.getSource());
+                }
+                startPayer(urls, false, 0);
+            }
+        }
     }
 
     private void handlePlayContent() {
         if (dailyPlay != null) {
-            if (Constant.isTestDownload) {
-                isPlayRoll = true;
-                playDaily();
-                return;
-            }
             long fixTime = dailyPlay.getFixed();
             long time = fixTime - getCurrentTime() / 1000;
             if (time > 0) { //
                 isPlayRoll = true;
                 presenter.downCount(time);
-                playDaily();
+                findPlayPosition();
             } else {
                 isPlayRoll = false;
                 findPlayPosition();
@@ -282,7 +286,6 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     }
 
     public long getCurrentTime() {
-//        return CommonUtils.date2TimeStamp("2019-06-23 19:00:00");
         return System.currentTimeMillis();
     }
 
@@ -293,6 +296,9 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         if (dailyPlay != null) {
             long currentTime = getCurrentTime() / 1000;
             List<DailyRoll> formals = dailyPlay.getFormal();
+            if (isPlayRoll) {
+                formals = dailyPlay.getRoll();
+            }
             if (formals != null && formals.size() > 0) {
                 long seek = 0;
                 List<String> urls = new ArrayList<>();
@@ -302,43 +308,12 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                     long endTime = formal.getEnd();
                     if (currentTime < endTime) {
                         urls.add(formal.getSource());
-                        seek = (currentTime - startTime) * 1000;
+                        if (seek == 0) {
+                            seek = (currentTime - startTime) * 1000;
+                        }
                     }
                 }
                 startPayer(urls, false, seek);
-            }
-        }
-    }
-
-    public void playDaily() {
-        if (dailyPlay != null) {
-            if (Constant.isTestDownload) {
-                List<DailyRoll> rolls = dailyPlay.getRoll();
-                if (rolls != null && rolls.size() > 0) {
-                    List<String> urls = new ArrayList<>();
-                    urls.add(rolls.get(0).getSource());
-                    startPayer(urls, true, 0);
-                }
-                return;
-            }
-            if (isPlayRoll) {
-                List<DailyRoll> rolls = dailyPlay.getRoll();
-                if (rolls != null && rolls.size() > 0) {
-                    List<String> urls = new ArrayList<>();
-                    for (DailyRoll roll : rolls) {
-                        urls.add(roll.getSource());
-                    }
-                    startPayer(urls, true, 0);
-                }
-            } else {
-                List<DailyRoll> formals = dailyPlay.getFormal();
-                if (formals != null && formals.size() > 0) {
-                    List<String> urls = new ArrayList<>();
-                    for (DailyRoll roll : formals) {
-                        urls.add(roll.getSource());
-                    }
-                    startPayer(urls, false, 0);
-                }
             }
         }
     }
