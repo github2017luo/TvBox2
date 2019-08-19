@@ -332,11 +332,11 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView,
             startDownLoad();
         }
     }
-
+    DownFile undownLoadFile;
     public void startDownLoad() {
-        DownFile downFile = presenter.getUnDownLoad();
-        if (downFile != null) {
-            mDownloadHelper.downloadFile(downFile.getDownLoadUrl(), downFile.getFilePath(), downFile.getFileName());
+        undownLoadFile = presenter.getUnDownLoad();
+        if (undownLoadFile != null) {
+            mDownloadHelper.downloadFile(undownLoadFile.getDownLoadUrl(), undownLoadFile.getFilePath(), undownLoadFile.getFileName());
         }
     }
 
@@ -348,6 +348,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView,
     @Override
     public void onProgress(int progress) {
         Log.d("Download", "onProgress:" + progress);
+        Log.d("Download", "undownLoadFile:" + undownLoadFile.getPath());
     }
 
     @Override
