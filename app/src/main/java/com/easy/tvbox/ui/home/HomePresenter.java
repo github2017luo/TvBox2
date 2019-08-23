@@ -1,6 +1,5 @@
 package com.easy.tvbox.ui.home;
 
-import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -651,16 +650,5 @@ public class HomePresenter extends BasePresenter<HomeView> {
             }
         }
         return null;
-    }
-
-    private boolean isTheSame(String url, String downUrl) {
-        if (url != null && downUrl != null) {
-            url = getDownloadPath(url);
-            downUrl = getDownloadPath(downUrl);
-            Log.d("DownloadUpdate", "下载路径:" + url);
-            Log.d("DownloadUpdate", "sql路径:" + downUrl);
-            return url.equals(downUrl);
-        }
-        return false;
     }
 }
