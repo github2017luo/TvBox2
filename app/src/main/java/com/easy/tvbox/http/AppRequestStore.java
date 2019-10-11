@@ -102,13 +102,20 @@ public class AppRequestStore {
     }
 
     /**
-     * 注册
+     * 请求二维码
      *
      * @return
      */
-    public Single<Respond> register(Map<String, Object> map) {
+    public Single<Respond> requestQrCode() {
         return retrofit.create(ApiService.class)
-                .register(getRequestBody(map))
+                .requestQrCode()
+                .map(getCommonFunction())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Single<Respond> requestCheckLogin(String key) {
+        return retrofit.create(ApiService.class)
+                .requestCheckLogin(key)
                 .map(getCommonFunction())
                 .subscribeOn(Schedulers.io());
     }
@@ -118,9 +125,9 @@ public class AppRequestStore {
      *
      * @return
      */
-    public Single<Respond> login(String code, Map<String, Object> map) {
+    public Single<Respond> login(String serial, Map<String, Object> map) {
         return retrofit.create(ApiService.class)
-                .login(code, getRequestBody(map))
+                .login(serial, getRequestBody(map))
                 .map(getCommonFunction())
                 .subscribeOn(Schedulers.io());
     }
@@ -214,7 +221,7 @@ public class AppRequestStore {
      *
      * @return
      */
-    public Single<Respond> queryForLive(int page, int size,Map<String, Object> map) {
+    public Single<Respond> queryForLive(int page, int size, Map<String, Object> map) {
         return retrofit.create(ApiService.class)
                 .queryForLive(page, size, getRequestBody(map))
                 .map(getCommonFunction())
@@ -302,7 +309,6 @@ public class AppRequestStore {
                 .map(getCommonFunction())
                 .subscribeOn(Schedulers.io());
     }
-
 
 
     public Observable<Respond> querySongSheetMusic(Map<String, Object> map) {

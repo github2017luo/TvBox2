@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/page_bg">
+        android:background="@color/white">
 
         <com.easy.tvbox.ui.LoadingView
             android:id="@+id/loadingView"
@@ -19,116 +20,14 @@
             android:layout_centerInParent="true"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="登录"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/editPhone"
-                android:layout_width="345dp"
-                android:layout_height="47dp"
-                android:layout_marginTop="25dp"
-                android:background="@drawable/edit_bg"
-                android:hint="@string/input_phone_num"
-                android:inputType="phone"
-                android:nextFocusDown="@+id/editImageCode"
-                android:paddingLeft="15dp"
-                android:textColor="@android:color/black"
-                android:textColorHint="#FF9B9B9B"
-                android:textCursorDrawable="@drawable/edittext_cursor"
-                android:textSize="18sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="47dp"
-                android:layout_marginTop="25dp"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/editImageCode"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_bg"
-                    android:hint="@string/input_check_code"
-                    android:nextFocusRight="@+id/rlImageCode"
-                    android:nextFocusUp="@+id/editPhone"
-                    android:nextFocusDown="@+id/editPhoneCode"
-                    android:paddingLeft="15dp"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="#FF9B9B9B"
-                    android:textCursorDrawable="@drawable/edittext_cursor"
-                    android:textSize="18sp" />
-
-                <RelativeLayout
-                    android:id="@+id/rlImageCode"
-                    android:layout_width="140dp"
-                    android:layout_height="47dp"
-                    android:layout_marginLeft="15dp"
-                    android:background="@drawable/edit_bg"
-                    android:focusable="true"
-                    android:nextFocusLeft="@+id/editImageCode"
-                    android:nextFocusUp="@+id/editPhone"
-                    android:nextFocusDown="@+id/tvPhoneCode"
-                    android:padding="2dp">
-
-                    <ImageView
-                        android:id="@+id/ivImageCode"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/error_icon"
-                        android:scaleType="fitXY" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="47dp"
-                android:layout_marginTop="25dp"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/editPhoneCode"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_bg"
-                    android:hint="@string/input_phone_code"
-                    android:nextFocusRight="@+id/tvPhoneCode"
-                    android:nextFocusUp="@+id/editImageCode"
-                    android:nextFocusDown="@+id/login"
-                    android:paddingLeft="15dp"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="#FF9B9B9B"
-                    android:textCursorDrawable="@drawable/edittext_cursor"
-                    android:textSize="18sp" />
-
-
-                <Button
-                    android:id="@+id/tvPhoneCode"
-                    android:layout_width="140dp"
-                    android:layout_height="47dp"
-                    android:layout_marginLeft="15dp"
-                    android:background="@drawable/edit_bg"
-                    android:enabled="true"
-                    android:gravity="center"
-                    android:nextFocusLeft="@+id/editPhoneCode"
-                    android:nextFocusUp="@+id/rlImageCode"
-                    android:nextFocusDown="@+id/login"
-                    android:text="@string/get_phone_code"
-                    android:textColor="@color/text_color_selector"
-                    android:textSize="18sp" />
-
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/ivQrCode"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                tools:background="@color/actionbar_color" />
 
             <TextView
-                android:id="@+id/login"
+                android:id="@+id/tvRefresh"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:layout_marginTop="25dp"
@@ -136,9 +35,10 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:nextFocusUp="@+id/tvPhoneCode"
-                android:text="@string/login"
+                android:text="@string/refresh_login_qr"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
+
         </LinearLayout>
     </RelativeLayout>
 </layout>

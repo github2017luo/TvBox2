@@ -22,4 +22,5 @@
     <string name="login">登录</string>
     <string name="get_phone_code">获取验证码</string>
     <string name="update_phone">修改手机号</string>
+    <string name="refresh_login_qr">刷新二维码</string>
 </resources>

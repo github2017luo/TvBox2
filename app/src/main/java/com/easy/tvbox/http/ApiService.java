@@ -27,8 +27,8 @@ public interface ApiService {
     @POST("sendMessage")
     Single<ResponseBody> sendMessage(@Body RequestBody requestBody);
 
-    @POST("login/{code}")
-    Single<ResponseBody> login(@Path("code") String code, @Body RequestBody requestBody);
+    @POST("login/{serial}")
+    Single<ResponseBody> login(@Path("serial") String serial, @Body RequestBody requestBody);
 
     @POST("updatePhone/{code}")
     Single<ResponseBody> updatePhone(@Path("code") String code, @Body RequestBody requestBody);
@@ -36,8 +36,11 @@ public interface ApiService {
     @GET("generate_image_code")
     Single<ResponseBody> generateImageCode();
 
-    @POST("register")
-    Single<ResponseBody> register(@Body RequestBody requestBody);
+    @GET("generate_qrcode")
+    Single<ResponseBody> requestQrCode();
+
+    @GET("is_scan/{uid}")
+    Single<ResponseBody> requestCheckLogin(@Path("uid") String key);
 
     @POST("queryForMusic")
     Observable<ResponseBody> queryForMusic(@Query("page") int page, @Query("size") int size, @Body RequestBody requestBody);
