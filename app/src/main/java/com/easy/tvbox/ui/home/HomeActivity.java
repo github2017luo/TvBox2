@@ -22,10 +22,14 @@ import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.HomeBinding;
 import com.easy.tvbox.event.DailyUpdateEvent;
 import com.easy.tvbox.event.LiveUpdateEvent;
+import com.easy.tvbox.mqtt.Config;
+import com.easy.tvbox.mqtt.MqttSimple;
 import com.easy.tvbox.utils.ToastUtils;
 import com.owen.focus.FocusBorder;
 import com.zhouwei.mzbanner.holder.MZHolderCreator;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -36,7 +40,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 //@Route(path = RouteManager.HOME, name = "首页")
-public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView{
+public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView {
 
     @Inject
     HomePresenter presenter;
@@ -46,6 +50,8 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView{
     public static List<LiveList> liveDataContent = new ArrayList<>();
 
     FocusBorder mFocusBorder;
+    MqttAndroidClient mqttClient;
+    MqttSimple mqttSimple;
 
     @Override
     public int getLayoutId() {
@@ -87,6 +93,9 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView{
             finish();
             return;
         }
+        mqttClient = new MqttAndroidClient(getApplicationContext(), Config.serverUri, Config.clientId);
+         mqttSimple = new MqttSimple(mqttClient);
+        mqttSimple.test();
 
         mFocusBorder = new FocusBorder.Builder()
                 .asColor()
@@ -97,8 +106,12 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView{
                 .build(this);
 
         mViewBinding.rlLive.setOnClickListener(v -> {
-            RouteManager.goLiveActivity(HomeActivity.this);
-            EventBus.getDefault().post(new LiveUpdateEvent(0));
+            //todo 临时注释掉
+//            RouteManager.goLiveActivity(HomeActivity.this);
+//            EventBus.getDefault().post(new LiveUpdateEvent(0));
+            if(mqttSimple!=null){
+                mqttSimple.publishMessage("msg_test");
+            }
         });
 
         mViewBinding.rlLive.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
@@ -161,6 +174,9 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView{
         super.onDestroy();
         if (presenter != null) {
             presenter.liveRequestCancel();
+        }
+        if (mqttClient != null) {
+            mqttClient.unregisterResources();
         }
     }
 
