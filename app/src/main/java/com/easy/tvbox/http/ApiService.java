@@ -24,6 +24,9 @@ public interface ApiService {
     @GET("getAllShop")
     Single<ResponseBody> getAllShop();
 
+    @GET("getVersion")
+    Single<ResponseBody> requestVersion();
+
     @POST("sendMessage")
     Single<ResponseBody> sendMessage(@Body RequestBody requestBody);
 

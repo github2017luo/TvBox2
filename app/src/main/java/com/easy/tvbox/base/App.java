@@ -1,6 +1,7 @@
 package com.easy.tvbox.base;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.alivc.player.AliVcMediaPlayer;
 import com.easy.tvbox.dagger.AppComponent;

@@ -6,25 +6,34 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.easy.tvbox.BuildConfig;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.Constant;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Account;
+import com.easy.tvbox.bean.AppVersion;
 import com.easy.tvbox.bean.CheckLogin;
 import com.easy.tvbox.bean.ImageCode;
 import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.LoginBinding;
 import com.easy.tvbox.http.NetworkUtils;
+import com.easy.tvbox.http.ProgressInfo;
+import com.easy.tvbox.http.ProgressListener;
+import com.easy.tvbox.http.ProgressManager;
 import com.easy.tvbox.ui.LoadingView;
+import com.easy.tvbox.ui.test.Utils;
 import com.easy.tvbox.utils.ToastUtils;
+import com.easy.tvbox.view.AppUpdateDialog;
 
 import java.util.List;
 
@@ -32,14 +41,14 @@ import javax.inject.Inject;
 
 import io.reactivex.annotations.NonNull;
 
-import static com.easy.tvbox.base.Constant.IS_DEBUG;
-
 //@Route(path = RouteManager.LOGIN, name = "登录/注册")
 public class LoginActivity extends BaseActivity<LoginBinding> implements LoginView {
 
     @Inject
     LoginPresenter loginPresenter;
     private final int GET_PERMISSION_REQUEST = 100; //权限申请自定义码
+    AppUpdateDialog dialog;
+    String downloadPath;
 
     @Override
     public void addPresenters(List<BasePresenter> observerList) {
@@ -58,25 +67,28 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
 
     @Override
     public void initView() {
-        isLoginActivity = true;
-        if (IS_DEBUG) {
-            Account account = DataManager.getInstance().queryAccount();
-            if (account != null) {
-                RouteManager.goHomeActivity(LoginActivity.this);
-                finish();
-                return;
-            }
-        }
+        String fileName = "tvBox.apk";
+        downloadPath = Utils.getSaveFilePath(Constant.TYPE_APP, this) + fileName;
         getPermissions();
-        mViewBinding.tvRefresh.setOnClickListener(v -> loginPresenter.requestQrCode());
-
+        isLoginActivity = true;
+//        if (IS_DEBUG) {
+//            Account account = DataManager.getInstance().queryAccount();
+//            if (account != null) {
+//                RouteManager.goHomeActivity(LoginActivity.this);
+//                finish();
+//                return;
+//            }
+//        }
+        mViewBinding.tvRefresh.setOnClickListener(v -> {
+            loginPresenter.requestQrCode();
+        });
         mViewBinding.loadingView.setRetryListener(v -> {
             if (NetworkUtils.isNetConnected(LoginActivity.this)) {
                 networkChange(true);
             }
         });
-
         networkChange(NetworkUtils.isNetConnected(LoginActivity.this));
+        loginPresenter.requestVersion();
     }
 
 
@@ -141,11 +153,38 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == GET_PERMISSION_REQUEST) {
             if (grantResults.length >= 1) {
-                int writeResult = grantResults[0];
+//                int writeResult = grantResults[0];
                 //读写内存权限
-                boolean writeGranted = writeResult == PackageManager.PERMISSION_GRANTED;//读写内存权限
+//                boolean writeGranted = writeResult == PackageManager.PERMISSION_GRANTED;//读写内存权限
             }
         }
+    }
+
+    private ProgressListener getDownloadListener() {
+        return new ProgressListener() {
+            @Override
+            public void onProgress(ProgressInfo progressInfo) {
+                int progress = progressInfo.getPercent();
+                Log.d("DownLoad", "--Download-- " + progress + " %  " + progressInfo.getSpeed() + " byte/s  " + progressInfo.toString());
+                if (dialog != null) {
+                    dialog.setProgress(progress);
+                }
+                if (progressInfo.isFinish()) {
+                    if (dialog != null) {
+                        dialog.setProgress(100);
+                        dialog.dismiss();
+                    }
+                    if (downloadPath != null) {
+                        Utils.install(mContext, BuildConfig.APPLICATION_ID, downloadPath);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(long id, Exception e) {
+                Log.d("DownLoad", e.getMessage());
+            }
+        };
     }
 
     /**
@@ -169,5 +208,34 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
     protected void onDestroy() {
         super.onDestroy();
         loginPresenter.requestCancel();
+    }
+
+    @Override
+    public void checkUpdateCallback(Respond<AppVersion> respond) {
+        if (respond.isOk()) {
+            AppVersion appVersion = respond.getObj();
+            if (appVersion != null) {
+                String currentVersion = BuildConfig.VERSION_NAME.replace(".", "");
+                String lastVersion = currentVersion;
+                if (!TextUtils.isEmpty(appVersion.getVersion())) {
+                    lastVersion = appVersion.getVersion().replace(".", "");
+                }
+                int cVersion = Utils.formatInt(currentVersion);
+                int cVersionName = Utils.formatInt(lastVersion);
+                if (BuildConfig.DEBUG) {
+                    cVersion = 0;
+                }
+                if (cVersionName > cVersion) {
+                    showAppVersionDialog(appVersion);
+                }
+            }
+        }
+    }
+
+    private void showAppVersionDialog(AppVersion appVersion) {
+        dialog = new AppUpdateDialog(this);
+        dialog.show();
+        ProgressManager.getInstance().addResponseListener(appVersion.getDownloadUrl(), getDownloadListener());
+        ProgressManager.getInstance().startDownload(downloadPath, appVersion.getDownloadUrl());
     }
 }

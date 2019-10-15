@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.bean.Account;
+import com.easy.tvbox.bean.AppVersion;
 import com.easy.tvbox.bean.CheckLogin;
 import com.easy.tvbox.bean.ImageCode;
 import com.easy.tvbox.bean.Respond;
@@ -166,17 +167,14 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         mCompositeSubscription.add(disposable);
     }
 
-    /**
-     * 获取门店信息
-     */
-    public void getAllShop() {
-        Disposable disposable = requestStore.getAllShop()
+    public void requestVersion() {
+        Disposable disposable = requestStore.requestVersion()
                 .doOnSuccess(respond -> {
                     if (respond.isOk()) {
                         String body = respond.getBody();
                         if (!TextUtils.isEmpty(body)) {
                             try {
-                                List<Shop> shopList = JSON.parseArray(body, Shop.class);
+                                AppVersion shopList = JSON.parseObject(body, AppVersion.class);
                                 respond.setObj(shopList);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -186,11 +184,11 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(respond -> {
-                            //mView.getAllShopCallback(respond),
+                            mView.checkUpdateCallback(respond);
                         },
                         throwable -> {
-//                            Respond respond = getThrowableRespond(throwable);
-//                            mView.getAllShopCallback(respond);
+                            Respond respond = getThrowableRespond(throwable);
+                            mView.checkUpdateCallback(respond);
                         });
         mCompositeSubscription.add(disposable);
     }

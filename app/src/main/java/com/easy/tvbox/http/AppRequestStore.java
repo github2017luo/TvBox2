@@ -203,7 +203,17 @@ public class AppRequestStore {
                 .map(getCommonFunction())
                 .subscribeOn(Schedulers.io());
     }
-
+    /**
+     * 请求版本更新
+     *
+     * @return
+     */
+    public Single<Respond> requestVersion() {
+        return retrofit.create(ApiService.class)
+                .requestVersion()
+                .map(getCommonFunction())
+                .subscribeOn(Schedulers.io());
+    }
     /**
      * 首页轮播图
      *
