@@ -1,15 +1,7 @@
 package com.easy.tvbox.ui.video;
 
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.base.BasePresenter;
-import com.easy.tvbox.base.DataManager;
-import com.easy.tvbox.bean.DailyPlay;
-import com.easy.tvbox.bean.Respond;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -67,28 +59,5 @@ public class DailyVideoPresenter extends BasePresenter<DailyVideoView> {
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
-    }
-
-    public File getDownload(String url) {
-        String filePath = DataManager.getInstance().getDownloadPath(getDownloadPath(url));
-        if (filePath != null) {
-            return new File(filePath);
-        }
-        return null;
-    }
-    /**
-     * 获取下载文件路径--只有文件地址，不包括token(即问号后都不要)
-     *
-     * @param url
-     * @return
-     */
-    private String getDownloadPath(String url) {
-        if (url != null) {
-            int indexUrl = url.indexOf("?");
-            if (indexUrl != -1) {
-                return url.substring(0, indexUrl);
-            }
-        }
-        return null;
     }
 }

@@ -221,10 +221,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
                 }
                 int cVersion = Utils.formatInt(currentVersion);
                 int cVersionName = Utils.formatInt(lastVersion);
-                if (BuildConfig.DEBUG) {
-                    cVersion = 0;
-                }
-                if (cVersionName > cVersion) {
+                if (Constant.TEST_UPDATE || cVersionName > cVersion) {
                     showAppVersionDialog(appVersion);
                 }
             }

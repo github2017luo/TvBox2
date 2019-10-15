@@ -212,26 +212,8 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         if (urls != null && urls.size() > 0) {
             ConcatenatingMediaSource source = new ConcatenatingMediaSource();
             for (String url : urls) {
-                Uri uri = null;
-                File downloadFile = presenter.getDownload(url);
-                if (downloadFile != null) {
-                    uri = Uri.fromFile(downloadFile);
-                }
-                if (uri != null) {
-                    DataSpec dataSpec = new DataSpec(uri);
-                    final FileDataSource fileDataSource = new FileDataSource();
-                    try {
-                        fileDataSource.open(dataSpec);
-                    } catch (FileDataSource.FileDataSourceException e) {
-                        e.printStackTrace();
-                    }
-
-                    DataSource.Factory factory = () -> fileDataSource;
-                    MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(), factory,
-                            new DefaultExtractorsFactory(), null, null);
-                    source.addMediaSource(audioSource);
-                } else if (hasNet) {
-                    uri = Uri.parse(url);
+                if (hasNet) {
+                    Uri uri = Uri.parse(url);
                     if (uri != null) {
                         MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab")).createMediaSource(uri);
                         source.addMediaSource(mediaSource);

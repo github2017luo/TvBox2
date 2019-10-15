@@ -13,8 +13,8 @@ public class Constant {
     public static final String PHONE_TEST = "13779926287";
 
     public static final boolean IS_DEBUG = true;//是否是Degbug
+    public static final boolean TEST_UPDATE = false;//是否测试版本升级
     public static final boolean OPEN_PLAYER = true;// 是否开启播放器，播放器在模拟器上是不能用的
-    public static final boolean isTestDownload = false;//是否是Degbug
 
     /**
      * 文件根路径
@@ -26,10 +26,6 @@ public class Constant {
      * 应用类型:app
      */
     public static final int TYPE_APP = 0;
-    /**
-     * 文件类型:file
-     */
-    public static final int TYPE_MORE = 1;
 
     /**
      * 录音

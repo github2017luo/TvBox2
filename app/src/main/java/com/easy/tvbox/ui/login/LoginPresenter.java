@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.Constant;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.AppVersion;
 import com.easy.tvbox.bean.CheckLogin;
@@ -144,7 +145,11 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     public void login(String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("username", userId);
-        Disposable disposable = requestStore.login(Build.SERIAL, map)
+        String serial = Build.SERIAL;
+        if (Constant.IS_DEBUG) {
+            serial = "EMULATOR29X2X1X0";
+        }
+        Disposable disposable = requestStore.login(serial, map)
                 .doOnSuccess(respond -> {
                     if (respond.isOk()) {
                         String body = respond.getBody();
