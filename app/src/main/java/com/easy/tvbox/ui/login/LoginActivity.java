@@ -71,14 +71,14 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
         downloadPath = Utils.getSaveFilePath(Constant.TYPE_APP, this) + fileName;
         getPermissions();
         isLoginActivity = true;
-//        if (IS_DEBUG) {
-//            Account account = DataManager.getInstance().queryAccount();
-//            if (account != null) {
-//                RouteManager.goHomeActivity(LoginActivity.this);
-//                finish();
-//                return;
-//            }
-//        }
+        if (Constant.IS_DEBUG) {
+            Account account = DataManager.getInstance().queryAccount();
+            if (account != null) {
+                RouteManager.goHomeActivity(LoginActivity.this);
+                finish();
+                return;
+            }
+        }
         mViewBinding.tvRefresh.setOnClickListener(v -> {
             loginPresenter.requestQrCode();
         });
@@ -103,7 +103,6 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
             mViewBinding.loadingView.setStatus(LoadingView.STATUS_NONETWORK);
         }
     }
-
 
     @Override
     public void loginCallback(Respond<Account> respond) {
