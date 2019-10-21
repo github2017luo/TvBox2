@@ -1,4 +1,4 @@
-package com.easy.tvbox.bean;
+package com.easy.tvbox.event;
 
 /**
  * mqtt推送过来的消息内容

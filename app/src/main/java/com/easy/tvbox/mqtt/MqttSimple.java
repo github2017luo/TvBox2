@@ -5,7 +5,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
-import com.easy.tvbox.bean.MtMessage;
+import com.easy.tvbox.event.MtMessage;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;

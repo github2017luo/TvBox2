@@ -3,7 +3,7 @@ package com.easy.tvbox.bean;
 public class DailyItem {
     private String uid;
     private long idx;//视频播放顺序
-    private long vid;//视频播放ID
+    private String vid;//视频播放ID
     private String faceurl;//封面地址
     private String videourl;//视频地址
     private String audiourl;//音频播放地址
@@ -30,11 +30,11 @@ public class DailyItem {
         this.idx = idx;
     }
 
-    public long getVid() {
+    public String getVid() {
         return vid;
     }
 
-    public void setVid(long vid) {
+    public void setVid(String vid) {
         this.vid = vid;
     }
 

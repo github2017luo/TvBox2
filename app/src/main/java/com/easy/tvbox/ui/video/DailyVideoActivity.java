@@ -8,20 +8,17 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.alibaba.fastjson.JSON;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.Constant;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.Daily;
 import com.easy.tvbox.bean.DailyItem;
-import com.easy.tvbox.bean.DailyRoll;
 import com.easy.tvbox.databinding.DailyVideoBinding;
-import com.easy.tvbox.http.NetworkUtils;
-import com.easy.tvbox.utils.ToastUtils;
+import com.easy.tvbox.event.MtMessage;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -30,12 +27,15 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,13 +46,11 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     @Inject
     DailyVideoPresenter presenter;
-
     List<DailyItem> dailyItems;
-    boolean isPlayRoll;//是否播放广告---还没到达知道时间轮播roll里的内容
     PlayerView playerView;
     ExoPlayer player;
     Player.EventListener eventListener;
-    boolean hasNet;//是否有网络
+    int i = -1;
 
     @Override
     public int getLayoutId() {
@@ -95,10 +93,22 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             finish();
             return;
         }
-        hasNet = NetworkUtils.isNetConnected(this);
         initExoPlayer();
-        showBackground();
-        findPlayPosition();
+        findPlayPosition(dailyItems, 0);
+
+        if (Constant.IS_DEBUG) {
+            mViewBinding.btnTest.setVisibility(View.VISIBLE);
+            mViewBinding.btnTest.setOnClickListener(v -> {
+                i++;
+                if (i >= dailyItems.size()) {
+                    i = 0;
+                }
+                MtMessage mtMessage = new MtMessage();
+                mtMessage.setVid(dailyItems.get(i).getVid());
+                mtMessage.setTimer(i + 10);
+                EventBus.getDefault().post(mtMessage);
+            });
+        }
     }
 
     private void initExoPlayer() {
@@ -183,40 +193,20 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         player.addListener(eventListener);
     }
 
-    private void showBackground() {
-        Glide.with(DailyVideoActivity.this)
-                .load(dailyItems.get(0).getFaceurl())
-                .error(R.drawable.error_icon)
-                .placeholder(R.drawable.error_icon)
-                .fitCenter()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(mViewBinding.ivBg);
-        mViewBinding.ivBg.setVisibility(View.VISIBLE);
-    }
-
-    public void startPayer(List<String> urls, boolean isLoop, long positionMs) {
+    public void startPayer(List<String> urls, long positionMs) {
         if (urls != null && urls.size() > 0) {
             ConcatenatingMediaSource source = new ConcatenatingMediaSource();
             for (String url : urls) {
-                if (hasNet) {
-                    Uri uri = Uri.parse(url);
-                    if (uri != null) {
-                        MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab")).createMediaSource(uri);
-                        source.addMediaSource(mediaSource);
-                    }
-                } else {
-                    ToastUtils.showLong("网络异常");
+                Uri uri = Uri.parse(url);
+                if (uri != null) {
+                    MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab")).createMediaSource(uri);
+                    source.addMediaSource(mediaSource);
                 }
             }
             if (source.getSize() > 0) {
-                if (isLoop) {
-                    MediaSource loopingSource = new LoopingMediaSource(source);
-                    player.prepare(loopingSource);
-                } else {
-                    player.prepare(source);
-                    if (positionMs != 0) {
-                        player.seekTo(positionMs);
-                    }
+                player.prepare(source);
+                if (positionMs != 0) {
+                    player.seekTo(positionMs);
                 }
             }
         }
@@ -225,12 +215,31 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     /**
      * 查找播放的位置
      */
-    private void findPlayPosition() {
+    private void findPlayPosition(List<DailyItem> items, long position) {
         List<String> urls = new ArrayList<>();
-        for (DailyItem dailyItem : dailyItems) {
+        for (DailyItem dailyItem : items) {
             urls.add(dailyItem.getVideourl());
         }
-        startPayer(urls, false, 0);
+        startPayer(urls, position);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onVideoPlayEvent(MtMessage message) {
+        if (message != null && dailyItems != null && dailyItems.size() > 0) {
+            List<DailyItem> newItems = new ArrayList<>();
+            boolean add = false;
+            for (DailyItem dailyItem : dailyItems) {
+                if (dailyItem.getVid().equalsIgnoreCase(message.getVid())) {
+                    add = true;
+                }
+                if (add) {
+                    newItems.add(dailyItem);
+                }
+            }
+            if (newItems.size() > 0) {
+                findPlayPosition(newItems, message.getTimer());
+            }
+        }
     }
 
     private void releasePlayer() {

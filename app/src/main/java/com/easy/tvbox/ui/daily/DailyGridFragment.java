@@ -27,7 +27,7 @@ public class DailyGridFragment extends VerticalGridSupportFragment {
     }
 
     public void setupRowAdapter() {
-        VerticalGridPresenter gridPresenter = new VerticalGridPresenter(FocusHighlight.ZOOM_FACTOR_XSMALL, true);
+        VerticalGridPresenter gridPresenter = new VerticalGridPresenter(FocusHighlight.ZOOM_FACTOR_SMALL, true);
         gridPresenter.setNumberOfColumns(2);
         gridPresenter.setShadowEnabled(true);
         setGridPresenter(gridPresenter);
