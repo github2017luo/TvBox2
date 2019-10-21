@@ -14,22 +14,16 @@ import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Account;
-import com.easy.tvbox.bean.DailyData;
-import com.easy.tvbox.bean.DailyList;
 import com.easy.tvbox.bean.LiveData;
 import com.easy.tvbox.bean.LiveList;
 import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.HomeBinding;
-import com.easy.tvbox.event.DailyUpdateEvent;
 import com.easy.tvbox.event.LiveUpdateEvent;
-import com.easy.tvbox.mqtt.Config;
 import com.easy.tvbox.mqtt.MqttSimple;
 import com.easy.tvbox.utils.ToastUtils;
 import com.owen.focus.FocusBorder;
 import com.zhouwei.mzbanner.holder.MZHolderCreator;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -46,11 +40,9 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     HomePresenter presenter;
     List<String> bannerImages = new ArrayList<>();
     Account account;
-    public static List<DailyList> dailyDataContent = new ArrayList<>();
     public static List<LiveList> liveDataContent = new ArrayList<>();
 
     FocusBorder mFocusBorder;
-    MqttAndroidClient mqttClient;
     MqttSimple mqttSimple;
 
     @Override
@@ -93,10 +85,6 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
             finish();
             return;
         }
-        mqttClient = new MqttAndroidClient(getApplicationContext(), Config.serverUri, Config.clientId);
-         mqttSimple = new MqttSimple(mqttClient);
-        mqttSimple.test();
-
         mFocusBorder = new FocusBorder.Builder()
                 .asColor()
                 .borderColorRes(R.color.actionbar_color)
@@ -106,12 +94,8 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 .build(this);
 
         mViewBinding.rlLive.setOnClickListener(v -> {
-            //todo 临时注释掉
-//            RouteManager.goLiveActivity(HomeActivity.this);
-//            EventBus.getDefault().post(new LiveUpdateEvent(0));
-            if(mqttSimple!=null){
-                mqttSimple.publishMessage("msg_test");
-            }
+            RouteManager.goLiveActivity(HomeActivity.this);
+            EventBus.getDefault().post(new LiveUpdateEvent(0));
         });
 
         mViewBinding.rlLive.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
@@ -142,6 +126,9 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         presenter.saveEquipment();
         presenter.getCarouselByShopNo(account.getShopNo());
         presenter.timeRequestLiveCourse();
+
+        mqttSimple = new MqttSimple(getApplicationContext());
+        mqttSimple.connect(account.getShopNo()/*"/BOX/S0001"*/);
     }
 
     @Override
@@ -175,8 +162,8 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         if (presenter != null) {
             presenter.liveRequestCancel();
         }
-        if (mqttClient != null) {
-            mqttClient.unregisterResources();
+        if (mqttSimple != null) {
+            mqttSimple.onDestroy();
         }
     }
 
@@ -200,17 +187,6 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
             }
         }
         EventBus.getDefault().post(new LiveUpdateEvent(1));
-    }
-
-    @Override
-    public void dailyCallback(DailyData dailyData) {
-        if (dailyData != null) {
-            List<DailyList> temp = dailyData.getContent();
-            if (temp != null) {
-                dailyDataContent = temp;
-            }
-        }
-        EventBus.getDefault().post(new DailyUpdateEvent(1));
     }
 
     @Override

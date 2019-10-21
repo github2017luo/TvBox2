@@ -1,7 +1,11 @@
 package com.easy.tvbox.mqtt;
 
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
+
+import com.alibaba.fastjson.JSON;
+import com.easy.tvbox.bean.MtMessage;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -9,8 +13,8 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.greenrobot.eventbus.EventBus;
 
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
@@ -23,29 +27,34 @@ public class MqttSimple {
 
     private MqttAndroidClient mqttAndroidClient;
 
-    public MqttSimple(MqttAndroidClient mqttAndroidClient) {
-        this.mqttAndroidClient = mqttAndroidClient;
-    }
-
-    public void test() {
+    public MqttSimple(Context applicationContext) {
+        mqttAndroidClient = new MqttAndroidClient(applicationContext, Config.serverUri, Config.clientId);
         mqttAndroidClient.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
-                Log.e("close", "connectionLost", cause);
+                Log.d("Mqtt", "connectionLost==>" + cause.getMessage());
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage message) {
-                String body = new String(message.getPayload());
-                Log.w("messageArrived", body);
+                String msg = new String(message.getPayload());
+                Log.d("Mqtt", "收到消息==》" + msg);
+                try {
+                    MtMessage mtMessage = JSON.parseObject(msg, MtMessage.class);
+                    Log.d("Mqtt", "收到消息==》" + mtMessage.toString());
+                    EventBus.getDefault().post(mtMessage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
-
+                Log.d("Mqtt", "deliveryComplete==>" + token.toString());
             }
         });
+    }
 
+    public MqttConnectOptions getConnectOptions() {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setConnectionTimeout(10000);
         mqttConnectOptions.setKeepAliveInterval(90);
@@ -64,46 +73,47 @@ public class MqttSimple {
              *  mqttConnectOptions.setPassword("RW|xxx");
              */
         } catch (Exception e) {
-            Log.e("exception", "setPassword", e);
+            Log.e("Mqtt", "setPassword Exception=>", e);
         }
+        return mqttConnectOptions;
+    }
 
+    public void connect(String shopId) {
         try {
-            mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
+            mqttAndroidClient.connect(getConnectOptions(), null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("connect", "onSuccess");
-                    subscribeToTopic();
+                    Log.w("Mqtt", "onSuccess");
+                    subscribeToTopic(shopId);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.e("connect", "onFailure", exception);
+                    Log.e("Mqtt", "onFailure==>" + exception);
                 }
             });
         } catch (Exception e) {
-            Log.e("connect", "exception", e);
+            Log.e("Mqtt", "exception11==>" + e);
         }
     }
 
-    public void subscribeToTopic() {
+    private void subscribeToTopic(String shopId) {
         try {
-            final String topicFilter[] = {Config.topic};
+            String[] topicFilter = {Config.topic + shopId};
             final int[] qos = {1};
             mqttAndroidClient.subscribe(topicFilter, qos, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("subscribe", "success");
-//                    publishMessage();
+                    Log.w("Mqtt", "Topic==>success");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.e("subscribe", "failed", exception);
+                    Log.e("Mqtt", "Topic==>failed", exception);
                 }
             });
-
-        } catch (MqttException ex) {
-            Log.e("subscribe", "exception", ex);
+        } catch (Exception ex) {
+            Log.e("Mqtt", "Topic==>exception", ex);
         }
     }
 
@@ -115,16 +125,16 @@ public class MqttSimple {
             mqttAndroidClient.publish(Config.topic, message, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("publish", "success:" + msg);
+                    Log.w("Mqtt", "publish=>success:" + msg);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w("publish", "failed:" + msg);
+                    Log.w("Mqtt", "publish=>failed:" + msg);
                 }
             });
         } catch (Exception e) {
-            Log.e("publish", "exception", e);
+            Log.e("Mqtt", "publish=>exception", e);
         }
     }
 
@@ -135,7 +145,7 @@ public class MqttSimple {
      * @throws InvalidKeyException
      * @throws NoSuchAlgorithmException
      */
-    public String macSignature(String text, String secretKey) throws InvalidKeyException, NoSuchAlgorithmException {
+    private String macSignature(String text, String secretKey) throws InvalidKeyException, NoSuchAlgorithmException {
         Charset charset = Charset.forName("UTF-8");
         String algorithm = "HmacSHA1";
         Mac mac = Mac.getInstance(algorithm);
@@ -144,5 +154,11 @@ public class MqttSimple {
         // android的base64编码注意换行符情况, 使用NO_WRAP
         String s = new String(Base64.encode(bytes, Base64.NO_WRAP), charset);
         return s;
+    }
+
+    public void onDestroy() {
+        if (mqttAndroidClient != null) {
+            mqttAndroidClient.unregisterResources();
+        }
     }
 }

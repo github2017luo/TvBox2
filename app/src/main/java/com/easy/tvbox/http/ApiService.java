@@ -67,7 +67,7 @@ public interface ApiService {
     Single<ResponseBody> getCarouselByShopNo(@Path("shopNo") String shopNo);
 
     @POST("queryForAudio")
-    Observable<ResponseBody> queryForAudio(@Query("page") int page, @Query("size") int size, @Body RequestBody requestBody);
+    Single<ResponseBody> queryForAudio(@Body RequestBody requestBody);
 
     @GET("getLivePlayUrl/{uid}")
     Single<ResponseBody> getLivePlayUrl(@Path("uid") String uid);

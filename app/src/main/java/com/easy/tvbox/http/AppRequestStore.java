@@ -280,9 +280,9 @@ public class AppRequestStore {
      *
      * @return
      */
-    public Observable<Respond> queryForAudio(int page, int size, Map<String, Object> map) {
+    public Single<Respond> queryForAudio(Map<String, Object> map) {
         return retrofit.create(ApiService.class)
-                .queryForAudio(page, size, getRequestBody(map))
+                .queryForAudio(getRequestBody(map))
                 .map(getCommonFunction())
                 .subscribeOn(Schedulers.io());
     }

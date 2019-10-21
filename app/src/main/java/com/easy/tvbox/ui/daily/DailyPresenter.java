@@ -1,23 +1,25 @@
 package com.easy.tvbox.ui.daily;
 
-import com.easy.tvbox.base.BasePresenter;
-import com.easy.tvbox.bean.DailyList;
-import com.easy.tvbox.ui.home.HomeActivity;
+import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.bean.Daily;
+import com.easy.tvbox.bean.DailyItem;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class DailyPresenter extends BasePresenter<DailyView> {
-
-    Disposable mDisposable;
 
     @Inject
     public DailyPresenter() {
@@ -29,95 +31,52 @@ public class DailyPresenter extends BasePresenter<DailyView> {
 
     }
 
-    public int playState(DailyList dailyList) {
-        if (dailyList != null) {
-            long nowTime = System.currentTimeMillis();
-            if (nowTime < dailyList.getStartTime()) {
-                return -1;
-            } else if (nowTime < dailyList.getEndTime()) {
-                return 0;
-            } else {
-                return 1;
+    public void queryDaily() {
+        Disposable disposable = Observable.zip(queryDaily(1), queryDaily(2), (dailyList1, dailyList2) -> {
+            List<Daily> dailyList = new ArrayList<>();
+            if (dailyList1 != null && dailyList1.size() > 0) {
+                Daily daily = new Daily();
+                DailyItem dailyItem = dailyList1.get(0);
+                daily.setImageUrl(dailyItem.getFaceurl());
+                daily.setDailyItems(dailyList1);
+                dailyList.add(daily);
             }
-        }
-        return -1;
+            if (dailyList2 != null && dailyList2.size() > 0) {
+                Daily daily = new Daily();
+                DailyItem dailyItem = dailyList2.get(0);
+                daily.setImageUrl(dailyItem.getFaceurl());
+                daily.setDailyItems(dailyList2);
+                dailyList.add(daily);
+            }
+            return dailyList;
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(daily -> mView.dailyCallback(daily), throwable ->
+                        mView.dailyCallback(null));
+        mCompositeSubscription.add(disposable);
     }
 
     /**
-     * 倒计时
+     * 请求每日课程
+     * // @param type  1：每日课程 2:直播 3：特殊 4：回放
+     *
+     * @param period 1：中文 2：蒙语
      */
-    public void downCount() {
-        //每10分支更新一次数据
-        Observable.interval( 0,1, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<Long>() {
-                    @Override
-                    public void onSubscribe(Disposable disposable) {
-                        mDisposable = disposable;
-                    }
-
-                    @Override
-                    public void onNext(Long number) {
-                        List<DailyList> dailyDataContent = HomeActivity.dailyDataContent;
-                        if (dailyDataContent != null && dailyDataContent.size() > 0) {
-                            long currrentTime = getCurrentTime() / 1000;
-                            for (DailyList dailyList : dailyDataContent) {
-//                                Log.d("downCount", CommonUtils.timeStamp2Date(dailyList.getStartTime(), 0));
-                                long second = dailyList.getStartTime()/1000 - currrentTime;
-                                long hour = 0, minute = 0;
-                                if (second > 0) {
-                                    if (second >= 60) {
-                                        minute = second / 60;
-                                        second = second % 60;
-                                        if (minute >= 60) {
-                                            hour = minute / 60;
-                                            minute = minute % 60;
-                                        }
-                                    }
-                                    dailyList.setDownCount(buildString(hour, "时", minute, "分", second, "秒"));
-                                }
-                            }
+    private Observable<List<DailyItem>> queryDaily(int period) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", 1);
+        map.put("period", period);
+        return requestStore.queryForAudio(map)
+                .map(respond -> {
+                    List<DailyItem> dailyList = new ArrayList<>();
+                    if (respond.isOk()) {
+                        String body = respond.getBody();
+                        if (!TextUtils.isEmpty(body)) {
+                            JSONObject jsonObject = JSON.parseObject(body);
+                            String content = jsonObject.getString("content");
+                            return JSON.parseArray(content, DailyItem.class);
                         }
-                        mView.downCountCallback();
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        //取消订阅
-                        cancel();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        //取消订阅
-                        cancel();
-                    }
-                });
-    }
-
-    public long getCurrentTime() {
-//        return CommonUtils.date2TimeStamp("2019-06-23 09:00:00");
-        return System.currentTimeMillis();
-    }
-
-    public String buildString(Object... str) {
-        if (str != null && str.length > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (Object s : str) {
-                builder.append(s);
-            }
-            return builder.toString();
-        }
-        return null;
-    }
-
-    /**
-     * 取消订阅
-     */
-    public void cancel() {
-        if (mDisposable != null && !mDisposable.isDisposed()) {
-            mDisposable.dispose();
-        }
+                    return dailyList;
+                }).onErrorReturn(throwable -> new ArrayList<>()).toObservable();
     }
 }

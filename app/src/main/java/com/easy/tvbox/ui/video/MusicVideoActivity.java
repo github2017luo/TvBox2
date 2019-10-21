@@ -3,25 +3,18 @@ package com.easy.tvbox.ui.video;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.alibaba.fastjson.JSON;
-import com.bumptech.glide.Glide;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.Account;
-import com.easy.tvbox.bean.DailyList;
-import com.easy.tvbox.bean.DailyPlay;
-import com.easy.tvbox.bean.DailyRoll;
 import com.easy.tvbox.bean.MusicInfo;
-import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.MusicVideoBinding;
-import com.easy.tvbox.utils.ToastUtils;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;

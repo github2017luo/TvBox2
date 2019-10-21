@@ -14,13 +14,11 @@ import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
-import com.easy.tvbox.base.Constant;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.Account;
-import com.easy.tvbox.bean.DailyList;
-import com.easy.tvbox.bean.DailyPlay;
+import com.easy.tvbox.bean.Daily;
+import com.easy.tvbox.bean.DailyItem;
 import com.easy.tvbox.bean.DailyRoll;
-import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.DailyVideoBinding;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.utils.ToastUtils;
@@ -30,7 +28,6 @@ import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
@@ -38,13 +35,8 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DataSpec;
-import com.google.android.exoplayer2.upstream.DefaultDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.upstream.FileDataSource;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +47,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     @Inject
     DailyVideoPresenter presenter;
 
-    DailyList dailyData;
-    DailyPlay dailyPlay;
+    List<DailyItem> dailyItems;
     boolean isPlayRoll;//是否播放广告---还没到达知道时间轮播roll里的内容
     PlayerView playerView;
     ExoPlayer player;
@@ -93,19 +84,21 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         Intent intent = getIntent();
         String dataJson = intent.getStringExtra("data");
         try {
-            dailyData = JSON.parseObject(dataJson, DailyList.class);
+            Daily daily = JSON.parseObject(dataJson, Daily.class);
+            if (daily != null) {
+                dailyItems = daily.getDailyItems();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (dailyData == null || dailyData.getDailyPlay() == null) {
+        if (dailyItems == null || dailyItems.isEmpty()) {
             finish();
             return;
         }
         hasNet = NetworkUtils.isNetConnected(this);
         initExoPlayer();
-        dailyPlay = dailyData.getDailyPlay();
         showBackground();
-        handlePlayContent();
+        findPlayPosition();
     }
 
     private void initExoPlayer() {
@@ -191,21 +184,14 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     }
 
     private void showBackground() {
-        if (dailyPlay != null) {
-            String type = dailyPlay.getType();
-            if ("audio".equalsIgnoreCase(type)) {
-                Glide.with(DailyVideoActivity.this)
-                        .load(dailyPlay.getCover())
-                        .error(R.drawable.error_icon)
-                        .placeholder(R.drawable.error_icon)
-                        .fitCenter()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(mViewBinding.ivBg);
-                mViewBinding.ivBg.setVisibility(View.VISIBLE);
-            } else {
-                mViewBinding.ivBg.setVisibility(View.GONE);
-            }
-        }
+        Glide.with(DailyVideoActivity.this)
+                .load(dailyItems.get(0).getFaceurl())
+                .error(R.drawable.error_icon)
+                .placeholder(R.drawable.error_icon)
+                .fitCenter()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(mViewBinding.ivBg);
+        mViewBinding.ivBg.setVisibility(View.VISIBLE);
     }
 
     public void startPayer(List<String> urls, boolean isLoop, long positionMs) {
@@ -236,68 +222,15 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         }
     }
 
-    @Override
-    public void playFormalVideo() {
-        //倒计时结束后开始的，所以就是从头开始播放
-        isPlayRoll = false;
-        if (dailyPlay != null) {
-            List<DailyRoll> formals = dailyPlay.getFormal();
-            if (formals != null && formals.size() > 0) {
-                List<String> urls = new ArrayList<>();
-                for (DailyRoll roll : formals) {
-                    urls.add(roll.getSource());
-                }
-                startPayer(urls, false, 0);
-            }
-        }
-    }
-
-    private void handlePlayContent() {
-        if (dailyPlay != null) {
-            long fixTime = dailyPlay.getFixed();
-            long time = fixTime - getCurrentTime() / 1000;
-            if (time > 0) { //
-                isPlayRoll = true;
-                presenter.downCount(time);
-                findPlayPosition();
-            } else {
-                isPlayRoll = false;
-                findPlayPosition();
-            }
-        }
-    }
-
-    public long getCurrentTime() {
-        return System.currentTimeMillis();
-    }
-
     /**
      * 查找播放的位置
      */
     private void findPlayPosition() {
-        if (dailyPlay != null) {
-            long currentTime = getCurrentTime() / 1000;
-            List<DailyRoll> formals = dailyPlay.getFormal();
-            if (isPlayRoll) {
-                formals = dailyPlay.getRoll();
-            }
-            if (formals != null && formals.size() > 0) {
-                long seek = 0;
-                List<String> urls = new ArrayList<>();
-                for (int i = 0; i < formals.size(); i++) {
-                    DailyRoll formal = formals.get(i);
-                    long startTime = formal.getStart();
-                    long endTime = formal.getEnd();
-                    if (currentTime < endTime) {
-                        urls.add(formal.getSource());
-                        if (seek == 0) {
-                            seek = (currentTime - startTime) * 1000;
-                        }
-                    }
-                }
-                startPayer(urls, false, seek);
-            }
+        List<String> urls = new ArrayList<>();
+        for (DailyItem dailyItem : dailyItems) {
+            urls.add(dailyItem.getVideourl());
         }
+        startPayer(urls, false, 0);
     }
 
     private void releasePlayer() {
@@ -313,9 +246,6 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (presenter != null) {
-            presenter.cancel();
-        }
         releasePlayer();
     }
 }

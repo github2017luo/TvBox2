@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/page_bg"
@@ -11,50 +10,8 @@
     <ImageView
         android:id="@+id/ivIcon"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scaleType="fitXY"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         tools:background="@android:color/white" />
-
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:paddingTop="5dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        tools:text="心身互动养身健康教育讲座" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp">
-
-        <TextView
-            android:id="@+id/tvTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="10dp"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            tools:text="08:00-11:00" />
-
-        <TextView
-            android:id="@+id/tvDownCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:visibility="gone"
-            tools:text="倒计时：03 时 37 分 09 秒"
-            tools:visibility="visible" />
-    </LinearLayout>
 
 </LinearLayout>

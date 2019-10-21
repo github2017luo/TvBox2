@@ -8,8 +8,8 @@ import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.Account;
+import com.easy.tvbox.bean.Daily;
 import com.easy.tvbox.databinding.DailyBinding;
-import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.ui.LoadingView;
 
 import java.util.List;
@@ -45,38 +45,30 @@ public class DailyActivity extends BaseActivity<DailyBinding> implements DailyVi
             return;
         }
         dailyGridFragment = new DailyGridFragment();
-        dailyGridFragment.setPresenter(presenter);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.cardsFragment, dailyGridFragment)
                 .commit();
-
-        networkChange(NetworkUtils.isNetConnected(DailyActivity.this));
-        presenter.downCount();
     }
 
     @Override
     public void networkChange(boolean isConnect) {
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (presenter != null) {
-            presenter.cancel();
-        }
-    }
-
-    @Override
-    public void downCountCallback() {
-        if (dailyGridFragment != null) {
-            dailyGridFragment.refreshCountdown();
+        if (isConnect) {
+            presenter.queryDaily();
         }
     }
 
     public void setNoData() {
         mViewBinding.loadingView.setStatus(LoadingView.STATUS_NODATA);
         mViewBinding.cardsFragment.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void dailyCallback(List<Daily> daily) {
+        if (daily != null && daily.size() > 0) {
+            if (dailyGridFragment != null) {
+                dailyGridFragment.updateData(presenter, daily);
+            }
+        }
     }
 }

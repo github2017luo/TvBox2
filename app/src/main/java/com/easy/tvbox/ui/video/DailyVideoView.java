@@ -4,5 +4,4 @@ import com.easy.tvbox.base.BaseView;
 
 public interface DailyVideoView extends BaseView {
 
-    void playFormalVideo();
 }

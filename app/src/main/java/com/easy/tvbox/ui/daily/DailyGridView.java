@@ -2,20 +2,15 @@
 package com.easy.tvbox.ui.daily;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.leanback.widget.BaseCardView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.easy.tvbox.R;
-import com.easy.tvbox.bean.DailyList;
-import com.easy.tvbox.bean.DailyPlay;
+import com.easy.tvbox.bean.Daily;
 
 public class DailyGridView extends BaseCardView {
 
@@ -26,59 +21,13 @@ public class DailyGridView extends BaseCardView {
         setFocusableInTouchMode(true);
     }
 
-    public void updateUi(DailyList itemData) {
-        View rootView = findViewById(R.id.rootView);
-        ViewGroup.LayoutParams layoutParams = rootView.getLayoutParams();
-        layoutParams.height = itemData.getHeight();
-        layoutParams.width = itemData.getWidth();
-        rootView.setLayoutParams(layoutParams);
-
+    public void updateUi(Daily daily) {
         ImageView ivIcon = findViewById(R.id.ivIcon);
         Glide.with(getContext())
-                .load(itemData.getPosterUrl())
+                .load(daily.getImageUrl())
                 .error(R.drawable.error_icon)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .placeholder(R.drawable.error_icon)
                 .into(ivIcon);
-
-        TextView tvTitle = findViewById(R.id.tvTitle);
-        DailyPlay dailyPlay = itemData.getDailyPlay();
-        String downloadNum = null;
-        if (dailyPlay != null && !dailyPlay.isDownloadFinish()) {
-            if (dailyPlay.getDownloadPro() != null) {
-                downloadNum = "(" + dailyPlay.getDownloadPro() + ")";
-            } else {
-                int size = 0;
-                if (dailyPlay.getFormal() != null) {
-                    size += dailyPlay.getFormal().size();
-                }
-                if (dailyPlay.getRoll() != null) {
-                    size += dailyPlay.getRoll().size();
-                }
-                downloadNum = "(0/" + size + ")";
-            }
-        }
-        tvTitle.setText(itemData.getTitle() + (downloadNum == null ? "" : downloadNum));
-
-        TextView tvTime = findViewById(R.id.tvTime);
-        tvTime.setText(itemData.getShowTime());
-
-        TextView tvDownCount = findViewById(R.id.tvDownCount);
-        if (TextUtils.isEmpty(itemData.getDownCount())) {
-            tvDownCount.setVisibility(View.GONE);
-        } else {
-            tvDownCount.setVisibility(View.VISIBLE);
-            tvDownCount.setText(" 倒计时：" + itemData.getDownCount());
-        }
-    }
-
-    public void refreshCountDown(DailyList itemData) {
-        TextView tvDownCount = findViewById(R.id.tvDownCount);
-        if (TextUtils.isEmpty(itemData.getDownCount())) {
-            tvDownCount.setVisibility(View.GONE);
-        } else {
-            tvDownCount.setVisibility(View.VISIBLE);
-            tvDownCount.setText(" 倒计时：" + itemData.getDownCount());
-        }
     }
 }

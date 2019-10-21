@@ -9,28 +9,20 @@ import androidx.leanback.widget.FocusHighlight;
 import androidx.leanback.widget.VerticalGridPresenter;
 
 import com.alibaba.fastjson.JSON;
-import com.easy.tvbox.base.Constant;
 import com.easy.tvbox.base.RouteManager;
-import com.easy.tvbox.bean.DailyList;
-import com.easy.tvbox.event.DailyUpdateEvent;
-import com.easy.tvbox.ui.home.HomeActivity;
-import com.easy.tvbox.utils.ToastUtils;
+import com.easy.tvbox.bean.Daily;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
 import java.util.List;
+
 
 public class DailyGridFragment extends VerticalGridSupportFragment {
 
     private ArrayObjectAdapter mAdapter;
-    DailyPresenter presenter;
+    List<Daily> dailyList;
+    DailyPresenter dailyPresenter;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
         setupRowAdapter();
     }
 
@@ -44,38 +36,19 @@ public class DailyGridFragment extends VerticalGridSupportFragment {
         setAdapter(mAdapter);
 
         setOnItemViewClickedListener((itemViewHolder, item, rowViewHolder, row) -> {
-            if (item instanceof DailyList) {
-                DailyList dailyList = (DailyList) item;
-                if (presenter != null) {
-                    int playState = presenter.playState(dailyList);
-                    if (playState == -1) {
-                        ToastUtils.showLong("时间未到");
-                    } else if (playState == 0) {
-                        RouteManager.goDailyVideoActivity(getContext(), JSON.toJSONString(dailyList));
-                    } else if (playState == 1) {
-                        ToastUtils.showLong("时间已过");
-                    }
-                }
-
+            if (item instanceof Daily) {
+                Daily daily = (Daily) item;
+                RouteManager.goDailyVideoActivity(getContext(), JSON.toJSONString(daily));
             }
         });
-        refreshView();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDailyUpdateEvent(DailyUpdateEvent event) {
-        if (event.type == 1) {
-            refreshView();
-        }
-    }
-
-    public void refreshView() {
-        List<DailyList> dailyDataContent = HomeActivity.dailyDataContent;
-        if (dailyDataContent != null && dailyDataContent.size() > 0) {
-            if (mAdapter != null) {
+    private void refreshView() {
+        if (dailyList != null && dailyList.size() > 0) {
+            if (mAdapter != null && dailyPresenter != null) {
                 prepareEntranceTransition();
                 mAdapter.clear();
-                mAdapter.addAll(0, dailyDataContent);
+                mAdapter.addAll(0, dailyList);
                 startEntranceTransition();
             }
         } else {
@@ -87,26 +60,9 @@ public class DailyGridFragment extends VerticalGridSupportFragment {
         }
     }
 
-    public void setPresenter(DailyPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
-
-    public void refreshCountdown() {
-        List<DailyList> dailyDataContent = HomeActivity.dailyDataContent;
-        if (dailyDataContent != null && dailyDataContent.size() > 0) {
-            if (mAdapter != null && mAdapter.size() == HomeActivity.dailyDataContent.size()) {
-//                prepareEntranceTransition();
-                for (int i = 0; i < HomeActivity.dailyDataContent.size(); i++) {
-                    mAdapter.replace(i, HomeActivity.dailyDataContent.get(i));
-                }
-//                startEntranceTransition();
-            }
-        }
+    void updateData(DailyPresenter dailyPresenter, List<Daily> dailyList) {
+        this.dailyList = dailyList;
+        this.dailyPresenter = dailyPresenter;
+        refreshView();
     }
 }

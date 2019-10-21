@@ -3,7 +3,7 @@ package com.easy.tvbox.ui.daily;
 import android.content.Context;
 
 import com.easy.tvbox.base.AbstractObjectPresenter;
-import com.easy.tvbox.bean.DailyList;
+import com.easy.tvbox.bean.Daily;
 
 public class DailyGridAdapter extends AbstractObjectPresenter<DailyGridView> {
 
@@ -19,9 +19,9 @@ public class DailyGridAdapter extends AbstractObjectPresenter<DailyGridView> {
 
     @Override
     public void onBindViewHolder(Object item, DailyGridView dailyGridView) {
-        if (item instanceof DailyList) {
-            DailyList dailyList = (DailyList) item;
-            dailyGridView.updateUi(dailyList);
+        if (item instanceof Daily) {
+            Daily daily = (Daily) item;
+            dailyGridView.updateUi(daily);
         }
     }
 }
