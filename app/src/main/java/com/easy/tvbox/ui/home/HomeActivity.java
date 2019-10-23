@@ -1,5 +1,6 @@
 package com.easy.tvbox.ui.home;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -7,20 +8,28 @@ import android.view.View;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.fastjson.JSON;
+import com.easy.tvbox.BuildConfig;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.Constant;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Account;
+import com.easy.tvbox.bean.AppVersion;
 import com.easy.tvbox.bean.LiveData;
 import com.easy.tvbox.bean.LiveList;
 import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.HomeBinding;
 import com.easy.tvbox.event.LiveUpdateEvent;
+import com.easy.tvbox.http.ProgressInfo;
+import com.easy.tvbox.http.ProgressListener;
+import com.easy.tvbox.http.ProgressManager;
 import com.easy.tvbox.mqtt.MqttSimple;
+import com.easy.tvbox.ui.test.Utils;
 import com.easy.tvbox.utils.ToastUtils;
+import com.easy.tvbox.view.AppUpdateDialog;
 import com.owen.focus.FocusBorder;
 import com.zhouwei.mzbanner.holder.MZHolderCreator;
 
@@ -41,9 +50,10 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     List<String> bannerImages = new ArrayList<>();
     Account account;
     public static List<LiveList> liveDataContent = new ArrayList<>();
-
+    String downloadPath;
     FocusBorder mFocusBorder;
     MqttSimple mqttSimple;
+    AppUpdateDialog dialog;
 
     @Override
     public int getLayoutId() {
@@ -119,6 +129,10 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         mFocusBorder.setVisible(true);
         onMoveFocusBorder(mViewBinding.rlLive, 1.1f);
         initData();
+
+        String fileName = "tvBox.apk";
+        downloadPath = Utils.getSaveFilePath(Constant.TYPE_APP, this) + fileName;
+        presenter.timeCheckVersion();
     }
 
 
@@ -154,6 +168,33 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     @Override
     public void onBackPressed() {
         //不能删
+    }
+
+    private ProgressListener getDownloadListener() {
+        return new ProgressListener() {
+            @Override
+            public void onProgress(ProgressInfo progressInfo) {
+                int progress = progressInfo.getPercent();
+//                Log.d("DownLoad", "--Download-- " + progress + " %  " + progressInfo.getSpeed() + " byte/s  " + progressInfo.toString());
+                if (dialog != null) {
+                    dialog.setProgress(progress);
+                }
+                if (progressInfo.isFinish()) {
+                    if (dialog != null) {
+                        dialog.setProgress(100);
+                        dialog.dismiss();
+                    }
+                    if (downloadPath != null) {
+                        Utils.install(mContext, BuildConfig.APPLICATION_ID, downloadPath);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(long id, Exception e) {
+                Log.d("DownLoad", e.getMessage());
+            }
+        };
     }
 
     @Override
@@ -194,5 +235,34 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         if (liveList != null) {
             RouteManager.goVideoActivity(HomeActivity.this, JSON.toJSONString(liveList));
         }
+    }
+
+    @Override
+    public void checkUpdateCallback(Respond<AppVersion> respond) {
+        if (respond.isOk()) {
+            AppVersion appVersion = respond.getObj();
+            if (appVersion != null) {
+                String currentVersion = BuildConfig.VERSION_NAME.replace(".", "");
+                String lastVersion = currentVersion;
+                if (!TextUtils.isEmpty(appVersion.getVersion())) {
+                    lastVersion = appVersion.getVersion().replace(".", "");
+                }
+                int cVersion = Utils.formatInt(currentVersion);
+                int cVersionName = Utils.formatInt(lastVersion);
+                if (Constant.TEST_UPDATE || cVersionName > cVersion) {
+                    showAppVersionDialog(appVersion);
+                }
+            }
+        }
+    }
+
+    private void showAppVersionDialog(AppVersion appVersion) {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+        dialog = new AppUpdateDialog(this);
+        dialog.show();
+        ProgressManager.getInstance().addResponseListener(appVersion.getDownloadUrl(), getDownloadListener());
+        ProgressManager.getInstance().startDownload(downloadPath, appVersion.getDownloadUrl());
     }
 }

@@ -99,7 +99,7 @@ public class MqttSimple {
 
     private void subscribeToTopic(String shopId) {
         try {
-            String[] topicFilter = {Config.topic + shopId};
+            String[] topicFilter = {Config.topic +"/BOX/"+ shopId};
             final int[] qos = {1};
             mqttAndroidClient.subscribe(topicFilter, qos, null, new IMqttActionListener() {
                 @Override

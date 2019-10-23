@@ -2,6 +2,9 @@ package com.easy.tvbox.ui.daily;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.leanback.app.VerticalGridSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
@@ -9,6 +12,7 @@ import androidx.leanback.widget.FocusHighlight;
 import androidx.leanback.widget.VerticalGridPresenter;
 
 import com.alibaba.fastjson.JSON;
+import com.easy.tvbox.R;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Daily;
 

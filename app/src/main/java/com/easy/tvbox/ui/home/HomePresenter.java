@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.Account;
+import com.easy.tvbox.bean.AppVersion;
 import com.easy.tvbox.bean.LiveData;
 import com.easy.tvbox.bean.LiveList;
 import com.easy.tvbox.bean.Respond;
@@ -30,6 +31,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
 
     Disposable liveTimeRequestDisposable;
     Disposable liveCountDownDisposable;
+    Disposable timeCheckVersionDisposable;
 
     @Inject
     public HomePresenter() {
@@ -239,5 +241,70 @@ public class HomePresenter extends BasePresenter<HomeView> {
         if (liveCountDownDisposable != null && !liveCountDownDisposable.isDisposed()) {
             liveCountDownDisposable.dispose();
         }
+    }
+
+    public void timeCheckVersion() {
+        //每10分支更新一次数据
+        Observable.interval(30, 30, TimeUnit.MINUTES)
+                .observeOn(Schedulers.io())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onSubscribe(Disposable disposable) {
+                        timeCheckVersionDisposable = disposable;
+                    }
+
+                    @Override
+                    public void onNext(Long number) {
+                        requestVersion();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //取消订阅
+                        timeCheckVersionCancel();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        //取消订阅
+                        timeCheckVersionCancel();
+                    }
+                });
+    }
+
+
+    /**
+     * 取消订阅
+     */
+    public void timeCheckVersionCancel() {
+        if (timeCheckVersionDisposable != null && !timeCheckVersionDisposable.isDisposed()) {
+            timeCheckVersionDisposable.dispose();
+        }
+    }
+
+    public void requestVersion() {
+        Disposable disposable = requestStore.requestVersion()
+                .doOnSuccess(respond -> {
+                    if (respond.isOk()) {
+                        String body = respond.getBody();
+                        if (!TextUtils.isEmpty(body)) {
+                            try {
+                                AppVersion shopList = JSON.parseObject(body, AppVersion.class);
+                                respond.setObj(shopList);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(respond -> {
+                            mView.checkUpdateCallback(respond);
+                        },
+                        throwable -> {
+                            Respond respond = getThrowableRespond(throwable);
+                            mView.checkUpdateCallback(respond);
+                        });
+        mCompositeSubscription.add(disposable);
     }
 }

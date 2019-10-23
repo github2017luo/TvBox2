@@ -9,8 +9,6 @@ import android.widget.ImageView;
 
 import androidx.leanback.widget.BaseCardView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.easy.tvbox.R;
 import com.easy.tvbox.bean.Daily;
 import com.easy.tvbox.utils.DimensUtils;
@@ -25,7 +23,7 @@ public class DailyGridView extends BaseCardView {
         setFocusableInTouchMode(true);
         int[] screens = DimensUtils.getWidthHeight(context);
         width = (screens[0] - DimensUtils.dp2px(context, 120)) / 2;
-        height = width / 2 + DimensUtils.dp2px(context, 60);
+        height = width * 305 / 800;
     }
 
     public void updateUi(Daily daily) {
@@ -36,11 +34,12 @@ public class DailyGridView extends BaseCardView {
         rootView.setLayoutParams(layoutParams);
 
         ImageView ivIcon = findViewById(R.id.ivIcon);
-        Glide.with(getContext())
-                .load(daily.getImageUrl())
-                .error(R.drawable.error_icon)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .placeholder(R.drawable.error_icon)
-                .into(ivIcon);
+        ivIcon.setImageResource(daily.getImageResource());
+//        Glide.with(getContext())
+//                .load(daily.getImageUrl())
+//                .error(R.drawable.error_icon)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .placeholder(R.drawable.error_icon)
+//                .into(ivIcon);
     }
 }

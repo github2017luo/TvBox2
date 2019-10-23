@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Daily {
     List<DailyItem> dailyItems;
-    String imageUrl;
+    int imageResource;
 
     public List<DailyItem> getDailyItems() {
         return dailyItems;
@@ -14,11 +14,11 @@ public class Daily {
         this.dailyItems = dailyItems;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public int getImageResource() {
+        return imageResource;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageResource(int imageResource) {
+        this.imageResource = imageResource;
     }
 }

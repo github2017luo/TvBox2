@@ -11,10 +11,8 @@ import com.easy.tvbox.bean.AppVersion;
 import com.easy.tvbox.bean.CheckLogin;
 import com.easy.tvbox.bean.ImageCode;
 import com.easy.tvbox.bean.Respond;
-import com.easy.tvbox.bean.Shop;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +26,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class LoginPresenter extends BasePresenter<LoginView> {
 
-    Disposable requestDisposable;
+    Disposable timeCheckLoginDisposable, timeCheckVersionDisposable;
 
     @Inject
     public LoginPresenter() {
@@ -71,14 +69,14 @@ public class LoginPresenter extends BasePresenter<LoginView> {
      * 定时检测是否登录
      */
     public void timeCheckLogin(String key) {
-        requestCancel();
+        timeCheckLoginCancel();
         //每10分支更新一次数据
         Observable.interval(0, 5, TimeUnit.SECONDS)
                 .observeOn(Schedulers.io())
                 .subscribe(new Observer<Long>() {
                     @Override
                     public void onSubscribe(Disposable disposable) {
-                        requestDisposable = disposable;
+                        timeCheckLoginDisposable = disposable;
                     }
 
                     @Override
@@ -88,14 +86,12 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
                     @Override
                     public void onError(Throwable e) {
-                        //取消订阅
-                        requestCancel();
+                        timeCheckLoginCancel();
                     }
 
                     @Override
                     public void onComplete() {
-                        //取消订阅
-                        requestCancel();
+                        timeCheckLoginCancel();
                     }
                 });
     }
@@ -103,9 +99,9 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     /**
      * 取消订阅
      */
-    public void requestCancel() {
-        if (requestDisposable != null && !requestDisposable.isDisposed()) {
-            requestDisposable.dispose();
+    public void timeCheckLoginCancel() {
+        if (timeCheckLoginDisposable != null && !timeCheckLoginDisposable.isDisposed()) {
+            timeCheckLoginDisposable.dispose();
         }
     }
 
@@ -121,7 +117,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                             try {
                                 CheckLogin checkLogin = JSON.parseObject(body, CheckLogin.class);
                                 respond.setObj(checkLogin);
-                                requestCancel();
+                                timeCheckLoginCancel();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -170,6 +166,45 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                             mView.loginCallback(respond);
                         });
         mCompositeSubscription.add(disposable);
+    }
+
+    public void timeCheckVersion() {
+        //每10分支更新一次数据
+        Observable.interval(0, 30, TimeUnit.MINUTES)
+                .observeOn(Schedulers.io())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onSubscribe(Disposable disposable) {
+                        timeCheckVersionDisposable = disposable;
+                    }
+
+                    @Override
+                    public void onNext(Long number) {
+                        requestVersion();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //取消订阅
+                        timeCheckVersionCancel();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        //取消订阅
+                        timeCheckVersionCancel();
+                    }
+                });
+    }
+
+
+    /**
+     * 取消订阅
+     */
+    public void timeCheckVersionCancel() {
+        if (timeCheckVersionDisposable != null && !timeCheckVersionDisposable.isDisposed()) {
+            timeCheckVersionDisposable.dispose();
+        }
     }
 
     public void requestVersion() {

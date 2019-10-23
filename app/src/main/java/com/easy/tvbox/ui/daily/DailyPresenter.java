@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.easy.tvbox.R;
 import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.bean.Daily;
 import com.easy.tvbox.bean.DailyItem;
@@ -36,15 +37,13 @@ public class DailyPresenter extends BasePresenter<DailyView> {
             List<Daily> dailyList = new ArrayList<>();
             if (dailyList1 != null && dailyList1.size() > 0) {
                 Daily daily = new Daily();
-                DailyItem dailyItem = dailyList1.get(0);
-                daily.setImageUrl(dailyItem.getFaceurl());
+                daily.setImageResource(R.drawable.han);
                 daily.setDailyItems(dailyList1);
                 dailyList.add(daily);
             }
             if (dailyList2 != null && dailyList2.size() > 0) {
                 Daily daily = new Daily();
-                DailyItem dailyItem = dailyList2.get(0);
-                daily.setImageUrl(dailyItem.getFaceurl());
+                daily.setImageResource(R.drawable.meng);
                 daily.setDailyItems(dailyList2);
                 dailyList.add(daily);
             }

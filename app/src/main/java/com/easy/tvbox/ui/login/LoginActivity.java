@@ -97,7 +97,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
             }
         });
         networkChange(NetworkUtils.isNetConnected(LoginActivity.this));
-        loginPresenter.requestVersion();
+        loginPresenter.timeCheckVersion();
     }
 
 
@@ -173,7 +173,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
             @Override
             public void onProgress(ProgressInfo progressInfo) {
                 int progress = progressInfo.getPercent();
-                Log.d("DownLoad", "--Download-- " + progress + " %  " + progressInfo.getSpeed() + " byte/s  " + progressInfo.toString());
+//                Log.d("DownLoad", "--Download-- " + progress + " %  " + progressInfo.getSpeed() + " byte/s  " + progressInfo.toString());
                 if (dialog != null) {
                     dialog.setProgress(progress);
                 }
@@ -214,8 +214,8 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
 
     @Override
     protected void onDestroy() {
+        loginPresenter.timeCheckLoginCancel();
         super.onDestroy();
-        loginPresenter.requestCancel();
     }
 
     @Override
@@ -238,6 +238,9 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
     }
 
     private void showAppVersionDialog(AppVersion appVersion) {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
         dialog = new AppUpdateDialog(this);
         dialog.show();
         ProgressManager.getInstance().addResponseListener(appVersion.getDownloadUrl(), getDownloadListener());
