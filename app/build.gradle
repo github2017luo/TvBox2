@@ -7,8 +7,8 @@ android {
         applicationId "com.easy.tvbox"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 6
-        versionName "0.0.4"
+        versionCode 8
+        versionName "0.0.6"
 
         multiDexEnabled true
         javaCompileOptions {
@@ -17,7 +17,7 @@ android {
             }
         }
         ndk {
-            abiFilters "armeabi-v7a","arm64","x86"
+            abiFilters "armeabi-v7a", "arm64", "x86"
         }
     }
     buildTypes {
@@ -56,8 +56,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    api (name: 'AlivcPlayer-3.4.9', ext: 'aar')
-    api (name: 'AlivcReporter-1.2', ext: 'aar')
+    api(name: 'AlivcPlayer-3.4.9', ext: 'aar')
+    api(name: 'AlivcReporter-1.2', ext: 'aar')
 
     api 'com.aliyun.dpa:oss-android-sdk:+'
 

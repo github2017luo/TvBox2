@@ -3,7 +3,6 @@ package com.easy.tvbox.ui.video;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 
@@ -12,7 +11,6 @@ import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
-import com.easy.tvbox.base.Constant;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.Daily;
@@ -33,7 +31,6 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -64,7 +61,9 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     @Override
     public void networkChange(boolean isConnect) {
-
+        if(isConnect && player!=null){
+            player.retry();
+        }
     }
 
     @Override
@@ -95,20 +94,6 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         }
         initExoPlayer();
         findPlayPosition(dailyItems, 0);
-
-        if (Constant.IS_DEBUG) {
-            mViewBinding.btnTest.setVisibility(View.VISIBLE);
-            mViewBinding.btnTest.setOnClickListener(v -> {
-                i++;
-                if (i >= dailyItems.size()) {
-                    i = 0;
-                }
-                MtMessage mtMessage = new MtMessage();
-                mtMessage.setVid(dailyItems.get(i).getVid());
-                mtMessage.setTimer(i + 10);
-                EventBus.getDefault().post(mtMessage);
-            });
-        }
     }
 
     private void initExoPlayer() {

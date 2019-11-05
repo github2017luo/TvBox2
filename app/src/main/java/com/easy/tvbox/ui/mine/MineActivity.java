@@ -3,6 +3,7 @@ package com.easy.tvbox.ui.mine;
 import android.util.TypedValue;
 import android.view.View;
 
+import com.easy.tvbox.BuildConfig;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
@@ -17,6 +18,7 @@ import com.easy.tvbox.ui.home.HomeActivity;
 import com.easy.tvbox.utils.CommonUtils;
 import com.owen.focus.FocusBorder;
 
+import org.greenrobot.essentials.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
@@ -103,7 +105,7 @@ public class MineActivity extends BaseActivity<MineBinding> implements MineView 
         mViewBinding.tvNo.setText("编号: " + account.getId());
         mViewBinding.tvPhone.setText("手机号: " + account.getPhone());
         mViewBinding.tvHospital.setText("归属医院: " + account.getShopName());
-        mViewBinding.tvIp.setText("网络信息: " + CommonUtils.getIp(this));
+        mViewBinding.tvIp.setText("当前版本: " + BuildConfig.VERSION_NAME);
     }
 
     @Override
