@@ -47,7 +47,6 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     PlayerView playerView;
     ExoPlayer player;
     Player.EventListener eventListener;
-    int i = -1;
 
     @Override
     public int getLayoutId() {
@@ -137,6 +136,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                         break;
                     case Player.STATE_ENDED:
                         stateString = "ExoPlayer.STATE_ENDED     -";
+                        finish();
                         break;
                     default:
                         stateString = "UNKNOWN_STATE             -";

@@ -67,7 +67,7 @@ public class DailyActivity extends BaseActivity<DailyBinding> implements DailyVi
     public void dailyCallback(List<Daily> daily) {
         if (daily != null && daily.size() > 0) {
             if (dailyGridFragment != null) {
-                dailyGridFragment.updateData(presenter, daily);
+                dailyGridFragment.updateData(daily);
             }
         }
     }

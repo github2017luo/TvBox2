@@ -1,10 +1,6 @@
 package com.easy.tvbox.ui.daily;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.leanback.app.VerticalGridSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
@@ -15,15 +11,16 @@ import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Daily;
+import com.easy.tvbox.utils.ToastUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class DailyGridFragment extends VerticalGridSupportFragment {
 
     private ArrayObjectAdapter mAdapter;
-    List<Daily> dailyList;
-    DailyPresenter dailyPresenter;
+    List<Daily> dailyList = new ArrayList<>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,31 +39,43 @@ public class DailyGridFragment extends VerticalGridSupportFragment {
         setOnItemViewClickedListener((itemViewHolder, item, rowViewHolder, row) -> {
             if (item instanceof Daily) {
                 Daily daily = (Daily) item;
+                if(daily.getDailyItems()==null){
+                    ToastUtils.showShort("暂无数据");
+                    return;
+                }
                 RouteManager.goDailyVideoActivity(getContext(), JSON.toJSONString(daily));
             }
         });
+        refreshView();
     }
 
     private void refreshView() {
-        if (dailyList != null && dailyList.size() > 0) {
-            if (mAdapter != null && dailyPresenter != null) {
-                prepareEntranceTransition();
-                mAdapter.clear();
-                mAdapter.addAll(0, dailyList);
-                startEntranceTransition();
-            }
-        } else {
-            Activity activity = getActivity();
-            if (activity instanceof DailyActivity) {
-                DailyActivity dailyActivity = (DailyActivity) activity;
-                dailyActivity.setNoData();
-            }
+        Daily han = new Daily();
+        han.setImageResource(R.drawable.han);
+        dailyList.add(han);
+
+        Daily meng = new Daily();
+        meng.setImageResource(R.drawable.meng);
+        dailyList.add(meng);
+
+        if (mAdapter != null) {
+            prepareEntranceTransition();
+            mAdapter.clear();
+            mAdapter.addAll(0, dailyList);
+            startEntranceTransition();
         }
     }
 
-    void updateData(DailyPresenter dailyPresenter, List<Daily> dailyList) {
-        this.dailyList = dailyList;
-        this.dailyPresenter = dailyPresenter;
-        refreshView();
+    void updateData(List<Daily> newData) {
+        if (newData != null && newData.size() > 0) {
+            for (Daily temp : newData) {
+                for (Daily daily : dailyList) {
+                    if (daily.getImageResource() == temp.getImageResource()) {
+                        daily.setDailyItems(temp.getDailyItems());
+                    }
+                }
+            }
+            mAdapter.notifyAll();
+        }
     }
 }
