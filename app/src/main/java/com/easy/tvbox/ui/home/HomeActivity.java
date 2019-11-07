@@ -161,7 +161,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 mViewBinding.banner.setIndicatorVisible(true);
             }
         } else {
-            ToastUtils.showLong(respond.getMessage());
+            ToastUtils.showLong("轮播图失败：" + respond.toString());
         }
     }
 

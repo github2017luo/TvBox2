@@ -19,7 +19,7 @@ public class ErrorRespond<T> implements Respond<T> {
         if (error != null) {
             return error.getMessage();
         }
-        return null;
+        return "Tv端默认错误值";
     }
 
     @Override
@@ -46,5 +46,14 @@ public class ErrorRespond<T> implements Respond<T> {
 
     public void setOk(boolean ok) {
         isOk = ok;
+    }
+
+    @Override
+    public String toString() {
+        return "ErrorRespond{" +
+                "body='" + body + '\'' +
+                ", error=" + error +
+                ", isOk=" + isOk +
+                '}';
     }
 }

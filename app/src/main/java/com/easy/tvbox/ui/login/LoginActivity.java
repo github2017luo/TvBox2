@@ -82,11 +82,9 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
                 account.setShopNo("S0001");
                 DataManager.getInstance().login(account);
             }
-            if (account != null) {
-                RouteManager.goHomeActivity(LoginActivity.this);
-                finish();
-                return;
-            }
+            RouteManager.goHomeActivity(LoginActivity.this);
+            finish();
+            return;
         }
         mViewBinding.tvRefresh.setOnClickListener(v -> {
             loginPresenter.requestQrCode();
