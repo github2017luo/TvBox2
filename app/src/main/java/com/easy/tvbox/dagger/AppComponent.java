@@ -5,6 +5,7 @@ import com.easy.tvbox.ui.album.AlbumActivity;
 import com.easy.tvbox.ui.album.AlbumListActivity;
 import com.easy.tvbox.ui.daily.DailyActivity;
 import com.easy.tvbox.ui.home.HomeActivity;
+import com.easy.tvbox.ui.launcher.LauncherActivity;
 import com.easy.tvbox.ui.live.LiveActivity;
 import com.easy.tvbox.ui.login.LoginActivity;
 import com.easy.tvbox.ui.mine.MineActivity;
@@ -55,4 +56,6 @@ public interface AppComponent {
     void inject(AlbumActivity activity);
 
     void inject(AlbumListActivity activity);
+
+    void inject(LauncherActivity activity);
 }

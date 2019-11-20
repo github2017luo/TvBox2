@@ -20,16 +20,6 @@ import com.easy.tvbox.ui.video.MusicVideoActivity;
 import com.easy.tvbox.ui.video.VideoActivity;
 
 public class RouteManager {
-    public static final String HOME = "/HomeActivity";
-    public static final String LOGIN = "/LoginActivity";
-    public static final String VIDEO = "/VideoActivity";
-    public static final String UPDATE_PHONE = "/UpdatePhoneActivity";
-    public static final String MUSIC = "/MusicActivity";
-    public static final String MUSIC_DETAIL = "/MusicDetailActivity";
-    public static final String MINE = "/MineActivity";
-    public static final String LIVE = "/LiveActivity";
-    public static final String DAILY = "/DailyActivity";
-    public static final String MUSIC_VIDEO = "/MusicVideoActivity";
 
     public static void goMusicDetailActivity(Context context, int position) {
         Intent intent = new Intent(context, MusicDetailActivity.class);
