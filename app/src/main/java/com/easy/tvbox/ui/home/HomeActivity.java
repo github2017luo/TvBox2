@@ -42,7 +42,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-//@Route(path = RouteManager.HOME, name = "首页")
 public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView {
 
     @Inject
@@ -104,8 +103,8 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 .build(this);
 
         mViewBinding.rlLive.setOnClickListener(v -> {
-            RouteManager.goLiveActivity(HomeActivity.this);
-            EventBus.getDefault().post(new LiveUpdateEvent(0));
+            RouteManager.goVideoActivity(HomeActivity.this,"http://mobile.hxsoft.net/live/show.m3u8");
+//            EventBus.getDefault().post(new LiveUpdateEvent(0));
         });
 
         mViewBinding.rlLive.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));

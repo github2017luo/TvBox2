@@ -4,6 +4,7 @@ buildscript {
     repositories {
         maven { url "http://objectbox.net/beta-repo/" }
         maven { url "https://repo.eclipse.org/content/repositories/paho-snapshots/" }
+        maven { url "http://maven.aliyun.com/nexus/content/repositories/releases" }
         google()
         jcenter()
 
@@ -22,6 +23,7 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        maven { url "http://maven.aliyun.com/nexus/content/repositories/releases" }
     }
 }
 

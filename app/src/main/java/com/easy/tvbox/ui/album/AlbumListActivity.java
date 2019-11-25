@@ -1,12 +1,9 @@
 package com.easy.tvbox.ui.album;
 
 import android.content.Intent;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.alivc.player.AliVcMediaPlayer;
-import com.alivc.player.MediaPlayer;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
@@ -40,7 +37,7 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
     AlbumListAdapter adapter;
     Account account;
     String uid;
-    AliVcMediaPlayer mPlayer;
+//    AliVcMediaPlayer mPlayer;
     List<MusicList> musicLists;
     int currentPosition = 0;//播放的位置
     boolean isPlaying;
@@ -108,14 +105,14 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
             @Override
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
                 if (musicLists != null && musicLists.size() > 0 && position < musicLists.size()) {
-                    if (mPlayer != null) {
-                        if (mPlayer.isPlaying()) {
-                            mPlayer.stop();
-                            currentPlayingMusic = null;
-                            currentPosition = 0;
-                            refreshView(true);
-                        }
-                    }
+//                    if (mPlayer != null) {
+//                        if (mPlayer.isPlaying()) {
+//                            mPlayer.stop();
+//                            currentPlayingMusic = null;
+//                            currentPosition = 0;
+//                            refreshView(true);
+//                        }
+//                    }
                     RouteManager.goMusicDetailActivity(AlbumListActivity.this, position);
                 }
             }
@@ -124,19 +121,19 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
         mViewBinding.ivPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPlayer != null) {
-                    if (mPlayer.isPlaying()) {
-                        mPlayer.pause();
-                        refreshView(true);
-                    } else {
-                        if (currentPlayingMusic != null) {
-                            mPlayer.play();
-                            refreshView(false);
-                        } else {
-                            startPayer();
-                        }
-                    }
-                }
+//                if (mPlayer != null) {
+//                    if (mPlayer.isPlaying()) {
+//                        mPlayer.pause();
+//                        refreshView(true);
+//                    } else {
+//                        if (currentPlayingMusic != null) {
+//                            mPlayer.play();
+//                            refreshView(false);
+//                        } else {
+//                            startPayer();
+//                        }
+//                    }
+//                }
             }
         });
 
@@ -156,10 +153,10 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
         if (currentPlayingMusic != null) {
             MusicInfo musicInfo = currentPlayingMusic.getMusicInfo();
             if (musicInfo != null) {
-                if (mPlayer != null) {
-                    mPlayer.prepareAndPlay(musicInfo.getPlayUrl());
-                    refreshView(false);
-                }
+//                if (mPlayer != null) {
+//                    mPlayer.prepareAndPlay(musicInfo.getPlayUrl());
+//                    refreshView(false);
+//                }
             }
         }
     }
@@ -194,85 +191,85 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
     }
 
     private void initPayer() {
-        mPlayer = new AliVcMediaPlayer(this, mViewBinding.surfaceView);
-
-        mPlayer.setPreparedListener(new MediaPlayer.MediaPlayerPreparedListener() {
-            @Override
-            public void onPrepared() {
-                //准备完成时触发
-                Log.d("VideoActivity", "准备完成时触发");
-            }
-        });
-        mPlayer.setPcmDataListener(new MediaPlayer.MediaPlayerPcmDataListener() {
-            @Override
-            public void onPcmData(byte[] bytes, int i) {
-                //音频数据回调接口，在需要处理音频时使用，如拿到视频音频，然后绘制音柱。
-//                Log.d("VideoActivity", "音频数据回调接口，在需要处理音频时使用，如拿到视频音频，然后绘制音柱");
-            }
-        });
-        mPlayer.setFrameInfoListener(new MediaPlayer.MediaPlayerFrameInfoListener() {
-            @Override
-            public void onFrameInfoListener() {
-                //首帧显示时触发
-                Log.d("VideoActivity", "首帧显示时触发");
-                isPlaying = true;
-                mViewBinding.ivPlayer.setImageResource(R.drawable.button_player_pause);
-            }
-        });
-        mPlayer.setErrorListener(new MediaPlayer.MediaPlayerErrorListener() {
-            @Override
-            public void onError(int i, String msg) {
-                //错误发生时触发，错误码见接口文档
-                Log.d("VideoActivity", "错误发生时触发，错误码见接口文档:" + i + "\n" + msg);
-                isPlaying = false;
-                mViewBinding.ivPlayer.setImageResource(R.drawable.button_stop_pause);
-            }
-        });
-        mPlayer.setCompletedListener(new MediaPlayer.MediaPlayerCompletedListener() {
-            @Override
-            public void onCompleted() {
-                //视频正常播放完成时触发
-                Log.d("VideoActivity", "视频正常播放完成时触发");
-                currentPosition++;
-                if (currentPosition >= musicLists.size()) {
-                    isPlaying = false;
-                    mViewBinding.ivPlayer.setImageResource(R.drawable.button_stop_pause);
-                } else {
-                    startPayer();
-                }
-            }
-        });
-        mPlayer.setSeekCompleteListener(new MediaPlayer.MediaPlayerSeekCompleteListener() {
-            @Override
-            public void onSeekCompleted() {
-                //视频seek完成时触发
-                Log.d("VideoActivity", "视频seek完成时触发");
-            }
-        });
-        mPlayer.setStoppedListener(new MediaPlayer.MediaPlayerStoppedListener() {
-            @Override
-            public void onStopped() {
-                //使用stop接口时触发
-                Log.d("VideoActivity", "使用stop接口时触发");
-                isPlaying = false;
-                mViewBinding.ivPlayer.setImageResource(R.drawable.button_stop_pause);
-            }
-        });
-        mPlayer.setCircleStartListener(new MediaPlayer.MediaPlayerCircleStartListener() {
-            @Override
-            public void onCircleStart() {
-                //循环播放开始
-                Log.d("VideoActivity", "循环播放开始");
-            }
-        });
-        //SEI数据回调
-        mPlayer.setSEIDataListener(new MediaPlayer.MediaPlayerSEIDataListener() {
-            @Override
-            public void onSeiUserUnregisteredData(String data) {
-                //解析SEI数据，在这里可以展示题目信息或答案信息
-                Log.d("VideoActivity", "解析SEI数据，在这里可以展示题目信息或答案信息");
-            }
-        });
+//        mPlayer = new AliVcMediaPlayer(this, mViewBinding.surfaceView);
+//
+//        mPlayer.setPreparedListener(new MediaPlayer.MediaPlayerPreparedListener() {
+//            @Override
+//            public void onPrepared() {
+//                //准备完成时触发
+//                Log.d("VideoActivity", "准备完成时触发");
+//            }
+//        });
+//        mPlayer.setPcmDataListener(new MediaPlayer.MediaPlayerPcmDataListener() {
+//            @Override
+//            public void onPcmData(byte[] bytes, int i) {
+//                //音频数据回调接口，在需要处理音频时使用，如拿到视频音频，然后绘制音柱。
+////                Log.d("VideoActivity", "音频数据回调接口，在需要处理音频时使用，如拿到视频音频，然后绘制音柱");
+//            }
+//        });
+//        mPlayer.setFrameInfoListener(new MediaPlayer.MediaPlayerFrameInfoListener() {
+//            @Override
+//            public void onFrameInfoListener() {
+//                //首帧显示时触发
+//                Log.d("VideoActivity", "首帧显示时触发");
+//                isPlaying = true;
+//                mViewBinding.ivPlayer.setImageResource(R.drawable.button_player_pause);
+//            }
+//        });
+//        mPlayer.setErrorListener(new MediaPlayer.MediaPlayerErrorListener() {
+//            @Override
+//            public void onError(int i, String msg) {
+//                //错误发生时触发，错误码见接口文档
+//                Log.d("VideoActivity", "错误发生时触发，错误码见接口文档:" + i + "\n" + msg);
+//                isPlaying = false;
+//                mViewBinding.ivPlayer.setImageResource(R.drawable.button_stop_pause);
+//            }
+//        });
+//        mPlayer.setCompletedListener(new MediaPlayer.MediaPlayerCompletedListener() {
+//            @Override
+//            public void onCompleted() {
+//                //视频正常播放完成时触发
+//                Log.d("VideoActivity", "视频正常播放完成时触发");
+//                currentPosition++;
+//                if (currentPosition >= musicLists.size()) {
+//                    isPlaying = false;
+//                    mViewBinding.ivPlayer.setImageResource(R.drawable.button_stop_pause);
+//                } else {
+//                    startPayer();
+//                }
+//            }
+//        });
+//        mPlayer.setSeekCompleteListener(new MediaPlayer.MediaPlayerSeekCompleteListener() {
+//            @Override
+//            public void onSeekCompleted() {
+//                //视频seek完成时触发
+//                Log.d("VideoActivity", "视频seek完成时触发");
+//            }
+//        });
+//        mPlayer.setStoppedListener(new MediaPlayer.MediaPlayerStoppedListener() {
+//            @Override
+//            public void onStopped() {
+//                //使用stop接口时触发
+//                Log.d("VideoActivity", "使用stop接口时触发");
+//                isPlaying = false;
+//                mViewBinding.ivPlayer.setImageResource(R.drawable.button_stop_pause);
+//            }
+//        });
+//        mPlayer.setCircleStartListener(new MediaPlayer.MediaPlayerCircleStartListener() {
+//            @Override
+//            public void onCircleStart() {
+//                //循环播放开始
+//                Log.d("VideoActivity", "循环播放开始");
+//            }
+//        });
+//        //SEI数据回调
+//        mPlayer.setSEIDataListener(new MediaPlayer.MediaPlayerSEIDataListener() {
+//            @Override
+//            public void onSeiUserUnregisteredData(String data) {
+//                //解析SEI数据，在这里可以展示题目信息或答案信息
+//                Log.d("VideoActivity", "解析SEI数据，在这里可以展示题目信息或答案信息");
+//            }
+//        });
     }
 
     @Override
@@ -302,9 +299,9 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
 
     @Override
     public void onDestroy() {
-        if (mPlayer != null) {
-            mPlayer.destroy();
-        }
+//        if (mPlayer != null) {
+//            mPlayer.destroy();
+//        }
         if (musicLists != null) {
             musicLists.clear();
         }

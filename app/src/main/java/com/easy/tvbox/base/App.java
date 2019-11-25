@@ -1,9 +1,7 @@
 package com.easy.tvbox.base;
 
 import android.app.Application;
-import android.content.Context;
 
-import com.alivc.player.AliVcMediaPlayer;
 import com.easy.tvbox.dagger.AppComponent;
 import com.easy.tvbox.dagger.DaggerAppComponent;
 import com.easy.tvbox.utils.ToastUtils;
@@ -18,8 +16,6 @@ public class App extends Application {
         super.onCreate();
         app = this;
         DataManager.getInstance().init(this);//数据库统一操作管理类初始化
-        AliVcMediaPlayer.init(getApplicationContext());
-//        ARouter.init(this); // 尽可能早，推荐在Application中初始化
         initComponent();
         ToastUtils.initToast(this);
     }

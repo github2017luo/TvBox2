@@ -14,12 +14,16 @@
             android:layout_height="205dp"
             android:background="@drawable/music_module_bg">
 
-            <SurfaceView
-                android:id="@+id/surfaceView"
+<!--            <SurfaceView-->
+<!--                android:id="@+id/surfaceView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_alignParentBottom="true"-->
+<!--                android:layout_gravity="center" />-->
+            <com.easy.aliplayer.view.AliyunVodPlayerView
+                android:id="@+id/videoView"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="center" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/tvPlayAll"

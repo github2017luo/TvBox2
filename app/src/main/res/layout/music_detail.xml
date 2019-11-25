@@ -103,12 +103,15 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="16dp" />
 
-                <SurfaceView
-                    android:id="@+id/surfaceView"
+                <!--                <SurfaceView-->
+                <!--                    android:id="@+id/surfaceView"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_gravity="center" />-->
+                <com.easy.aliplayer.view.AliyunVodPlayerView
+                    android:id="@+id/videoView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
-
+                    android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
