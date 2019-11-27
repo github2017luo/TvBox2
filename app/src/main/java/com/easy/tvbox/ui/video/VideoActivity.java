@@ -1,8 +1,10 @@
 package com.easy.tvbox.ui.video;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.aliyun.player.bean.ErrorInfo;
 import com.aliyun.player.source.UrlSource;
 import com.easy.aliplayer.view.AliyunVodPlayerView;
@@ -10,6 +12,8 @@ import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.DataManager;
+import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.LiveList;
 import com.easy.tvbox.bean.Respond;
 import com.easy.tvbox.databinding.VideoBinding;
@@ -64,8 +68,7 @@ public class VideoActivity extends BaseActivity<VideoBinding> implements VideoVi
 //            return;
 //        }
         initAliyunPlayerView();
-        startPayer("http://player.alicdn.com/video/aliyunmedia.mp4");
-//        initPayer();
+        startPayer("http://mobile.hxsoft.net/live/show.m3u8");
 //        presenter.getLivePlayUrl(liveData.getUid());
     }
 

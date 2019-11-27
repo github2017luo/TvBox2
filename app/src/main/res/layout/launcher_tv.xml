@@ -2,25 +2,70 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/llContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/box_screen"
+        android:clipChildren="false"
+        android:focusable="false"
         android:orientation="vertical"
-        android:gravity="center"
-        android:background="@color/white"
         android:paddingTop="30dp">
-        <Button
+
+        <LinearLayout
+            android:id="@+id/llGoIn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="goLogin"
-            android:text="登录"/>
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@+id/llGoSet"
+            android:focusable="true"
+            android:gravity="center"
+            android:nextFocusRight="@id/llGoSet"
+            android:nextFocusDown="@id/llGoSet"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-        <TextView
-            android:layout_width="270dp"
-            android:textColor="@color/background_gradient_start"
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:onClick="goLogin"
+                android:src="@drawable/home_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="进入"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llGoSet"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="这是桌面页面，点击登录进入登录页面，\n或者有网络自动跳到登录页面(故意延迟3秒然后跳如登录页面)"/>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:nextFocusLeft="@id/llGoIn"
+            android:nextFocusUp="@id/llGoIn"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-    </LinearLayout>
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:onClick="goLogin"
+                android:src="@drawable/set_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="设置"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </RelativeLayout>
 </layout>

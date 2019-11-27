@@ -1,5 +1,7 @@
 package com.easy.tvbox.ui.launcher;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.view.View;
 
 import com.easy.tvbox.R;
@@ -44,9 +46,16 @@ public class LauncherActivity extends BaseActivity<LauncherTvBinding> implements
 
     @Override
     public void initView() {
-    }
+        mViewBinding.llGoIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                ComponentName componet = new ComponentName(getPackageName(), cls);
+//                Intent intent = new Intent();
+//                intent.setComponent(componet);
+//                startActivity(intent);
+                finish();
 
-    public void goLogin(View view) {
-        RouteManager.goLoginActivity(this);
+            }
+        });
     }
 }

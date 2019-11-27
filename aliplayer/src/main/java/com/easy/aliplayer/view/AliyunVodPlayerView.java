@@ -113,7 +113,7 @@ public class AliyunVodPlayerView extends RelativeLayout implements ITheme {
     //锁定竖屏
     private LockPortraitListener mLockPortraitListener = null;
     //是否锁定全屏
-    private boolean mIsFullScreenLocked = false;
+    private boolean mIsFullScreenLocked = true;
     //当前屏幕模式
     private AliyunScreenMode mCurrentScreenMode = AliyunScreenMode.Small;
     //是不是在seek中
@@ -141,17 +141,14 @@ public class AliyunVodPlayerView extends RelativeLayout implements ITheme {
     //对外的各种事件监听
     private IPlayer.OnInfoListener mOutInfoListener = null;
     private IPlayer.OnErrorListener mOutErrorListener = null;
-    //    private IPlayer.OnRePlayListener mOutRePlayListener = null;
     private OnAutoPlayListener mOutAutoPlayListener = null;
     private IPlayer.OnPreparedListener mOutPreparedListener = null;
     private IPlayer.OnCompletionListener mOutCompletionListener = null;
     private IPlayer.OnSeekCompleteListener mOuterSeekCompleteListener = null;
     private OnChangeQualityListener mOutChangeQualityListener = null;
     private IPlayer.OnRenderingStartListener mOutFirstFrameStartListener = null;
-    private OnScreenCostingSingleTagListener mOnScreenCostingSingleTagListener = null;
     private OnScreenBrightnessListener mOnScreenBrightnessListener = null;
     private OnTimeExpiredErrorListener mOutTimeExpiredErrorListener = null;
-    //    private IPlayer.OnUrlTimeExpiredListener mOutUrlTimeExpiredListener = null;
     //对外view点击事件监听
     private OnPlayerViewClickListener mOnPlayerViewClickListener = null;
     // 连网断网监听

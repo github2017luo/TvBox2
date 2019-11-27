@@ -104,7 +104,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
 
         mViewBinding.rlLive.setOnClickListener(v -> {
             RouteManager.goVideoActivity(HomeActivity.this,"http://mobile.hxsoft.net/live/show.m3u8");
-//            EventBus.getDefault().post(new LiveUpdateEvent(0));
+            EventBus.getDefault().post(new LiveUpdateEvent(0));
         });
 
         mViewBinding.rlLive.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));

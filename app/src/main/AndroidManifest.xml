@@ -51,6 +51,7 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:screenOrientation="landscape"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize|stateHidden|stateUnchanged" />
 
         <provider
@@ -66,26 +67,32 @@
 
         <activity
             android:name=".ui.phone.UpdatePhoneActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
             android:name=".ui.home.HomeActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
             android:name=".ui.music.MusicActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
             android:name=".ui.music.MusicDetailActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
             android:name=".ui.mine.MineActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
             android:name=".ui.live.LiveActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.daily.DailyActivity"
@@ -93,22 +100,27 @@
 
         <activity
             android:name=".ui.video.VideoActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
             android:name=".ui.video.DailyVideoActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
             android:name=".ui.album.AlbumActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
             android:name=".ui.album.AlbumListActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
             android:name=".ui.video.MusicVideoActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
@@ -116,9 +128,11 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".PlaybackActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
         <activity
             android:name=".BrowseErrorActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
     </application>
 
