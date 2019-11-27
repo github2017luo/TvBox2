@@ -170,34 +170,31 @@ public class MusicFragment extends BaseFragment<MusicFragmentBinding> implements
             RouteManager.goAlbumActivity(getContext());
         });
         mViewBinding.tvAlbum.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.05f));
-        mViewBinding.ivPlayer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (videoId == 1) {
-                    if (mAliyunVodPlayerView != null) {
-                        if (mAliyunVodPlayerView.isPlaying()) {
-                            mAliyunVodPlayerView.pause();
-                            refreshView(true);
+        mViewBinding.ivPlayer.setOnClickListener(v -> {
+            if (videoId == 1) {
+                if (mAliyunVodPlayerView != null) {
+                    if (mAliyunVodPlayerView.isPlaying()) {
+                        mAliyunVodPlayerView.pause();
+                        refreshView(true);
+                    } else {
+                        if (currentPlayingMusic != null) {
+                            mAliyunVodPlayerView.startPlay();
+                            refreshView(false);
                         } else {
-                            if (currentPlayingMusic != null) {
-                                mAliyunVodPlayerView.startPlay();
-                                refreshView(false);
-                            } else {
-                                startPayer();
-                            }
+                            startPayer();
                         }
                     }
-                } else {
-                    if (mvLists != null && mvLists.size() > 0) {
-                        List<MusicInfo> musicInfos = new ArrayList<>();
-                        for (MusicList mvList : mvLists) {
-                            MusicInfo musicInfo = mvList.getMusicInfo();
-                            if (musicInfo != null) {
-                                musicInfos.add(musicInfo);
-                            }
+                }
+            } else {
+                if (mvLists != null && mvLists.size() > 0) {
+                    List<MusicInfo> musicInfos = new ArrayList<>();
+                    for (MusicList mvList : mvLists) {
+                        MusicInfo musicInfo = mvList.getMusicInfo();
+                        if (musicInfo != null) {
+                            musicInfos.add(musicInfo);
                         }
-                        RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
                     }
+                    RouteManager.goMusicVideoActivity(getContext(), JSON.toJSONString(musicInfos));
                 }
             }
         });
