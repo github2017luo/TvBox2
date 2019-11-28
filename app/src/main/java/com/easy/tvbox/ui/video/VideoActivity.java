@@ -51,25 +51,25 @@ public class VideoActivity extends BaseActivity<VideoBinding> implements VideoVi
 
     @Override
     public void initView() {
-//        Account account = DataManager.getInstance().queryAccount();
-//        if (account == null) {
-//            finish();
-//            return;
-//        }
-//        Intent intent = getIntent();
-//        String dataJson = intent.getStringExtra("data");
-//        try {
-//            liveData = JSON.parseObject(dataJson, LiveList.class);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        if (liveData == null) {
-//            finish();
-//            return;
-//        }
+        Account account = DataManager.getInstance().queryAccount();
+        if (account == null) {
+            finish();
+            return;
+        }
+        Intent intent = getIntent();
+        String dataJson = intent.getStringExtra("data");
+        try {
+            liveData = JSON.parseObject(dataJson, LiveList.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (liveData == null) {
+            finish();
+            return;
+        }
         initAliyunPlayerView();
-        startPayer("http://mobile.hxsoft.net/live/show.m3u8");
-//        presenter.getLivePlayUrl(liveData.getUid());
+//        startPayer("http://mobile.hxsoft.net/live/show.m3u8");
+        presenter.getLivePlayUrl(liveData.getUid());
     }
 
     private void initAliyunPlayerView() {

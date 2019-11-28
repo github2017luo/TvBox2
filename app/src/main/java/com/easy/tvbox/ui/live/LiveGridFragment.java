@@ -8,6 +8,7 @@ import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.FocusHighlight;
 import androidx.leanback.widget.VerticalGridPresenter;
 
+import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.LiveList;
 import com.easy.tvbox.event.LiveUpdateEvent;
@@ -50,7 +51,7 @@ public class LiveGridFragment extends VerticalGridSupportFragment {
                 } else if (liveList.getState() == 1) {
                     ToastUtils.showLong("直播未开始");
                 } else {
-                    RouteManager.goVideoActivity(getContext(), liveList.getUid());
+                    RouteManager.goVideoActivity(getContext(), JSON.toJSONString(liveList));
                 }
             }
         });
