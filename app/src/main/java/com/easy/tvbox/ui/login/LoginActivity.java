@@ -31,6 +31,7 @@ import com.easy.tvbox.http.ProgressInfo;
 import com.easy.tvbox.http.ProgressListener;
 import com.easy.tvbox.http.ProgressManager;
 import com.easy.tvbox.ui.LoadingView;
+import com.easy.tvbox.ui.home.HomeActivity;
 import com.easy.tvbox.ui.test.Utils;
 import com.easy.tvbox.utils.ToastUtils;
 import com.easy.tvbox.view.AppUpdateDialog;
@@ -71,23 +72,27 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
         downloadPath = Utils.getSaveFilePath(Constant.TYPE_APP, this) + fileName;
         getPermissions();
         isLoginActivity = true;
-//        if (Constant.IS_DEBUG) {
         Account account = DataManager.getInstance().queryAccount();
-//            if (account == null) {
-//                account = new Account();
-//                account.setId("13959932888");
-//                account.setName("颜");
-//                account.setPhone("13959932888");
-//                account.setShopName("阿吉泰养生馆");
-//                account.setShopNo("S0001");
-//                DataManager.getInstance().login(account);
-//            }
-        if (account != null) {
+
+        if (Constant.IS_DEBUG) {
+            if (account == null) {
+                account = new Account();
+                account.setId("13959932888");
+                account.setName("颜");
+                account.setPhone("13959932888");
+                account.setShopName("阿吉泰养生馆");
+                account.setShopNo("S0001");
+                DataManager.getInstance().login(account);
+            } else {
+                HomeActivity.canInHome = true;
+            }
+        }
+
+        if (HomeActivity.canInHome && account != null) {
             RouteManager.goHomeActivity(LoginActivity.this);
             finish();
             return;
         }
-//        }
         mViewBinding.tvRefresh.setOnClickListener(v -> {
             loginPresenter.requestQrCode();
         });
@@ -120,6 +125,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
             ToastUtils.showLong(respond.getMessage());
             if (account != null) {
                 DataManager.getInstance().login(account);
+                HomeActivity.canInHome = true;
                 RouteManager.goHomeActivity(this);
                 finish();
             }

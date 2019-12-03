@@ -53,6 +53,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     FocusBorder mFocusBorder;
     MqttSimple mqttSimple;
     AppUpdateDialog dialog;
+    public static boolean canInHome = false;
 
     @Override
     public int getLayoutId() {
