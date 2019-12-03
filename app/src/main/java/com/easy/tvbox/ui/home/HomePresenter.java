@@ -245,7 +245,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
 
     public void timeCheckVersion() {
         //每10分支更新一次数据
-        Observable.interval(30, 30, TimeUnit.MINUTES)
+        Observable.interval(0, 30, TimeUnit.MINUTES)
                 .observeOn(Schedulers.io())
                 .subscribe(new Observer<Long>() {
                     @Override
