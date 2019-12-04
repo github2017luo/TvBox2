@@ -138,7 +138,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
 
 
     private void initData() {
-        presenter.saveEquipment();
+//        presenter.saveEquipment();
         presenter.getCarouselByShopNo(account.getShopNo());
         presenter.timeRequestLiveCourse();
 

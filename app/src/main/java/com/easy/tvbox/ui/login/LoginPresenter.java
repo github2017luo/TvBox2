@@ -117,7 +117,6 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                             try {
                                 CheckLogin checkLogin = JSON.parseObject(body, CheckLogin.class);
                                 respond.setObj(checkLogin);
-                                timeCheckLoginCancel();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
