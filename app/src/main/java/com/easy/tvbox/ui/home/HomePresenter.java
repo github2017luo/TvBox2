@@ -163,9 +163,9 @@ public class HomePresenter extends BasePresenter<HomeView> {
                                             if (endTime < currentTime) {
                                                 content.setState(0);
                                             } else if (startTime > currentTime) {
-                                                content.setState(2);
-                                            } else {
                                                 content.setState(1);
+                                            } else {
+                                                content.setState(2);
                                             }
                                             String startDate = CommonUtils.timeStamp2Date(startTime, 0);
                                             String endDate = CommonUtils.timeStamp2Date(startTime, 1);
