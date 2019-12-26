@@ -55,7 +55,7 @@ public final class ToastUtils {
 
     public static void initToast(Context context) {
         mContext = context;
-        setGravity(Gravity.CENTER, 0, 0);//设置土司在中间显示
+        setGravity(Gravity.BOTTOM, 0, 0);//设置土司在中间显示
     }
 
     /**

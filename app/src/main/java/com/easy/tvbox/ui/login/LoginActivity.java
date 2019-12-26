@@ -158,11 +158,6 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
     }
 
     @Override
-    public void onBackPressed() {
-
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == GET_PERMISSION_REQUEST) {

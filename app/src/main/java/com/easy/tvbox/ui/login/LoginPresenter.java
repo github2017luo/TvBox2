@@ -71,7 +71,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     public void timeCheckLogin(String key) {
         timeCheckLoginCancel();
         //每10分支更新一次数据
-        Observable.interval(0, 5, TimeUnit.SECONDS)
+        Observable.interval(0, 2, TimeUnit.SECONDS)
                 .observeOn(Schedulers.io())
                 .subscribe(new Observer<Long>() {
                     @Override
