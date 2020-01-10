@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.BasePresenter;
+import com.easy.tvbox.base.DataManager;
+import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.bean.Daily;
 import com.easy.tvbox.bean.DailyItem;
 
@@ -61,9 +63,13 @@ public class DailyPresenter extends BasePresenter<DailyView> {
      * @param period 1：中文 2：蒙语
      */
     private Observable<List<DailyItem>> queryDaily(int period) {
+        Account account = DataManager.getInstance().queryAccount();
         Map<String, Object> map = new HashMap<>();
         map.put("type", 1);
         map.put("period", period);
+        if (account != null && !TextUtils.isEmpty(account.getShopNo())) {
+            map.put("shopNo", account.getShopNo());
+        }
         return requestStore.queryForAudio(map)
                 .map(respond -> {
                     List<DailyItem> dailyList = new ArrayList<>();
