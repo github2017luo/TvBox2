@@ -33,6 +33,7 @@ import com.easy.tvbox.http.ProgressManager;
 import com.easy.tvbox.ui.LoadingView;
 import com.easy.tvbox.ui.home.HomeActivity;
 import com.easy.tvbox.ui.test.Utils;
+import com.easy.tvbox.utils.SystemUtils;
 import com.easy.tvbox.utils.ToastUtils;
 import com.easy.tvbox.view.AppUpdateDialog;
 
@@ -224,14 +225,12 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
         if (respond.isOk()) {
             AppVersion appVersion = respond.getObj();
             if (appVersion != null) {
-                String currentVersion = BuildConfig.VERSION_NAME.replace(".", "");
-                String lastVersion = currentVersion;
+                int currentVersion = SystemUtils.getVersion(BuildConfig.VERSION_NAME);
+                int versionName = currentVersion;
                 if (!TextUtils.isEmpty(appVersion.getVersion())) {
-                    lastVersion = appVersion.getVersion().replace(".", "");
+                    versionName = SystemUtils.getVersion(appVersion.getVersion());
                 }
-                int cVersion = Utils.formatInt(currentVersion);
-                int cVersionName = Utils.formatInt(lastVersion);
-                if (Constant.TEST_UPDATE || cVersionName > cVersion) {
+                if (Constant.TEST_UPDATE || versionName > currentVersion) {
                     showAppVersionDialog(appVersion);
                 }
             }
