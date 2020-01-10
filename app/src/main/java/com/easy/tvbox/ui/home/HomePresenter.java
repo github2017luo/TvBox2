@@ -168,7 +168,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
                                                 content.setState(2);
                                             }
                                             String startDate = CommonUtils.timeStamp2Date(startTime, 0);
-                                            String endDate = CommonUtils.timeStamp2Date(startTime, 1);
+                                            String endDate = CommonUtils.timeStamp2Date(endTime, 1);
                                             if (startDate != null && endDate != null) {
                                                 content.setShowTime(startDate + "-" + endDate);
                                             }
