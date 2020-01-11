@@ -3,9 +3,9 @@ package com.easy.tvbox.base;
 import java.io.File;
 
 public class Constant {
-    public static final String RELEASE_DOMAIN = "https://gl.ajitai.com.cn";
-//    public static final String DEBUG_DOMAIN = "http://oa.xm-golden.cn";
-    public static final String BASE_URL = RELEASE_DOMAIN + "/api/box/";
+    public static final String RELEASE_DOMAIN = "https://gl.ajitai.com.cn/api/box/";
+    public static final String DEBUG_DOMAIN = "http://oa.xm-golden.cn/ajitai/api/";
+    public static final String BASE_URL = DEBUG_DOMAIN;
 
     public static final String CODE = "azitai@2019";
     public static final String PHONE = "13779926288";
