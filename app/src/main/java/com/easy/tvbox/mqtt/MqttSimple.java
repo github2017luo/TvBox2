@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -28,7 +29,7 @@ public class MqttSimple {
     private MqttAndroidClient mqttAndroidClient;
 
     public MqttSimple(Context applicationContext) {
-        mqttAndroidClient = new MqttAndroidClient(applicationContext, Config.serverUri, Config.clientId);
+        mqttAndroidClient = new MqttAndroidClient(applicationContext, Config.serverUri, Config.clientId + UUID.randomUUID().toString());
         mqttAndroidClient.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
@@ -47,6 +48,7 @@ public class MqttSimple {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
                 Log.d("Mqtt", "deliveryComplete==>" + token.toString());
@@ -99,7 +101,7 @@ public class MqttSimple {
 
     private void subscribeToTopic(String shopId) {
         try {
-            String[] topicFilter = {Config.topic +"/BOX/"+ shopId};
+            String[] topicFilter = {Config.topic + "/BOX/" + shopId};
             final int[] qos = {1};
             mqttAndroidClient.subscribe(topicFilter, qos, null, new IMqttActionListener() {
                 @Override
