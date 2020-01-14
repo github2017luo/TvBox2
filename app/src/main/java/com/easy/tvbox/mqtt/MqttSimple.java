@@ -27,9 +27,11 @@ import javax.crypto.spec.SecretKeySpec;
 public class MqttSimple {
 
     private MqttAndroidClient mqttAndroidClient;
+    private String uuid;
 
     public MqttSimple(Context applicationContext) {
-        mqttAndroidClient = new MqttAndroidClient(applicationContext, Config.serverUri, Config.clientId + UUID.randomUUID().toString());
+        uuid = UUID.randomUUID().toString();
+        mqttAndroidClient = new MqttAndroidClient(applicationContext, Config.serverUri, Config.clientId + uuid);
         mqttAndroidClient.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
@@ -67,7 +69,7 @@ public class MqttSimple {
             // 参考 https://help.aliyun.com/document_detail/54225.html
             // Signature 方式
             mqttConnectOptions.setUserName("Signature|" + Config.accessKey + "|" + Config.instanceId);
-            mqttConnectOptions.setPassword(macSignature(Config.clientId, Config.secretKey).toCharArray());
+            mqttConnectOptions.setPassword(macSignature(Config.clientId + uuid, Config.secretKey).toCharArray());
 
             /**
              * Token方式
