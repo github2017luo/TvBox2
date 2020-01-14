@@ -144,7 +144,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         presenter.timeRequestLiveCourse();
 
         mqttSimple = new MqttSimple(getApplicationContext());
-        mqttSimple.connect(account.getShopNo()/*"/BOX/S0001"*/);
+        mqttSimple.connect(account.getShopNo());
     }
 
     @Override

@@ -78,11 +78,11 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
         if (Constant.IS_DEBUG) {
             if (account == null) {
                 account = new Account();
-                account.setId("13959932888");
-                account.setName("颜");
+                account.setId("15184784396");
+                account.setName("ajt12345678");
                 account.setPhone("13959932888");
-                account.setShopName("阿吉泰养生馆");
-                account.setShopNo("S0001");
+                account.setShopName("内蒙古国际蒙医医院");
+                account.setShopNo("S0016");
                 DataManager.getInstance().login(account);
             } else {
                 HomeActivity.canInHome = true;
