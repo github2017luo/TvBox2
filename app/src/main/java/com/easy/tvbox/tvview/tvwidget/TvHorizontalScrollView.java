@@ -25,7 +25,7 @@ public class TvHorizontalScrollView extends HorizontalScrollView {
     private FixedSpeedScroller mScroller;
     private float mSelectedItemOffsetStart = 0;
     private float mSelectedItemOffsetEnd = 0;
-    private boolean mIsSelectedCentered = false;
+    private boolean mIsSelectedCentered = true;
     
     public TvHorizontalScrollView(Context context) {
         this(context, null);

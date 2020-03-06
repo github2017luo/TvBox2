@@ -2,11 +2,20 @@ package com.easy.tvbox.ui.video;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.text.Layout;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.alibaba.fastjson.JSON;
+import com.bumptech.glide.Glide;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
@@ -17,6 +26,8 @@ import com.easy.tvbox.bean.Daily;
 import com.easy.tvbox.bean.DailyItem;
 import com.easy.tvbox.databinding.DailyVideoBinding;
 import com.easy.tvbox.event.MtMessage;
+import com.easy.tvbox.utils.DimensUtils;
+import com.google.android.exoplayer2.DefaultControlDispatcher;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -28,8 +39,10 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.owen.focus.FocusBorder;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -47,6 +60,10 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     PlayerView playerView;
     ExoPlayer player;
     Player.EventListener eventListener;
+    int width;
+    FocusBorder mFocusBorder;
+    PlayerControlView controlView;
+    LinearLayout scrollView;
 
     @Override
     public int getLayoutId() {
@@ -60,7 +77,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     @Override
     public void networkChange(boolean isConnect) {
-        if(isConnect && player!=null){
+        if (isConnect && player != null) {
             player.retry();
         }
     }
@@ -77,6 +94,14 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             finish();
             return;
         }
+        mFocusBorder = new FocusBorder.Builder()
+                .asColor()
+                .borderColorRes(R.color.actionbar_color)
+                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3f)
+                .shadowColorRes(R.color.green_bright)
+                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 5f)
+                .build(this);
+        width = DimensUtils.dp2px(this, 150);
         Intent intent = getIntent();
         String dataJson = intent.getStringExtra("data");
         try {
@@ -93,13 +118,67 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         }
         initExoPlayer();
         findPlayPosition(dailyItems, 0);
+        addVideoView();
+    }
+
+    protected void onMoveFocusBorder(View focusedView, float scale) {
+        if (null != mFocusBorder) {
+            mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale));
+        }
+    }
+
+    private void addVideoView() {
+        scrollView = findViewById(R.id.scrollView);
+        for (int i = 0; i < dailyItems.size(); i++) {
+            DailyItem dailyItem = dailyItems.get(i);
+            View item = LayoutInflater.from(this).inflate(R.layout.video_item, null);
+            item.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+            ImageView videoPreImage = item.findViewById(R.id.videoPreImage);
+            Glide.with(this).load(dailyItem.getFaceurl()).into(videoPreImage);
+            TextView videoTitle = item.findViewById(R.id.videoTitle);
+            videoTitle.setText(TextUtils.isEmpty(dailyItem.getTitle()) ? "无标题" : dailyItem.getTitle());
+            scrollView.addView(item, width, width);
+            if (i == 0) {
+                onMoveFocusBorder(item, 1.1f);
+            }
+        }
     }
 
     private void initExoPlayer() {
         playerView = mViewBinding.videoView;
         player = ExoPlayerFactory.newSimpleInstance(this);
+        controlView = findViewById(R.id.exo_controller);
+        View playBtn = controlView.findViewById(R.id.exo_play);
+        playBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+        View pauseBtn = controlView.findViewById(R.id.exo_pause);
+        pauseBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+
+        View rewBtn = controlView.findViewById(R.id.exo_rew);
+        rewBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+        View ffwdBtn = controlView.findViewById(R.id.exo_ffwd);
+        ffwdBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+
+        playerView.setControllerShowTimeoutMs(8000);
+        DefaultControlDispatcher dispatcher = new DefaultControlDispatcher() {
+            @Override
+            public boolean dispatchSeekTo(Player player, int windowIndex, long positionMs) {
+                player.seekTo(windowIndex, positionMs);
+                if (mFocusBorder.isVisible() && scrollView.getChildCount() > 0) {
+                    View view = scrollView.getChildAt(windowIndex);
+                    onMoveFocusBorder(view, 1.1f);
+                }
+                Log.d("SeekTo", "windowIndex:" + windowIndex + " positionMs:" + positionMs);
+                return true;
+            }
+        };
+        playerView.setControlDispatcher(dispatcher);
         playerView.setPlayer(player);
         player.setPlayWhenReady(true);
+        playerView.setControllerVisibilityListener(visibility -> {
+            if (mFocusBorder != null) {
+                mFocusBorder.setVisible(View.VISIBLE == visibility);
+            }
+        });
         eventListener = new Player.EventListener() {
 
             @Override
