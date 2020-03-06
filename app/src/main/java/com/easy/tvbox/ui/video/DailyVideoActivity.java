@@ -263,7 +263,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         View ffwdBtn = controlView.findViewById(R.id.exo_ffwd);
         ffwdBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
 
-        playerView.setControllerShowTimeoutMs(80000);
+        playerView.setControllerShowTimeoutMs(8000);
         dispatcher = new DefaultControlDispatcher() {
             @Override
             public boolean dispatchSeekTo(Player player, int windowIndex, long positionMs) {
