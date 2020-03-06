@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="120dp"
-    android:layout_height="120dp"
+    android:layout_width="170dp"
+    android:layout_height="170dp"
     android:layout_marginStart="10dp"
     android:layout_marginTop="10dp"
     android:layout_marginEnd="5dp"
     android:layout_marginBottom="10dp"
     android:focusable="true"
-    android:padding="10dp"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/videoPreImage"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@drawable/icon_loading" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/progressBarHorizontal2"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:max="100"
+        android:progress="50" />
 
     <TextView
         android:id="@+id/videoTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxLines="2"
         android:textColor="@color/white"
-        android:textSize="22sp"
-        tools:text="ssss" />
+        android:textSize="18sp"
+        tools:text="ssssssssssssssssssssssssssss" />
 </LinearLayout>

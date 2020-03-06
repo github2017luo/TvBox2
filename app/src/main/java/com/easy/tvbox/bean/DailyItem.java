@@ -1,5 +1,7 @@
 package com.easy.tvbox.bean;
 
+import android.text.TextUtils;
+
 public class DailyItem {
     private String uid;
     private long idx;//视频播放顺序
@@ -13,6 +15,24 @@ public class DailyItem {
     private int period;
     private String date;//播放日期
     private String durationM;//视频时长 毫秒数
+    private int position;//自己用的--第几个视频
+    private int progress;//自己用 上次播放的位置
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
     public String getUid() {
         return uid;
@@ -106,8 +126,20 @@ public class DailyItem {
         return durationM;
     }
 
+    public int getDurationMForLong() {
+        return TextUtils.isEmpty(durationM) ? 0 : Integer.parseInt(durationM);
+    }
+
     public void setDurationM(String durationM) {
         this.durationM = durationM;
+    }
+
+    @Override
+    public String toString() {
+        return "DailyItem{" +
+                "position=" + position +
+                ", progress=" + progress +
+                '}';
     }
 }
 

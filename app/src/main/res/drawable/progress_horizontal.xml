@@ -12,7 +12,7 @@
         <clip>
             <shape>
                 <corners android:radius="20dip" />
-                <solid android:color="#3e688f" />
+                <solid android:color="@color/alivc_common_line_red" />
             </shape>
         </clip>
     </item>
@@ -21,7 +21,7 @@
         <clip>
             <shape>
                 <corners android:radius="20dip" />
-                <solid android:color="#3e688f" />
+                <solid android:color="@color/alivc_common_line_red" />
             </shape>
         </clip>
     </item>

@@ -20,6 +20,13 @@
         <item name="android:maxHeight">8dip</item>
     </style>
 
+    <style name="progressBarHorizontal2" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/progress_horizontal</item>
+        <item name="android:minHeight">8dip</item>
+        <item name="android:maxHeight">8dip</item>
+    </style>
+
     <style name="DialogBottomAnimation_NEW" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/dialog_bottom_popup_in</item>
         <item name="android:windowExitAnimation">@anim/dialog_bottom_popup_out</item>
