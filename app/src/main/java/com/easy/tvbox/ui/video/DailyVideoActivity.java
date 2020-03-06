@@ -53,8 +53,15 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implements DailyVideoView {
 
@@ -71,6 +78,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     int currentPlayPosition = 0;
     DefaultControlDispatcher dispatcher;
     boolean isFirstLoad = true;
+    Disposable disposable;
 
     @Override
     public int getLayoutId() {
@@ -182,6 +190,40 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         }
     }
 
+    public void startInterval() {
+        Observable.interval(0, 2, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onSubscribe(Disposable dis) {
+                        disposable = dis;
+                    }
+
+                    @Override
+                    public void onNext(Long number) {
+                        if (player != null && dailyItems != null && scrollView != null) {
+                            if (player.getCurrentPosition() > 100) {
+                                View view = scrollView.getChildAt(player.getCurrentWindowIndex());
+                                if (view != null) {
+                                    ProgressBar progressBar = view.findViewById(R.id.progressBar);
+                                    progressBar.setProgress((int) player.getCurrentPosition());
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //取消订阅
+                        disposable.dispose();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+    }
+
     public void seekTo(View item, DailyItem dailyItem, int windowIndex, long positionMs) {
         if (currentPlayPosition == windowIndex) {
             dailyItem.setProgress((int) positionMs);
@@ -286,6 +328,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                         stateString = "ExoPlayer.STATE_BUFFERING -";
                         if (isFirstLoad && dailyItems != null && dailyItems.size() > 0) {
                             isFirstLoad = false;
+                            startInterval();
                             DailyItem dailyItem = dailyItems.get(0);
                             dispatcher.dispatchSeekTo(player, dailyItem.getPosition(), dailyItem.getProgress());
                         }
@@ -401,7 +444,11 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     @Override
     protected void onDestroy() {
-        if (dailyItems != null) {
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
+        if (dailyItems != null && player != null) {
+            dailyItems.get(player.getCurrentWindowIndex()).setProgress((int) player.getCurrentPosition());
             List<PlayProgress> playProgresses = new ArrayList<>();
             for (DailyItem dailyItem : dailyItems) {
                 PlayProgress playProgress = new PlayProgress();
