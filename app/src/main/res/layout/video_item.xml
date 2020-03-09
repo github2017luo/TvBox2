@@ -7,14 +7,15 @@
     android:layout_marginTop="10dp"
     android:layout_marginEnd="5dp"
     android:layout_marginBottom="10dp"
-    android:focusable="true"
     android:gravity="center"
+    android:focusable="true"
     android:orientation="vertical"
     android:padding="10dp">
 
     <ImageView
         android:id="@+id/videoPreImage"
         android:layout_width="100dp"
+        android:focusable="false"
         android:layout_height="100dp"
         android:src="@drawable/icon_loading" />
 
@@ -24,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:max="100"
+        android:focusable="false"
         android:progress="50" />
 
     <TextView
@@ -33,5 +35,6 @@
         android:maxLines="2"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:focusable="false"
         tools:text="ssssssssssssssssssssssssssss" />
 </LinearLayout>

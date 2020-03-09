@@ -1,9 +1,7 @@
 package com.easy.tvbox.ui.video;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -31,7 +29,8 @@ import com.easy.tvbox.bean.PlayProgress;
 import com.easy.tvbox.databinding.DailyVideoBinding;
 import com.easy.tvbox.event.MtMessage;
 import com.easy.tvbox.utils.DimensUtils;
-import com.google.android.exoplayer2.C;
+import com.easy.tvbox.view.PlayerControlView;
+import com.easy.tvbox.view.PlayerView;
 import com.google.android.exoplayer2.DefaultControlDispatcher;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -39,14 +38,11 @@ import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.analytics.AnalyticsListener;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.ui.PlayerControlView;
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.owen.focus.FocusBorder;
 
@@ -63,7 +59,8 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+
+import static com.easy.tvbox.view.PlayerView.SHOW_BUFFERING_WHEN_PLAYING;
 
 public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implements DailyVideoView {
 
@@ -175,7 +172,9 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             item.setTag(dailyItem);
             ProgressBar progressBar = item.findViewById(R.id.progressBar);
             progressBar.setMax(dailyItem.getDurationMForLong());
+            item.setNextFocusUpId(R.id.exo_ffwd);
             if (i == 0) {
+                item.setId(R.id.video_vew_id);
                 item.setNextFocusLeftId(R.id.exo_ffwd);
                 progressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
             }
@@ -230,7 +229,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                     @Override
                     public void onNext(Long number) {
                         if (player != null && dailyItems != null && scrollView != null) {
-                            if (player.getCurrentPosition() > 100) {
+                            if (player.getCurrentPosition() > 100 && scrollView.getChildCount() < player.getCurrentWindowIndex()) {
                                 View view = scrollView.getChildAt(player.getCurrentWindowIndex());
                                 if (view != null) {
                                     ProgressBar progressBar = view.findViewById(R.id.progressBar);
@@ -263,17 +262,22 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         } else {
             Log.d("SeekTo", "切换视频");
             DailyItem lastItem = dailyItems.get(currentPlayPosition);
-            View lastView = scrollView.getChildAt(currentPlayPosition);
-            lastItem.setProgress((int) player.getCurrentPosition());
-            if (mFocusBorder.isVisible() && lastView != null) {
-                ProgressBar progressBar = lastView.findViewById(R.id.progressBar);
-                progressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal2));
-                progressBar.setProgress(lastItem.getProgress());
+            if (scrollView.getChildCount() < currentPlayPosition) {
+                View lastView = scrollView.getChildAt(currentPlayPosition);
+                lastItem.setProgress((int) player.getCurrentPosition());
+                if (mFocusBorder.isVisible() && lastView != null) {
+                    ProgressBar progressBar = lastView.findViewById(R.id.progressBar);
+                    progressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal2));
+                    progressBar.setProgress(lastItem.getProgress());
+                }
             }
+
             currentPlayPosition = windowIndex;
-            View currentView = scrollView.getChildAt(currentPlayPosition);
-            ProgressBar currentProgressBar = currentView.findViewById(R.id.progressBar);
-            currentProgressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
+            if (scrollView.getChildCount() < currentPlayPosition) {
+                View currentView = scrollView.getChildAt(currentPlayPosition);
+                ProgressBar currentProgressBar = currentView.findViewById(R.id.progressBar);
+                currentProgressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
+            }
             if (mFocusBorder.isVisible() && item != null) {
                 onMoveFocusBorder(item, 1.1f);
             }
@@ -301,26 +305,19 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         View currentView = scrollView.getChildAt(currentPlayPosition);
         ProgressBar currentProgressBar = currentView.findViewById(R.id.progressBar);
         currentProgressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
-        onMoveFocusBorder(currentView, 1.1f);
+        if (isFinish) {
+            onMoveFocusBorder(currentView, 1.1f);
+        }
     }
 
     private void initExoPlayer() {
         playerView = mViewBinding.videoView;
+        playerView.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING);
         controlView = findViewById(R.id.exo_controller);
         View playBtn = controlView.findViewById(R.id.exo_play);
-        playBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onMoveFocusBorder(v, 1.1f);
-            }
-        });
+        playBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
         View pauseBtn = controlView.findViewById(R.id.exo_pause);
-        pauseBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onMoveFocusBorder(v, 1.1f);
-            }
-        });
+        pauseBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
 
         View rewBtn = controlView.findViewById(R.id.exo_rew);
         rewBtn.setOnLongClickListener(v -> {
@@ -361,6 +358,25 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         playerView.setControllerVisibilityListener(visibility -> {
             if (mFocusBorder != null) {
                 mFocusBorder.setVisible(View.VISIBLE == visibility);
+            }
+            if (View.VISIBLE == visibility) {
+                if (playBtn.hasFocus()) {
+                    playBtn.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("Focustv", "playBtn.onMoveFocusBorder");
+                            onMoveFocusBorder(playBtn, 1.1f);
+                        }
+                    }, 200);
+                } else {
+                    pauseBtn.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("Focustv", "pauseBtn.onMoveFocusBorder");
+                            onMoveFocusBorder(pauseBtn, 1.1f);
+                        }
+                    }, 200);
+                }
             }
         });
         eventListener = new Player.EventListener() {

@@ -24,7 +24,7 @@
             android:id="@id/exo_rew"
             style="@style/ExoMediaButton.Rewind"
             android:focusable="true"
-            android:nextFocusRight="@id/exo_pause" />
+            android:nextFocusDown="@id/video_vew_id" />
 
         <!--        <ImageButton android:id="@id/exo_shuffle"-->
         <!--            android:visibility="gone"-->
@@ -40,26 +40,29 @@
             android:focusable="true"
             android:nextFocusLeft="@id/exo_rew"
             android:nextFocusRight="@id/exo_ffwd"
-            android:nextFocusUp="@id/exo_rew" />
+            android:nextFocusUp="@id/exo_rew"
+            android:nextFocusDown="@id/video_vew_id"/>
 
         <ImageButton
             android:id="@id/exo_pause"
             style="@style/ExoMediaButton.Pause"
             android:focusable="true"
             android:nextFocusLeft="@id/exo_rew"
+            android:focusableInTouchMode="true"
             android:nextFocusRight="@id/exo_ffwd"
-            android:nextFocusUp="@id/exo_rew" />
+            android:nextFocusUp="@id/exo_rew"
+            android:nextFocusDown="@id/video_vew_id"/>
 
         <ImageButton
             android:id="@id/exo_ffwd"
             style="@style/ExoMediaButton.FastForward"
-            android:focusable="true"
-            android:nextFocusLeft="@id/exo_pause"
-            android:nextFocusUp="@id/exo_pause" />
+            android:nextFocusDown="@id/video_vew_id"
+            android:focusable="true" />
 
-        <!--        <ImageButton android:id="@id/exo_next"-->
-        <!--            android:visibility="gone"-->
-        <!--            style="@style/ExoMediaButton.Next"/>-->
+        <!--        <ImageButton-->
+        <!--            android:id="@id/exo_next"-->
+        <!--            android:focusable="true"-->
+        <!--            style="@style/ExoMediaButton.Next" />-->
 
         <!--        <ImageButton android:id="@id/exo_vr"-->
         <!--            android:visibility="gone"-->
