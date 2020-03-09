@@ -1,11 +1,13 @@
 package com.easy.tvbox.ui.video;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -119,17 +121,25 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         width = DimensUtils.dp2px(this, 150);
         Intent intent = getIntent();
         String dataJson = intent.getStringExtra("data");
+        int startPosition = -1;
         try {
             Daily daily = JSON.parseObject(dataJson, Daily.class);
             if (daily != null) {
                 dailyItems = daily.getDailyItems();
                 List<PlayProgress> playProgresses = DataManager.getInstance().queryPlayProgress();
                 if (playProgresses != null && playProgresses.size() > 0) {
-                    for (DailyItem dailyItem : dailyItems) {
+                    for (int i = 0; i < dailyItems.size(); i++) {
+                        DailyItem dailyItem = dailyItems.get(i);
                         for (PlayProgress playProgress : playProgresses) {
                             if (dailyItem.getVid().equals(playProgress.getId())) {
                                 dailyItem.setProgress(playProgress.getProgressInt());
+                                dailyItem.setFinish(playProgress.isFinish());
                             }
+                        }
+                        Log.d("SeekTo", "i=" + i + " vid:" + dailyItem.getVid() + " finish:" + dailyItem.isFinish());
+                        if (startPosition == -1 && !dailyItem.isFinish()) {
+                            startPosition = i;
+                            Log.d("SeekTo", "选中startPosition=" + startPosition);
                         }
                     }
                 }
@@ -137,13 +147,17 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (startPosition == -1) {
+            startPosition = 0;
+        }
         if (dailyItems == null || dailyItems.isEmpty()) {
             finish();
             return;
         }
-        initExoPlayer();
-        findPlayPosition(dailyItems, 0);
         addVideoView();
+        initExoPlayer();
+        DailyItem dailyItem = dailyItems.get(startPosition);
+        findPlayPosition(dailyItems, startPosition, dailyItem.getProgress());
     }
 
     protected void onMoveFocusBorder(View focusedView, float scale) {
@@ -161,13 +175,12 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             item.setTag(dailyItem);
             ProgressBar progressBar = item.findViewById(R.id.progressBar);
             progressBar.setMax(dailyItem.getDurationMForLong());
+            if (i == 0) {
+                item.setNextFocusLeftId(R.id.exo_ffwd);
+                progressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
+            }
             progressBar.setProgress(dailyItem.getProgress());
-            item.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickVideo(v, false);
-                }
-            });
+            item.setOnClickListener(v -> clickVideo(v, false));
             item.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
             ImageView videoPreImage = item.findViewById(R.id.videoPreImage);
             Glide.with(this).load(dailyItem.getFaceurl()).into(videoPreImage);
@@ -188,6 +201,21 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                 dispatcher.dispatchSeekTo(player, dailyItem.getPosition(), dailyItem.getProgress());
             }
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+                || keyCode == KeyEvent.KEYCODE_DPAD_LEFT
+                || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+                || keyCode == KeyEvent.KEYCODE_DPAD_UP
+                || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            if (playerView != null && !playerView.isControllerVisible()) {
+                playerView.showController();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     public void startInterval() {
@@ -226,43 +254,90 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     public void seekTo(View item, DailyItem dailyItem, int windowIndex, long positionMs) {
         if (currentPlayPosition == windowIndex) {
+            Log.d("SeekTo", "没切换视频");
             dailyItem.setProgress((int) positionMs);
             if (mFocusBorder.isVisible() && item != null) {
                 ProgressBar progressBar = item.findViewById(R.id.progressBar);
                 progressBar.setProgress(dailyItem.getProgress());
             }
         } else {
+            Log.d("SeekTo", "切换视频");
             DailyItem lastItem = dailyItems.get(currentPlayPosition);
             View lastView = scrollView.getChildAt(currentPlayPosition);
             lastItem.setProgress((int) player.getCurrentPosition());
             if (mFocusBorder.isVisible() && lastView != null) {
                 ProgressBar progressBar = lastView.findViewById(R.id.progressBar);
+                progressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal2));
                 progressBar.setProgress(lastItem.getProgress());
             }
             currentPlayPosition = windowIndex;
+            View currentView = scrollView.getChildAt(currentPlayPosition);
+            ProgressBar currentProgressBar = currentView.findViewById(R.id.progressBar);
+            currentProgressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
             if (mFocusBorder.isVisible() && item != null) {
                 onMoveFocusBorder(item, 1.1f);
             }
             positionMs = dailyItem.getProgress();
         }
+
         player.seekTo(windowIndex, positionMs);
         Log.d("SeekTo", "windowIndex:" + windowIndex + " positionMs:" + positionMs);
         Log.d("SeekTo", dailyItem.toString());
+    }
+
+    private void switchNextVideo(boolean isFinish) {
+        Log.d("SeekTo", "切换视频===》lastPlayPosition：" + currentPlayPosition + " position:" + player.getCurrentPosition());
+        DailyItem lastItem = dailyItems.get(currentPlayPosition);
+        View lastView = scrollView.getChildAt(currentPlayPosition);
+        ProgressBar progressBar = lastView.findViewById(R.id.progressBar);
+        progressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal2));
+        if (isFinish) {
+            lastItem.setProgress(lastItem.getDurationMForLong());
+            lastItem.setFinish(true);
+            progressBar.setProgress(lastItem.getProgress());
+        }
+
+        currentPlayPosition = player.getCurrentWindowIndex();
+        View currentView = scrollView.getChildAt(currentPlayPosition);
+        ProgressBar currentProgressBar = currentView.findViewById(R.id.progressBar);
+        currentProgressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
+        onMoveFocusBorder(currentView, 1.1f);
     }
 
     private void initExoPlayer() {
         playerView = mViewBinding.videoView;
         controlView = findViewById(R.id.exo_controller);
         View playBtn = controlView.findViewById(R.id.exo_play);
-        playBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+        playBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.1f);
+            }
+        });
         View pauseBtn = controlView.findViewById(R.id.exo_pause);
-        pauseBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+        pauseBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onMoveFocusBorder(v, 1.1f);
+            }
+        });
 
         View rewBtn = controlView.findViewById(R.id.exo_rew);
+        rewBtn.setOnLongClickListener(v -> {
+            if (player != null && player.isCurrentWindowSeekable()) {
+                player.seekTo(player.getCurrentPosition() - 5000);
+            }
+            return false;
+        });
         rewBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
         View ffwdBtn = controlView.findViewById(R.id.exo_ffwd);
         ffwdBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
-
+        ffwdBtn.setOnLongClickListener(v -> {
+            if (player != null && player.isCurrentWindowSeekable()) {
+                player.seekTo(player.getCurrentPosition() + 15000);
+            }
+            return false;
+        });
         playerView.setControllerShowTimeoutMs(8000);
         dispatcher = new DefaultControlDispatcher() {
             @Override
@@ -292,25 +367,17 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
             @Override
             public void onTimelineChanged(Timeline timeline, @Nullable Object manifest, int reason) {
-//                if (scrollView != null) {
-//                    View view = scrollView.getChildAt(player.getCurrentWindowIndex());
-//                    Object object = view.getTag();
-//                    if (object instanceof DailyItem) {
-//                        DailyItem dailyItem = (DailyItem) object;
-//                        dailyItem.setProgress(timeline.getPeriodPosition());
-//                    }
-//                }
-                Log.d("EventListener", "onTimelineChanged:");
+                Log.d("SeekTo", "onTimelineChanged:");
             }
 
             @Override
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                Log.d("EventListener", "onTracksChanged:");
+                Log.d("SeekTo", "onTracksChanged:");
             }
 
             @Override
             public void onLoadingChanged(boolean isLoading) {
-                Log.d("EventListener", "onLoadingChanged:");
+                Log.d("SeekTo", "onLoadingChanged:");
             }
 
             @Override
@@ -318,7 +385,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                 String stateString;
                 // actually playing media
                 if (playWhenReady && playbackState == Player.STATE_READY) {
-                    Log.d("EventListener", "onPlayerStateChanged: actually playing media");
+                    Log.d("SeekTo", "onPlayerStateChanged: actually playing media");
                 }
                 switch (playbackState) {
                     case Player.STATE_IDLE:
@@ -326,11 +393,9 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                         break;
                     case Player.STATE_BUFFERING:
                         stateString = "ExoPlayer.STATE_BUFFERING -";
-                        if (isFirstLoad && dailyItems != null && dailyItems.size() > 0) {
+                        if (isFirstLoad) {
                             isFirstLoad = false;
                             startInterval();
-                            DailyItem dailyItem = dailyItems.get(0);
-                            dispatcher.dispatchSeekTo(player, dailyItem.getPosition(), dailyItem.getProgress());
                         }
                         break;
                     case Player.STATE_READY:
@@ -344,46 +409,48 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                         stateString = "UNKNOWN_STATE             -";
                         break;
                 }
-                Log.d("EventListener", "changed state to " + stateString + " playWhenReady: " + playWhenReady);
+                Log.d("SeekTo", "changed state to " + stateString + " playWhenReady: " + playWhenReady);
             }
 
             @Override
             public void onRepeatModeChanged(int repeatMode) {
-                Log.d("EventListener", "onRepeatModeChanged:");
+                Log.d("SeekTo", "onRepeatModeChanged:");
             }
 
             @Override
             public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
-                Log.d("EventListener", "onShuffleModeEnabledChanged:");
+                Log.d("SeekTo", "onShuffleModeEnabledChanged:");
             }
 
             @Override
             public void onPlayerError(ExoPlaybackException error) {
-                Log.d("EventListener", "onPlayerError:");
+                Log.d("SeekTo", "onPlayerError:");
             }
 
             @Override
             public void onPositionDiscontinuity(int reason) {
-                Log.d("EventListener", "onPositionDiscontinuity:");
+                Log.d("SeekTo", "onPositionDiscontinuity:reason==>" + reason);
+                switchNextVideo(reason == 0);
             }
 
             @Override
             public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-                Log.d("EventListener", "onPlaybackParametersChanged:");
+                Log.d("SeekTo", "onPlaybackParametersChanged:");
             }
 
             @Override
             public void onSeekProcessed() {
-                Log.d("EventListener", "onSeekProcessed:");
+                Log.d("SeekTo", "onSeekProcessed:");
             }
         };
         player = ExoPlayerFactory.newSimpleInstance(this);
         player.addListener(eventListener);
         playerView.setPlayer(player);
         player.setPlayWhenReady(true);
+        playerView.hideController();
     }
 
-    public void startPayer(List<String> urls, long positionMs) {
+    public void startPayer(List<String> urls, int chooseVideoPosition, long positionMs) {
         if (urls != null && urls.size() > 0) {
             ConcatenatingMediaSource source = new ConcatenatingMediaSource();
             for (String url : urls) {
@@ -395,9 +462,8 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             }
             if (source.getSize() > 0) {
                 player.prepare(source);
-                if (positionMs != 0) {
-                    player.seekTo(positionMs);
-                }
+                player.seekTo(chooseVideoPosition, positionMs);
+                Log.d("SeekTo", "开始定位chooseVideoPosition:" + chooseVideoPosition + " positionMs:" + positionMs);
             }
         }
     }
@@ -405,29 +471,26 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     /**
      * 查找播放的位置
      */
-    private void findPlayPosition(List<DailyItem> items, long position) {
+    private void findPlayPosition(List<DailyItem> items, int chooseVideoPosition, long position) {
         List<String> urls = new ArrayList<>();
         for (DailyItem dailyItem : items) {
             urls.add(dailyItem.getVideourl());
         }
-        startPayer(urls, position);
+        startPayer(urls, chooseVideoPosition, position);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVideoPlayEvent(MtMessage message) {
         if (message != null && dailyItems != null && dailyItems.size() > 0) {
-            List<DailyItem> newItems = new ArrayList<>();
-            boolean add = false;
-            for (DailyItem dailyItem : dailyItems) {
-                if (dailyItem.getVid().equalsIgnoreCase(message.getVid())) {
-                    add = true;
-                }
-                if (add) {
-                    newItems.add(dailyItem);
+            int choosePosition = -1;
+            for (int i = 0; i < dailyItems.size(); i++) {
+                if (dailyItems.get(i).getVid().equals(message.getVid())) {
+                    choosePosition = i;
+                    break;
                 }
             }
-            if (newItems.size() > 0) {
-                findPlayPosition(newItems, message.getTimer());
+            if (choosePosition != -1) {
+                findPlayPosition(dailyItems, choosePosition, message.getTimer());
             }
         }
     }
@@ -453,6 +516,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             for (DailyItem dailyItem : dailyItems) {
                 PlayProgress playProgress = new PlayProgress();
                 playProgress.setId(dailyItem.getVid());
+                playProgress.setFinish(dailyItem.isFinish());
                 playProgress.setProgress(dailyItem.getProgress() + "");
                 playProgresses.add(playProgress);
             }

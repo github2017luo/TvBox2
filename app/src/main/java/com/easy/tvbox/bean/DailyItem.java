@@ -17,6 +17,15 @@ public class DailyItem {
     private String durationM;//视频时长 毫秒数
     private int position;//自己用的--第几个视频
     private int progress;//自己用 上次播放的位置
+    private boolean isFinish;//自己用  是否播放完成
+
+    public boolean isFinish() {
+        return isFinish;
+    }
+
+    public void setFinish(boolean finish) {
+        isFinish = finish;
+    }
 
     public int getProgress() {
         return progress;

@@ -73,7 +73,7 @@
     },
     {
       "id": "3:2563918082805653941",
-      "lastPropertyId": "3:883989596918206823",
+      "lastPropertyId": "4:2987613160617109484",
       "name": "PlayProgress",
       "properties": [
         {
@@ -87,6 +87,10 @@
         {
           "id": "3:883989596918206823",
           "name": "progress"
+        },
+        {
+          "id": "4:2987613160617109484",
+          "name": "isFinish"
         }
       ],
       "relations": []

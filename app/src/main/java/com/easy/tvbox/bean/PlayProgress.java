@@ -11,6 +11,15 @@ public class PlayProgress {
     private long sqlId;//数据库ID
     private String id;
     private String progress;
+    private boolean isFinish;
+
+    public boolean isFinish() {
+        return isFinish;
+    }
+
+    public void setFinish(boolean finish) {
+        isFinish = finish;
+    }
 
     public long getSqlId() {
         return sqlId;

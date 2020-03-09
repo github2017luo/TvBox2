@@ -70,9 +70,29 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "3:2563918082805653941",
+      "lastPropertyId": "3:883989596918206823",
+      "name": "PlayProgress",
+      "properties": [
+        {
+          "id": "1:4917594773042845581",
+          "name": "sqlId"
+        },
+        {
+          "id": "2:817273388904743221",
+          "name": "id"
+        },
+        {
+          "id": "3:883989596918206823",
+          "name": "progress"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "2:2027348856514962136",
+  "lastEntityId": "3:2563918082805653941",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
