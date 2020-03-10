@@ -29,6 +29,7 @@ import com.easy.tvbox.bean.PlayProgress;
 import com.easy.tvbox.databinding.DailyVideoBinding;
 import com.easy.tvbox.event.MtMessage;
 import com.easy.tvbox.utils.DimensUtils;
+import com.easy.tvbox.utils.ToastUtils;
 import com.easy.tvbox.view.PlayerControlView;
 import com.easy.tvbox.view.PlayerView;
 import com.google.android.exoplayer2.DefaultControlDispatcher;
@@ -78,6 +79,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     DefaultControlDispatcher dispatcher;
     boolean isFirstLoad = true;
     Disposable disposable;
+    private long fistTouchTime;
 
     @Override
     public int getLayoutId() {
@@ -110,10 +112,10 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         }
         mFocusBorder = new FocusBorder.Builder()
                 .asColor()
-                .borderColorRes(R.color.actionbar_color)
+                .borderColorRes(R.color.white)
                 .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3f)
-                .shadowColorRes(R.color.green_bright)
-                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 5f)
+                .shadowColorRes(R.color.default_background)
+                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 8f)
                 .build(this);
         width = DimensUtils.dp2px(this, 150);
         Intent intent = getIntent();
@@ -306,7 +308,9 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         ProgressBar currentProgressBar = currentView.findViewById(R.id.progressBar);
         currentProgressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
         if (isFinish) {
-            onMoveFocusBorder(currentView, 1.1f);
+            if (controlView.getVisibility() == View.VISIBLE) {
+                onMoveFocusBorder(currentView, 1.1f);
+            }
         }
     }
 
@@ -540,5 +544,17 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         }
         super.onDestroy();
         releasePlayer();
+    }
+
+    @Override
+    public void onBackPressed() {
+        long nowTouchTime = System.currentTimeMillis();
+        if (nowTouchTime - fistTouchTime < 501) {//
+            super.onBackPressed();
+            finish();
+        } else {
+            fistTouchTime = nowTouchTime;
+            ToastUtils.showShort("再次点击退出播放");
+        }
     }
 }
