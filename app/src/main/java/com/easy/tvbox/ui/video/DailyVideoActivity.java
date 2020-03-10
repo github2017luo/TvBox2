@@ -60,6 +60,7 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import retrofit2.Retrofit;
 
 import static com.easy.tvbox.view.PlayerView.SHOW_BUFFERING_WHEN_PLAYING;
 
@@ -316,12 +317,13 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     private void initExoPlayer() {
         playerView = mViewBinding.videoView;
+        playerView.setShowMultiWindowTimeBar(true);
         playerView.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING);
         controlView = findViewById(R.id.exo_controller);
         View playBtn = controlView.findViewById(R.id.exo_play);
-        playBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+        playBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
         View pauseBtn = controlView.findViewById(R.id.exo_pause);
-        pauseBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+        pauseBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
 
         View rewBtn = controlView.findViewById(R.id.exo_rew);
         rewBtn.setOnLongClickListener(v -> {
@@ -330,9 +332,9 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             }
             return false;
         });
-        rewBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+        rewBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
         View ffwdBtn = controlView.findViewById(R.id.exo_ffwd);
-        ffwdBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+        ffwdBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
         ffwdBtn.setOnLongClickListener(v -> {
             if (player != null && player.isCurrentWindowSeekable()) {
                 player.seekTo(player.getCurrentPosition() + 15000);
@@ -369,7 +371,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                         @Override
                         public void run() {
                             Log.d("Focustv", "playBtn.onMoveFocusBorder");
-                            onMoveFocusBorder(playBtn, 1.1f);
+                            onMoveFocusBorder(playBtn, 1.5f);
                         }
                     }, 200);
                 } else {
@@ -377,7 +379,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                         @Override
                         public void run() {
                             Log.d("Focustv", "pauseBtn.onMoveFocusBorder");
-                            onMoveFocusBorder(pauseBtn, 1.1f);
+                            onMoveFocusBorder(pauseBtn, 1.5f);
                         }
                     }, 200);
                 }
@@ -548,6 +550,10 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     @Override
     public void onBackPressed() {
+        if (controlView != null && controlView.getVisibility() == View.VISIBLE) {
+            controlView.hide();
+            return;
+        }
         long nowTouchTime = System.currentTimeMillis();
         if (nowTouchTime - fistTouchTime < 501) {//
             super.onBackPressed();

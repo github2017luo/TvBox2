@@ -39,16 +39,16 @@
                 android:id="@+id/rlLive"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="15dp"
                 android:layout_weight="1"
                 android:background="@drawable/home_module_bg_1"
                 android:focusable="true"
+                android:padding="10dp"
                 android:nextFocusRight="@id/rlDaily"
-                android:nextFocusDown="@id/rlDaily"
-                android:padding="10dp">
+                android:nextFocusDown="@id/rlDaily">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="15dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="15dp"
                 android:layout_weight="1"
                 android:background="@drawable/home_module_bg_2"
