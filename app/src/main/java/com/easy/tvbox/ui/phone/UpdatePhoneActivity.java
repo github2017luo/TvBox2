@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.easy.tvbox.BuildConfig;
 import com.easy.tvbox.R;
 import com.easy.tvbox.base.App;
 import com.easy.tvbox.base.BaseActivity;
@@ -99,7 +100,7 @@ public class UpdatePhoneActivity extends BaseActivity<UpdatePhoneBinding> implem
                     ToastUtils.showLong("请填写短信验证码");
                     return;
                 }
-                if (Constant.IS_DEBUG) {
+                if (BuildConfig.DEBUG) {
                     phoneCode = Constant.CODE;
                     if (account.getPhone().equals(Constant.PHONE)) {
                         phone = Constant.PHONE_TEST;

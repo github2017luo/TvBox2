@@ -7,6 +7,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -60,6 +61,7 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import retrofit2.Retrofit;
 
 import static com.easy.tvbox.view.PlayerView.SHOW_BUFFERING_WHEN_PLAYING;
@@ -79,7 +81,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
     int currentPlayPosition = 0;
     DefaultControlDispatcher dispatcher;
     boolean isFirstLoad = true;
-    Disposable disposable;
+    Disposable disposable, playProgress;
     private long fistTouchTime;
 
     @Override
@@ -113,10 +115,10 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         }
         mFocusBorder = new FocusBorder.Builder()
                 .asColor()
-                .borderColorRes(R.color.white)
-                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3f)
-                .shadowColorRes(R.color.default_background)
-                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 8f)
+                .borderColorRes(R.color.touming)
+                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.1f)
+                .shadowColorRes(R.color.touming)
+                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.1f)
                 .build(this);
         width = DimensUtils.dp2px(this, 150);
         Intent intent = getIntent();
@@ -250,6 +252,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
                     @Override
                     public void onComplete() {
+                        disposable.dispose();
                     }
                 });
     }
@@ -317,7 +320,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
 
     private void initExoPlayer() {
         playerView = mViewBinding.videoView;
-        playerView.setShowMultiWindowTimeBar(true);
+        playerView.setShowMultiWindowTimeBar(false);
         playerView.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING);
         controlView = findViewById(R.id.exo_controller);
         View playBtn = controlView.findViewById(R.id.exo_play);
@@ -326,19 +329,35 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         pauseBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
 
         View rewBtn = controlView.findViewById(R.id.exo_rew);
-        rewBtn.setOnLongClickListener(v -> {
-            if (player != null && player.isCurrentWindowSeekable()) {
-                player.seekTo(player.getCurrentPosition() - 5000);
+        rewBtn.setOnKeyListener((v, keyCode, event) -> {
+            Log.d("LongClick", "keyCode:" + keyCode + " action:" + event.getAction());
+            if (event.getAction() == KeyEvent.ACTION_UP
+                    && (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER)) {
+                cancelPlayProgress();
+                Log.d("LongClick", " rewBtn==>up");
             }
+            return false;
+        });
+        rewBtn.setOnLongClickListener(v -> {
+            Log.d("LongClick", " rewBtn  => LongClick");
+            changePlayProgress(false);
             return false;
         });
         rewBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
         View ffwdBtn = controlView.findViewById(R.id.exo_ffwd);
         ffwdBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
-        ffwdBtn.setOnLongClickListener(v -> {
-            if (player != null && player.isCurrentWindowSeekable()) {
-                player.seekTo(player.getCurrentPosition() + 15000);
+        ffwdBtn.setOnKeyListener((v, keyCode, event) -> {
+            Log.d("LongClick", "keyCode:" + keyCode + " action:" + event.getAction());
+            if (event.getAction() == KeyEvent.ACTION_UP
+                    && (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER)) {
+                cancelPlayProgress();
+                Log.d("LongClick", " ffwdBtn==>up");
             }
+            return false;
+        });
+        ffwdBtn.setOnLongClickListener(v -> {
+            Log.d("LongClick", " ffwdBtn => LongClick");
+            changePlayProgress(true);
             return false;
         });
         playerView.setControllerShowTimeoutMs(8000);
@@ -472,6 +491,44 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         playerView.hideController();
     }
 
+    public void changePlayProgress(boolean isForward) {
+        Observable.interval(0, 500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        playProgress = d;
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        Log.d("LongClick", "onNext:" + aLong);
+                        if (player != null && player.isCurrentWindowSeekable()) {
+                            player.seekTo(player.getCurrentPosition() + (isForward ? 1 : -1) * 5000);
+                            Log.d("LongClick", "CurrentPosition:" + player.getCurrentPosition());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("LongClick", "onError");
+                        cancelPlayProgress();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d("LongClick", "onComplete");
+                        cancelPlayProgress();
+                    }
+                });
+    }
+
+    public void cancelPlayProgress() {
+        if (playProgress != null && !playProgress.isDisposed()) {
+            playProgress.dispose();
+        }
+    }
+
     public void startPayer(List<String> urls, int chooseVideoPosition, long positionMs) {
         if (urls != null && urls.size() > 0) {
             ConcatenatingMediaSource source = new ConcatenatingMediaSource();
@@ -532,6 +589,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
+        cancelPlayProgress();
         if (dailyItems != null && player != null) {
             dailyItems.get(player.getCurrentWindowIndex()).setProgress((int) player.getCurrentPosition());
             List<PlayProgress> playProgresses = new ArrayList<>();
@@ -555,7 +613,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             return;
         }
         long nowTouchTime = System.currentTimeMillis();
-        if (nowTouchTime - fistTouchTime < 501) {//
+        if (nowTouchTime - fistTouchTime < 2000) {//
             super.onBackPressed();
             finish();
         } else {

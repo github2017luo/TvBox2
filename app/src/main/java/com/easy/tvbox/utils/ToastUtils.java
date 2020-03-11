@@ -42,9 +42,9 @@ public final class ToastUtils {
     private static int sGravity = -1;
     private static int sXOffset = -1;
     private static int sYOffset = -1;
-    private static int sBgColor = COLOR_DEFAULT;
+    private static int sBgColor = 0xff000000;
     private static int sBgResource = -1;
-    private static int sMsgColor = COLOR_DEFAULT;
+    private static int sMsgColor = 0xFFFFFFFF;
     private static int sMsgTextSize = -1;
 
     private static Context mContext;
@@ -55,7 +55,7 @@ public final class ToastUtils {
 
     public static void initToast(Context context) {
         mContext = context;
-        setGravity(Gravity.BOTTOM, 0, 0);//设置土司在中间显示
+        setGravity(Gravity.CENTER, 0, 0);//设置土司在中间显示
     }
 
     /**

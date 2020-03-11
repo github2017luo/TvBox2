@@ -249,7 +249,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 if (!TextUtils.isEmpty(appVersion.getVersion())) {
                     versionName = SystemUtils.getVersion(appVersion.getVersion());
                 }
-                if (Constant.TEST_UPDATE || versionName > currentVersion) {
+                if (versionName > currentVersion) {
                     showAppVersionDialog(appVersion);
                 }
             }

@@ -16,4 +16,5 @@
     <color name="actionbar_color">#3FBA91</color>
     <color name="green_bright">#00FF00</color>
     <color name="item_default_color">#EEEEEE</color>
+    <color name="touming">#00000000</color>
 </resources>

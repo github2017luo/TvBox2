@@ -75,7 +75,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
         isLoginActivity = true;
         Account account = DataManager.getInstance().queryAccount();
 
-        if (Constant.IS_DEBUG) {
+        if (BuildConfig.DEBUG) {
             if (account == null) {
                 account = new Account();
                 account.setId("15184784396");
@@ -230,7 +230,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
                 if (!TextUtils.isEmpty(appVersion.getVersion())) {
                     versionName = SystemUtils.getVersion(appVersion.getVersion());
                 }
-                if (Constant.TEST_UPDATE || versionName > currentVersion) {
+                if (versionName > currentVersion) {
                     showAppVersionDialog(appVersion);
                 }
             }
