@@ -185,7 +185,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             }
             progressBar.setProgress(dailyItem.getProgress());
             item.setOnClickListener(v -> clickVideo(v, false));
-            item.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+            item.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.3f));
             ImageView videoPreImage = item.findViewById(R.id.videoPreImage);
             Glide.with(this).load(dailyItem.getFaceurl()).into(videoPreImage);
             TextView videoTitle = item.findViewById(R.id.videoTitle);
