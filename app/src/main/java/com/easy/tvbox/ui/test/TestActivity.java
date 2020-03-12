@@ -55,10 +55,10 @@ public class TestActivity extends BaseActivity<TestBinding> implements TestView{
     public void initView() {
         mFocusBorder = new FocusBorder.Builder()
                 .asColor()
-                .borderColorRes(R.color.actionbar_color)
-                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3f)
-                .shadowColorRes(R.color.green_bright)
-                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 10f)
+                .borderColorRes(R.color.touming)
+                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
+                .shadowColorRes(R.color.touming)
+                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
                 .build(this);
 
         mViewBinding.recyclerView.setSpacingWithMargins(20, 20);

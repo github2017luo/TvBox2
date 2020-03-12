@@ -116,9 +116,9 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         mFocusBorder = new FocusBorder.Builder()
                 .asColor()
                 .borderColorRes(R.color.touming)
-                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.1f)
+                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.01f)
                 .shadowColorRes(R.color.touming)
-                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.1f)
+                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.01f)
                 .build(this);
         width = DimensUtils.dp2px(this, 150);
         Intent intent = getIntent();

@@ -63,10 +63,10 @@ public class MineActivity extends BaseActivity<MineBinding> implements MineView 
     public void initView() {
         mFocusBorder = new FocusBorder.Builder()
                 .asColor()
-                .borderColorRes(R.color.actionbar_color)
-                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 3f)
-                .shadowColorRes(R.color.green_bright)
-                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 5f)
+                .borderColorRes(R.color.touming)
+                .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
+                .shadowColorRes(R.color.touming)
+                .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
                 .build(this);
 
         mViewBinding.tvUpdatePhone.setOnClickListener(v -> RouteManager.goUpdatePhoneActivity(MineActivity.this));
