@@ -46,6 +46,7 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.owen.focus.AbsFocusBorder;
 import com.owen.focus.FocusBorder;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -113,13 +114,15 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             finish();
             return;
         }
-        mFocusBorder = new FocusBorder.Builder()
+        AbsFocusBorder.Builder builder = new FocusBorder.Builder()
                 .asColor()
                 .borderColorRes(R.color.touming)
                 .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.01f)
                 .shadowColorRes(R.color.touming)
                 .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.01f)
-                .build(this);
+                .noShimmer();
+        mFocusBorder = builder.build(this);
+
         width = DimensUtils.dp2px(this, 150);
         Intent intent = getIntent();
         String dataJson = intent.getStringExtra("data");
@@ -177,9 +180,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             item.setTag(dailyItem);
             ProgressBar progressBar = item.findViewById(R.id.progressBar);
             progressBar.setMax(dailyItem.getDurationMForLong());
-            item.setNextFocusUpId(R.id.exo_ffwd);
             if (i == 0) {
-                item.setId(R.id.video_vew_id);
                 item.setNextFocusLeftId(R.id.exo_ffwd);
                 progressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
             }
@@ -188,8 +189,8 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             item.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.3f));
             ImageView videoPreImage = item.findViewById(R.id.videoPreImage);
             Glide.with(this).load(dailyItem.getFaceurl()).into(videoPreImage);
-            TextView videoTitle = item.findViewById(R.id.videoTitle);
-            videoTitle.setText(TextUtils.isEmpty(dailyItem.getTitle()) ? "无标题" : dailyItem.getTitle());
+//            TextView videoTitle = item.findViewById(R.id.videoTitle);
+//            videoTitle.setText(TextUtils.isEmpty(dailyItem.getTitle()) ? "无标题" : dailyItem.getTitle());
             scrollView.addView(item, width, width);
         }
     }

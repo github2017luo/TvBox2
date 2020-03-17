@@ -102,6 +102,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
                 .shadowColorRes(R.color.touming)
                 .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
+                .noShimmer()
                 .build(this);
 
         mViewBinding.rlLive.setOnClickListener(v -> {

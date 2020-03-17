@@ -69,6 +69,7 @@ public class AlbumActivity extends BaseActivity<AlbumBinding> implements AlbumVi
                 .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
                 .shadowColorRes(R.color.touming)
                 .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
+                .noShimmer()
                 .build(this);
 
         mViewBinding.loadingView.setRetryListener(v -> {

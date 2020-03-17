@@ -67,6 +67,7 @@ public class MineActivity extends BaseActivity<MineBinding> implements MineView 
                 .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
                 .shadowColorRes(R.color.touming)
                 .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
+                .noShimmer()
                 .build(this);
 
         mViewBinding.tvUpdatePhone.setOnClickListener(v -> RouteManager.goUpdatePhoneActivity(MineActivity.this));

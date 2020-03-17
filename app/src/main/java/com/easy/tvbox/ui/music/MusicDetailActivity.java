@@ -74,6 +74,7 @@ public class MusicDetailActivity extends BaseActivity<MusicDetailBinding> implem
                 .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
                 .shadowColorRes(R.color.touming)
                 .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
+                .noShimmer()
                 .build(this);
 
         if (MusicFragment.musicLists.size() > position && position >= 0) {

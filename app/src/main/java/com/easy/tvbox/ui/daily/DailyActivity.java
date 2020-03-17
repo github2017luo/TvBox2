@@ -56,6 +56,7 @@ public class DailyActivity extends BaseActivity<DailyBinding> implements DailyVi
                 .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
                 .shadowColorRes(R.color.touming)
                 .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
+                .noShimmer()
                 .build(this);
 
         //1034:395

@@ -90,6 +90,7 @@ public class AlbumListActivity extends BaseActivity<AlbumListBinding> implements
                 .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.01f)
                 .shadowColorRes(R.color.touming)
                 .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
+                .noShimmer()
                 .build(this);
 
         mViewBinding.loadingView.setRetryListener(v -> {

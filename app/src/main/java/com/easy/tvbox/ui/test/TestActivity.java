@@ -59,6 +59,7 @@ public class TestActivity extends BaseActivity<TestBinding> implements TestView{
                 .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
                 .shadowColorRes(R.color.touming)
                 .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
+                .noShimmer()
                 .build(this);
 
         mViewBinding.recyclerView.setSpacingWithMargins(20, 20);

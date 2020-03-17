@@ -22,6 +22,7 @@ public abstract class TvBaseFragment<M extends ViewDataBinding> extends BaseFrag
                 .borderWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
                 .shadowColorRes(R.color.touming)
                 .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 0.001f)
+                .noShimmer()
                 .build(this);
     }
 
