@@ -1,5 +1,7 @@
 package com.easy.tvbox.ui.home;
 
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -27,6 +29,7 @@ import com.easy.tvbox.http.ProgressInfo;
 import com.easy.tvbox.http.ProgressListener;
 import com.easy.tvbox.http.ProgressManager;
 import com.easy.tvbox.mqtt.MqttSimple;
+import com.easy.tvbox.receiver.DataChangeReceiver;
 import com.easy.tvbox.ui.test.Utils;
 import com.easy.tvbox.utils.SystemUtils;
 import com.easy.tvbox.utils.ToastUtils;
@@ -55,6 +58,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     MqttSimple mqttSimple;
     AppUpdateDialog dialog;
     public static boolean canInHome = false;
+    DataChangeReceiver receiver;
 
     @Override
     public int getLayoutId() {
@@ -96,6 +100,8 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
             finish();
             return;
         }
+        registerBroadcast();
+
         mFocusBorder = new FocusBorder.Builder()
                 .asColor()
                 .borderColorRes(R.color.touming)
@@ -136,6 +142,14 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         String fileName = "tvBox.apk";
         downloadPath = Utils.getSaveFilePath(Constant.TYPE_APP, this) + fileName;
         presenter.timeCheckVersion();
+    }
+
+    private void registerBroadcast() {
+        receiver = new DataChangeReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        registerReceiver(receiver, filter);
     }
 
 
@@ -203,6 +217,9 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
         if (presenter != null) {
             presenter.liveRequestCancel();
         }
