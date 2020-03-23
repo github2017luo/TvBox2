@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nScrollView"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_height="200dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
         android:focusable="false"
         android:orientation="vertical">
 
@@ -25,4 +30,5 @@
                 android:orientation="horizontal" />
         </com.easy.tvbox.tvview.tvwidget.TvHorizontalScrollView>
     </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </merge>

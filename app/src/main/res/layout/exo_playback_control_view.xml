@@ -27,10 +27,10 @@
             android:layout_height="45dp"
             android:background="@drawable/video_btn"
             android:focusable="true"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="15dp"
             android:src="@drawable/exo_controls_rewind" />
 
         <!--        <ImageButton android:id="@id/exo_shuffle"-->
@@ -49,10 +49,10 @@
             android:focusable="true"
             android:nextFocusLeft="@id/exo_rew"
             android:nextFocusRight="@id/exo_ffwd"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="15dp"
             android:nextFocusUp="@id/exo_rew"
             android:src="@drawable/exo_controls_play" />
 
@@ -64,10 +64,10 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:nextFocusLeft="@id/exo_rew"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="15dp"
             android:nextFocusRight="@id/exo_ffwd"
             android:nextFocusUp="@id/exo_rew"
             android:src="@drawable/exo_controls_pause" />
@@ -77,10 +77,10 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:background="@drawable/video_btn"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="15dp"
             android:focusable="true"
             android:src="@drawable/exo_controls_fastforward" />
 

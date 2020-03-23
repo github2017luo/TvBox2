@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
@@ -186,11 +187,11 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             }
             progressBar.setProgress(dailyItem.getProgress());
             item.setOnClickListener(v -> clickVideo(v, false));
-            item.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.3f));
+            item.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
             ImageView videoPreImage = item.findViewById(R.id.videoPreImage);
             Glide.with(this).load(dailyItem.getFaceurl()).into(videoPreImage);
-//            TextView videoTitle = item.findViewById(R.id.videoTitle);
-//            videoTitle.setText(TextUtils.isEmpty(dailyItem.getTitle()) ? "无标题" : dailyItem.getTitle());
+            TextView videoTitle = item.findViewById(R.id.videoTitle);
+            videoTitle.setText(TextUtils.isEmpty(dailyItem.getTitle()) ? "无标题" : dailyItem.getTitle());
             scrollView.addView(item, width, width);
         }
     }
@@ -286,7 +287,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                 currentProgressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
             }
             if (mFocusBorder.isVisible() && item != null) {
-                onMoveFocusBorder(item, 1.1f);
+                onMoveFocusBorder(item, 1.5f);
             }
             positionMs = dailyItem.getProgress();
         }
@@ -314,7 +315,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         currentProgressBar.setProgressDrawable(getDrawable(R.drawable.progress_horizontal_red));
         if (isFinish) {
             if (controlView.getVisibility() == View.VISIBLE) {
-                onMoveFocusBorder(currentView, 1.1f);
+                onMoveFocusBorder(currentView, 1.5f);
             }
         }
     }
@@ -324,10 +325,17 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
         playerView.setShowMultiWindowTimeBar(false);
         playerView.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING);
         controlView = findViewById(R.id.exo_controller);
+        NestedScrollView nScrollView = findViewById(R.id.nScrollView);
         View playBtn = controlView.findViewById(R.id.exo_play);
-        playBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
+        playBtn.setOnFocusChangeListener((v, hasFocus) -> {
+            nScrollView.scrollTo(0,0);
+            onMoveFocusBorder(v, 1.7f);
+        });
         View pauseBtn = controlView.findViewById(R.id.exo_pause);
-        pauseBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
+        pauseBtn.setOnFocusChangeListener((v, hasFocus) -> {
+            nScrollView.scrollTo(0,0);
+            onMoveFocusBorder(v, 1.7f);
+        });
 
         View rewBtn = controlView.findViewById(R.id.exo_rew);
         rewBtn.setOnKeyListener((v, keyCode, event) -> {
@@ -344,9 +352,16 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             changePlayProgress(false);
             return false;
         });
-        rewBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
+        rewBtn.setOnFocusChangeListener((v, hasFocus) -> {
+            nScrollView.scrollTo(0,0);
+            onMoveFocusBorder(v, 1.7f);
+        });
+
         View ffwdBtn = controlView.findViewById(R.id.exo_ffwd);
-        ffwdBtn.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.5f));
+        ffwdBtn.setOnFocusChangeListener((v, hasFocus) -> {
+            nScrollView.scrollTo(0,0);
+            onMoveFocusBorder(v, 1.7f);
+        });
         ffwdBtn.setOnKeyListener((v, keyCode, event) -> {
             Log.d("LongClick", "keyCode:" + keyCode + " action:" + event.getAction());
             if (event.getAction() == KeyEvent.ACTION_UP
@@ -391,7 +406,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                         @Override
                         public void run() {
                             Log.d("Focustv", "playBtn.onMoveFocusBorder");
-                            onMoveFocusBorder(playBtn, 1.5f);
+                            onMoveFocusBorder(playBtn, 1.7f);
                         }
                     }, 200);
                 } else {
@@ -399,7 +414,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                         @Override
                         public void run() {
                             Log.d("Focustv", "pauseBtn.onMoveFocusBorder");
-                            onMoveFocusBorder(pauseBtn, 1.5f);
+                            onMoveFocusBorder(pauseBtn, 1.7f);
                         }
                     }, 200);
                 }
