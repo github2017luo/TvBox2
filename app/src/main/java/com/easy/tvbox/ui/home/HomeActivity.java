@@ -30,6 +30,7 @@ import com.easy.tvbox.http.ProgressListener;
 import com.easy.tvbox.http.ProgressManager;
 import com.easy.tvbox.mqtt.MqttSimple;
 import com.easy.tvbox.receiver.DataChangeReceiver;
+import com.easy.tvbox.receiver.ShutdownBroadcastReceiver;
 import com.easy.tvbox.ui.test.Utils;
 import com.easy.tvbox.utils.SystemUtils;
 import com.easy.tvbox.utils.ToastUtils;
@@ -59,6 +60,7 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
     AppUpdateDialog dialog;
     public static boolean canInHome = false;
     DataChangeReceiver receiver;
+    ShutdownBroadcastReceiver shutdownReceiver;
 
     @Override
     public int getLayoutId() {
@@ -142,6 +144,9 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         String fileName = "tvBox.apk";
         downloadPath = Utils.getSaveFilePath(Constant.TYPE_APP, this) + fileName;
         presenter.timeCheckVersion();
+
+        shutdownReceiver = new ShutdownBroadcastReceiver();
+        registerReceiver(shutdownReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
     }
 
     private void registerBroadcast() {
@@ -219,6 +224,9 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
         super.onDestroy();
         if (receiver != null) {
             unregisterReceiver(receiver);
+        }
+        if (shutdownReceiver != null) {
+            unregisterReceiver(shutdownReceiver);
         }
         if (presenter != null) {
             presenter.liveRequestCancel();

@@ -2,13 +2,15 @@ package com.easy.tvbox.base;
 
 import android.content.Context;
 import android.content.IntentFilter;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.view.KeyEvent;
+
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.fragment.app.FragmentActivity;
 
 import com.easy.tvbox.event.LogoutEvent;
 import com.easy.tvbox.http.NetworkChangeEvent;
