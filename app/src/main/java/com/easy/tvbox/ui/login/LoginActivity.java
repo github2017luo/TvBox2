@@ -217,6 +217,7 @@ public class LoginActivity extends BaseActivity<LoginBinding> implements LoginVi
     @Override
     protected void onDestroy() {
         loginPresenter.timeCheckLoginCancel();
+        loginPresenter.timeCheckVersionCancel();
         super.onDestroy();
     }
 

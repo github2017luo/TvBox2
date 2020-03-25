@@ -9,14 +9,10 @@
         android:orientation="vertical"
         android:paddingTop="30dp">
 
-        <com.easy.tvbox.tvview.tvRecycleView.TvRecyclerView
-            android:id="@+id/recyclerView"
-            style="@style/TwoWayView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:tv_numColumns="3"
-            app:tv_numRows="3"
-            app:tv_layoutManager="GridLayoutManager"/>
+        <TextView
+            android:id="@+id/testView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="插入/拔出u盘" />
     </LinearLayout>
 </layout>

@@ -96,6 +96,8 @@ public class MineActivity extends BaseActivity<MineBinding> implements MineView 
         });
         mFocusBorder.setVisible(true);
         onMoveFocusBorder(mViewBinding.tvUpdatePhone, 1.1f);
+
+        mViewBinding.tvTest.setOnClickListener(v -> RouteManager.goTestActivity(MineActivity.this));
     }
 
     private void refreshAccountInfo() {

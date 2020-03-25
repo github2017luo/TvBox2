@@ -15,6 +15,7 @@ import com.easy.tvbox.ui.mine.MineActivity;
 import com.easy.tvbox.ui.music.MusicActivity;
 import com.easy.tvbox.ui.music.MusicDetailActivity;
 import com.easy.tvbox.ui.phone.UpdatePhoneActivity;
+import com.easy.tvbox.ui.test.TestActivity;
 import com.easy.tvbox.ui.video.DailyVideoActivity;
 import com.easy.tvbox.ui.video.MusicVideoActivity;
 import com.easy.tvbox.ui.video.VideoActivity;
@@ -99,6 +100,11 @@ public class RouteManager {
         context.startActivity(intent);
     }
 
+    public static void goTestActivity(Context context) {
+        Intent intent = new Intent(context, TestActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
     public static void goDailyActivity(Context context) {
         Intent intent = new Intent(context, DailyActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
