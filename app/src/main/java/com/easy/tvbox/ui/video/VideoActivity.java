@@ -3,6 +3,9 @@ package com.easy.tvbox.ui.video;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.aliyun.player.bean.ErrorInfo;
@@ -28,6 +31,7 @@ public class VideoActivity extends BaseActivity<VideoBinding> implements VideoVi
     @Inject
     VideoPresenter presenter;
     LiveList liveData;
+    TextView tvTitle;
 
     @Override
     public int getLayoutId() {
@@ -58,6 +62,8 @@ public class VideoActivity extends BaseActivity<VideoBinding> implements VideoVi
         }
         Intent intent = getIntent();
         String dataJson = intent.getStringExtra("data");
+        mAliyunVodPlayerView = findViewById(com.easy.aliplayer.R.id.videoView);
+        tvTitle = findViewById(R.id.tvTitle);
         try {
             liveData = JSON.parseObject(dataJson, LiveList.class);
         } catch (Exception e) {
@@ -67,6 +73,7 @@ public class VideoActivity extends BaseActivity<VideoBinding> implements VideoVi
             finish();
             return;
         }
+        tvTitle.setText(liveData.getTitle());
         initAliyunPlayerView();
 //        startPayer("http://mobile.hxsoft.net/live/show.m3u8");
         presenter.getLivePlayUrl(liveData.getUid());
@@ -90,13 +97,37 @@ public class VideoActivity extends BaseActivity<VideoBinding> implements VideoVi
      * 播放完成
      */
     private void playerCompletion() {
-       finish();
+        finish();
     }
 
     private void startPayer(String url) {
         UrlSource urlSource = new UrlSource();
         urlSource.setUri(url);
         mAliyunVodPlayerView.setLocalSource(urlSource);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+                || keyCode == KeyEvent.KEYCODE_DPAD_LEFT
+                || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+                || keyCode == KeyEvent.KEYCODE_DPAD_UP
+                || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            if (tvTitle != null && tvTitle.getVisibility() == View.GONE) {
+                tvTitle.setVisibility(View.VISIBLE);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (tvTitle != null && tvTitle.getVisibility() == View.VISIBLE) {
+            tvTitle.setVisibility(View.GONE);
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -107,6 +138,7 @@ public class VideoActivity extends BaseActivity<VideoBinding> implements VideoVi
             mAliyunVodPlayerView.onStop();
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();

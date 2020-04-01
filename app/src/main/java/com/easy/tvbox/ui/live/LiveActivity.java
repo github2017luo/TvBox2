@@ -11,7 +11,6 @@ import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.databinding.LiveBinding;
 import com.easy.tvbox.http.NetworkUtils;
 import com.easy.tvbox.ui.LoadingView;
-import com.easy.tvbox.ui.home.HomeActivity;
 
 import java.util.List;
 
@@ -21,7 +20,6 @@ public class LiveActivity extends BaseActivity<LiveBinding> implements LiveView 
 
     @Inject
     LivePresenter presenter;
-    LiveGridFragment liveGridFragment;
 
     @Override
     public int getLayoutId() {
@@ -34,18 +32,11 @@ public class LiveActivity extends BaseActivity<LiveBinding> implements LiveView 
     }
 
     @Override
-    public void networkChange(boolean isConnect) {
+    public synchronized void networkChange(boolean isConnect) {
         if (isConnect) {
-            if (HomeActivity.liveDataContent == null || HomeActivity.liveDataContent.isEmpty()) {
-                mViewBinding.ivNoData.setVisibility(View.VISIBLE);
-                mViewBinding.cardsFragment.setVisibility(View.GONE);
-            } else {
-                mViewBinding.ivNoData.setVisibility(View.GONE);
-                mViewBinding.cardsFragment.setVisibility(View.VISIBLE);
-            }
             mViewBinding.loadingView.setStatus(LoadingView.STATUS_HIDDEN);
+            mViewBinding.ivNoData.setVisibility(View.VISIBLE);
         } else {
-            mViewBinding.cardsFragment.setVisibility(View.GONE);
             mViewBinding.loadingView.setStatus(LoadingView.STATUS_NONETWORK);
         }
     }
@@ -62,12 +53,6 @@ public class LiveActivity extends BaseActivity<LiveBinding> implements LiveView 
             finish();
             return;
         }
-        liveGridFragment = new LiveGridFragment();
-        liveGridFragment.setPresenter(presenter);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.cardsFragment, liveGridFragment)
-                .commit();
 
         mViewBinding.loadingView.setRetryListener(v -> {
             if (NetworkUtils.isNetConnected(LiveActivity.this)) {

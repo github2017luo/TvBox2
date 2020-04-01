@@ -31,6 +31,7 @@ import com.easy.tvbox.http.ProgressManager;
 import com.easy.tvbox.mqtt.MqttSimple;
 import com.easy.tvbox.receiver.DataChangeReceiver;
 import com.easy.tvbox.receiver.ShutdownBroadcastReceiver;
+import com.easy.tvbox.ui.live.LiveActivity;
 import com.easy.tvbox.ui.test.Utils;
 import com.easy.tvbox.utils.SystemUtils;
 import com.easy.tvbox.utils.ToastUtils;
@@ -114,9 +115,8 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
                 .build(this);
 
         mViewBinding.rlLive.setOnClickListener(v -> {
-            RouteManager.goLiveActivity(HomeActivity.this);
-//            RouteManager.goVideoActivity(HomeActivity.this,"http://mobile.hxsoft.net/live/show.m3u8");
-            EventBus.getDefault().post(new LiveUpdateEvent(0));
+            clickLiveButton();
+//            EventBus.getDefault().post(new LiveUpdateEvent(0));//播放列表已去掉这个就没用了
         });
 
         mViewBinding.rlLive.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
@@ -147,6 +147,25 @@ public class HomeActivity extends BaseActivity<HomeBinding> implements HomeView 
 
         shutdownReceiver = new ShutdownBroadcastReceiver();
         registerReceiver(shutdownReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+    }
+
+    public void clickLiveButton() {
+        if (liveDataContent == null || liveDataContent.isEmpty()) {
+            RouteManager.goLiveActivity(HomeActivity.this);
+            return;
+        }
+        LiveList startLive = null;
+        for (LiveList liveList : liveDataContent) {
+            if (liveList.getState() != 0 && liveList.getState() != 1) {
+                startLive = liveList;
+                break;
+            }
+        }
+        if (startLive != null) {
+            RouteManager.goVideoActivity(HomeActivity.this, JSON.toJSONString(startLive));
+        } else {
+            RouteManager.goLiveActivity(HomeActivity.this);
+        }
     }
 
     private void registerBroadcast() {

@@ -267,6 +267,7 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
                 ProgressBar progressBar = item.findViewById(R.id.progressBar);
                 progressBar.setProgress(dailyItem.getProgress());
             }
+            player.seekTo(windowIndex, positionMs);
         } else {
             Log.d("SeekTo", "切换视频");
             DailyItem lastItem = dailyItems.get(currentPlayPosition);
@@ -289,10 +290,11 @@ public class DailyVideoActivity extends BaseActivity<DailyVideoBinding> implemen
             if (mFocusBorder.isVisible() && item != null) {
                 onMoveFocusBorder(item, 1.5f);
             }
-            positionMs = dailyItem.getProgress();
+            dailyItem.setProgress(0);
+            player.seekTo(windowIndex, 0);
         }
 
-        player.seekTo(windowIndex, positionMs);
+
         Log.d("SeekTo", "windowIndex:" + windowIndex + " positionMs:" + positionMs);
         Log.d("SeekTo", dailyItem.toString());
     }

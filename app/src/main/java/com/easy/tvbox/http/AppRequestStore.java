@@ -208,9 +208,9 @@ public class AppRequestStore {
      *
      * @return
      */
-    public Single<Respond> requestVersion() {
+    public Single<Respond> requestVersion(String serial) {
         return retrofit.create(ApiService.class)
-                .requestVersion()
+                .requestVersion(serial)
                 .map(getCommonFunction())
                 .subscribeOn(Schedulers.io());
     }

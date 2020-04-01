@@ -4,6 +4,7 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.easy.tvbox.BuildConfig;
 import com.easy.tvbox.base.BasePresenter;
 import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.bean.Account;
@@ -283,7 +284,11 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
     public void requestVersion() {
-        Disposable disposable = requestStore.requestVersion()
+        String serial = Build.SERIAL;
+        if (BuildConfig.DEBUG) {
+            serial = "EMULATOR29X2X1X0";
+        }
+        Disposable disposable = requestStore.requestVersion(serial)
                 .doOnSuccess(respond -> {
                     if (respond.isOk()) {
                         String body = respond.getBody();

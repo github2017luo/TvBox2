@@ -1,11 +1,13 @@
 package com.easy.tvbox.base;
 
+import com.easy.tvbox.BuildConfig;
+
 import java.io.File;
 
 public class Constant {
     public static final String RELEASE_DOMAIN = "https://gl.ajitai.com.cn/api/box/";
     public static final String DEBUG_DOMAIN = "http://oa.xm-golden.cn/ajitai/api/box/";
-    public static final String BASE_URL = RELEASE_DOMAIN;
+    public static final String BASE_URL = /*BuildConfig.DEBUG ? DEBUG_DOMAIN :*/ RELEASE_DOMAIN;
 
     public static final String CODE = "azitai@2019";
     public static final String PHONE = "13779926288";

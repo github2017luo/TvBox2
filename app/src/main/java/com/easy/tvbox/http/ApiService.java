@@ -24,8 +24,8 @@ public interface ApiService {
     @GET("getAllShop")
     Single<ResponseBody> getAllShop();
 
-    @GET("getVersion")
-    Single<ResponseBody> requestVersion();
+    @GET("getVersion/{serial}")
+    Single<ResponseBody> requestVersion(@Path("serial") String serial);
 
     @POST("sendMessage")
     Single<ResponseBody> sendMessage(@Body RequestBody requestBody);

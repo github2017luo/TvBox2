@@ -208,7 +208,11 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     }
 
     public void requestVersion() {
-        Disposable disposable = requestStore.requestVersion()
+        String serial = Build.SERIAL;
+        if (BuildConfig.DEBUG) {
+            serial = "EMULATOR29X2X1X0";
+        }
+        Disposable disposable = requestStore.requestVersion(serial)
                 .doOnSuccess(respond -> {
                     if (respond.isOk()) {
                         String body = respond.getBody();
