@@ -1,15 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.objectbox'
 
-//com.droidlogic.FileBrower 机顶盒文件管理器包名
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.easy.tvbox"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 55
-        versionName "1.4.2"
+        versionCode 58
+        versionName "1.4.5"
 
         multiDexEnabled true
         javaCompileOptions {

@@ -1,7 +1,5 @@
 package com.easy.tvbox.base;
 
-import com.easy.tvbox.BuildConfig;
-
 import java.io.File;
 
 public class Constant {

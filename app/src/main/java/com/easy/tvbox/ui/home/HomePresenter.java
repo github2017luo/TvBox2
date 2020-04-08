@@ -2,6 +2,7 @@ package com.easy.tvbox.ui.home;
 
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.easy.tvbox.BuildConfig;
@@ -136,6 +137,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
         if (account != null) {
             map.put("shopNo", account.getShopNo());
         }
+        Log.d("queryLive","queryLive");
         Disposable disposable = requestStore.queryForLive(0, 20, map)
                 .doOnSuccess(respond -> {
                     if (respond.isOk()) {

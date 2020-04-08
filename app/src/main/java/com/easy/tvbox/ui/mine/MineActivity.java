@@ -12,13 +12,11 @@ import com.easy.tvbox.base.DataManager;
 import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.Account;
 import com.easy.tvbox.databinding.MineBinding;
-import com.easy.tvbox.event.LiveUpdateEvent;
 import com.easy.tvbox.event.LogoutEvent;
-import com.easy.tvbox.ui.home.HomeActivity;
-import com.easy.tvbox.utils.CommonUtils;
+import com.easy.tvbox.utils.SystemUtils;
+import com.easy.tvbox.utils.ToastUtils;
 import com.owen.focus.FocusBorder;
 
-import org.greenrobot.essentials.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
@@ -71,33 +69,28 @@ public class MineActivity extends BaseActivity<MineBinding> implements MineView 
                 .build(this);
 
         mViewBinding.tvUpdatePhone.setOnClickListener(v -> RouteManager.goUpdatePhoneActivity(MineActivity.this));
+        mViewBinding.tvUpdatePhone.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
 
-        mViewBinding.logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LogoutFragmentDialog dialog = new LogoutFragmentDialog();
-                dialog.setCancelable(false);
-                dialog.show(getSupportFragmentManager(), "logout");
+        mViewBinding.logout.setOnClickListener(v -> {
+            LogoutFragmentDialog dialog = new LogoutFragmentDialog();
+            dialog.setCancelable(false);
+            dialog.show(getSupportFragmentManager(), "logout");
+        });
+        mViewBinding.logout.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+
+        mViewBinding.tvFileManager.setOnFocusChangeListener((v, hasFocus) -> onMoveFocusBorder(v, 1.1f));
+        mViewBinding.tvFileManager.setOnClickListener(v -> {
+            String packageName = "com.droidlogic.FileBrower";
+            boolean hasIn = SystemUtils.isAppExist(MineActivity.this, packageName);
+            if (hasIn) {
+                SystemUtils.openApp(MineActivity.this, packageName);
+            } else {
+                ToastUtils.showShort("应用还未安装，请先安装应用");
             }
         });
 
-        mViewBinding.logout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onMoveFocusBorder(v, 1.1f);
-            }
-        });
-
-        mViewBinding.tvUpdatePhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onMoveFocusBorder(v, 1.1f);
-            }
-        });
         mFocusBorder.setVisible(true);
         onMoveFocusBorder(mViewBinding.tvUpdatePhone, 1.1f);
-
-        mViewBinding.tvTest.setOnClickListener(v -> RouteManager.goTestActivity(MineActivity.this));
     }
 
     private void refreshAccountInfo() {

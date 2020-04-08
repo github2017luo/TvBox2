@@ -10,7 +10,6 @@ import com.easy.tvbox.databinding.TestBinding;
 import com.easy.tvbox.event.StorageChangeEvent;
 import com.easy.tvbox.receiver.UsbBroadcast;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
