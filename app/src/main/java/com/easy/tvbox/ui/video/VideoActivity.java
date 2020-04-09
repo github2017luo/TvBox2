@@ -128,6 +128,7 @@ public class VideoActivity extends BaseActivity<VideoBinding> implements VideoVi
             return;
         }
         super.onBackPressed();
+        finish();
     }
 
     @Override

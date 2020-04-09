@@ -13,7 +13,6 @@ import com.easy.tvbox.base.RouteManager;
 import com.easy.tvbox.bean.LiveList;
 import com.easy.tvbox.event.LiveUpdateEvent;
 import com.easy.tvbox.ui.daily.DailyActivity;
-import com.easy.tvbox.ui.daily.DailyGridAdapter;
 import com.easy.tvbox.ui.home.HomeActivity;
 import com.easy.tvbox.utils.ToastUtils;
 
@@ -58,12 +57,12 @@ public class LiveGridFragment extends VerticalGridSupportFragment {
         refreshView();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLiveUpdateEvent(LiveUpdateEvent event) {
-        if (event.type == 1) {
-            refreshView();
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onLiveUpdateEvent(LiveUpdateEvent event) {
+//        if (event.type == 1) {
+//            refreshView();
+//        }
+//    }
 
     public void refreshView() {
         List<LiveList> dailyDataContent = HomeActivity.liveDataContent;

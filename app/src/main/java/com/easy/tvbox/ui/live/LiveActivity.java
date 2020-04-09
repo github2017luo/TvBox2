@@ -1,5 +1,6 @@
 package com.easy.tvbox.ui.live;
 
+import android.util.Log;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -41,15 +42,7 @@ public class LiveActivity extends BaseActivity<LiveBinding> implements LiveView 
     }
 
     @Override
-    public synchronized void networkChange(boolean isConnect) {
-        if (isConnect) {
-            EventBus.getDefault().post(new LiveUpdateEvent(0));
-            mViewBinding.loadingView.setStatus(LoadingView.STATUS_LOADING);
-            mViewBinding.ivNoData.setVisibility(View.GONE);
-        } else {
-            mViewBinding.loadingView.setStatus(LoadingView.STATUS_NONETWORK);
-            mViewBinding.ivNoData.setVisibility(View.GONE);
-        }
+    public void networkChange(boolean isConnect) {
     }
 
     @Override
@@ -67,16 +60,27 @@ public class LiveActivity extends BaseActivity<LiveBinding> implements LiveView 
 
         mViewBinding.loadingView.setRetryListener(v -> {
             if (NetworkUtils.isNetConnected(LiveActivity.this)) {
-                networkChange(true);
+                mViewBinding.loadingView.setStatus(LoadingView.STATUS_LOADING);
+                mViewBinding.ivNoData.setVisibility(View.GONE);
+                EventBus.getDefault().post(new LiveUpdateEvent(0));
             }
         });
 
-        networkChange(NetworkUtils.isNetConnected(LiveActivity.this));
+        if (NetworkUtils.isNetConnected(LiveActivity.this)) {
+            mViewBinding.loadingView.setStatus(LoadingView.STATUS_LOADING);
+            mViewBinding.ivNoData.setVisibility(View.GONE);
+            Log.d("onLiveUpdateEvent", "LiveUpdateEvent==0");
+            EventBus.getDefault().post(new LiveUpdateEvent(0));
+        } else {
+            mViewBinding.loadingView.setStatus(LoadingView.STATUS_NONETWORK);
+            mViewBinding.ivNoData.setVisibility(View.GONE);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLiveUpdateEvent(LiveUpdateEvent event) {
         if (event.type == 1) {
+            Log.d("onLiveUpdateEvent", "收到event==1");
             if (HomeActivity.liveDataContent != null && !HomeActivity.liveDataContent.isEmpty()) {
                 LiveList startLive = null;
                 for (LiveList liveList : HomeActivity.liveDataContent) {
@@ -86,6 +90,7 @@ public class LiveActivity extends BaseActivity<LiveBinding> implements LiveView 
                     }
                 }
                 if (startLive != null) {
+                    Log.d("onLiveUpdateEvent", "打开goVideoActivity");
                     RouteManager.goVideoActivity(LiveActivity.this, JSON.toJSONString(startLive));
                     finish();
                     return;
